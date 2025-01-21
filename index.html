@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Web</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <a href="#home">
+                        <img src="images/Logo.png" alt="Your Logo" class="logo-img">
+                    </a>
+                </div>
+                <div class="menu-toggle" id="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#home" class="active">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <h1>Muhammad Rakha Pratama</h1>
+                <p>Software Developer & Web Designer</p>
+                <div class="hero-buttons">
+                    <a href="#portfolio" class="button">View My Work</a>
+                    <a href="#contact" class="button button-outline">Contact Me</a>
+                </div>
+                <!-- Add Social Links -->
+                <div class="hero-social-links">
+                    <a href="https://github.com/rkhplace" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/exoticnuggs?s=21" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/rkhap_?igsh=MXhicWRoOHo4cnhhbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>About Me</h2>
+                <p>Get to know me better</p>
+            </div>
+            <div class="about-content">
+                <div class="about-image" data-aos="fade-right">
+                    <img src="images/ProfilePict.jpg" alt="My Profile Picture">
+                </div>
+                <div class="about-text" data-aos="fade-left">
+                    <h3>Computer Science Enthusiast</h3>
+                    <p>As a passionate Informatics Student, I specialize in developing innovative digital solutions. My journey in technology began with my deep curiosity about how computers work and evolved into a professional pursuit of creating impactful software solutions.</p>
+                    
+                    <div class="expertise-areas">
+                        <h4>Areas of Expertise:</h4>
+                        <ul>
+                            <li>🖥️ Software Development</li>
+                            <li>📱 Mobile App Development</li>
+                            <li>🌐 Web Technologies</li>
+                            <li>📊 Database Management</li>
+                            <li>🤖 Artificial Intelligence</li>
+                        </ul>
+                    </div>
+
+                    <div class="education">
+                        <h4>Education:</h4>
+                        <p>Student in Informatics Engineering</p>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h4>5+</h4>
+                            <p>Projects Completed</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>5+</h4>
+                            <p>Programming Languages</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>2+</h4>
+                            <p>Years Experience</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>My Services</h2>
+                <p>Expertise & Solutions</p>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Web Development -->
+                <div class="service-item" data-aos="fade-up">
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="service-info">
+                            <h3>Web Development</h3>
+                            <p class="service-description">
+                                Developing modern and responsive web applications with clean code practices. 
+                                Specializing in creating interactive user interfaces and ensuring cross-browser compatibility.
+                            </p>
+                            <div class="service-expertise">
+                                <h4>Core Competencies:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Frontend Development (HTML5, CSS3, JavaScript)</li>
+                                    <li><i class="fas fa-check"></i> Responsive Web Design</li>
+                                    <li><i class="fas fa-check"></i> Cross-browser Compatibility</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Development -->
+                <div class="service-item" data-aos="fade-up">
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="service-info">
+                            <h3>Mobile Development</h3>
+                            <p class="service-description">
+                                Building cross-platform mobile applications with Flutter framework. 
+                                Focus on creating seamless user experiences and efficient performance.
+                            </p>
+                            <div class="service-expertise">
+                                <h4>Core Competencies:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Flutter & Dart Programming</li>
+                                    <li><i class="fas fa-check"></i> Firebase Integration</li>
+                                    <li><i class="fas fa-check"></i> Cross-platform Development</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Development -->
+                <div class="service-item" data-aos="fade-up">
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="service-info">
+                            <h3>Backend Development</h3>
+                            <p class="service-description">
+                                Developing robust server-side applications with Go programming language.
+                                Implementing efficient algorithms and data structures for optimal performance.
+                            </p>
+                            <div class="service-expertise">
+                                <h4>Core Competencies:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Go Programming & API Development</li>
+                                    <li><i class="fas fa-check"></i> Data Structures & Algorithms</li>
+                                    <li><i class="fas fa-check"></i> System Architecture Design</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UI/UX Design -->
+                <div class="service-item" data-aos="fade-up">
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="service-info">
+                            <h3>UI/UX Design</h3>
+                            <p class="service-description">
+                                Creating intuitive and engaging user interfaces with focus on user experience.
+                                Specializing in modern design principles and user-centered approaches.
+                            </p>
+                            <div class="service-expertise">
+                                <h4>Core Competencies:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> Figma Design & Prototyping</li>
+                                    <li><i class="fas fa-check"></i> User Experience Research</li>
+                                    <li><i class="fas fa-check"></i> Interactive Interface Design</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Database Management -->
+                <div class="service-item" data-aos="fade-up">
+                    <div class="service-content">
+                        <div class="service-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="service-info">
+                            <h3>Database Management</h3>
+                            <p class="service-description">
+                                Designing and implementing secure database systems with focus on data integrity.
+                                Expertise in database security and efficient data management.
+                            </p>
+                            <div class="service-expertise">
+                                <h4>Core Competencies:</h4>
+                                <ul>
+                                    <li><i class="fas fa-check"></i> MySQL Database Design</li>
+                                    <li><i class="fas fa-check"></i> Database Security Implementation</li>
+                                    <li><i class="fas fa-check"></i> Data Integrity Management</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section class="portfolio" id="portfolio">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>My Portfolio</h2>
+                <p>Recent projects I've worked on</p>
+            </div>
+            
+            <div class="portfolio-grid">
+                <!-- Web Development -->
+                <div class="portfolio-item" data-aos="fade-up">
+                    <div class="portfolio-content">
+                        <div class="portfolio-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3>Web Development</h3>
+                        <p>Web Applications & Websites</p>
+                        <div class="portfolio-tags">
+                            <span>HTML</span>
+                            <span>CSS</span>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'web')">
+                                <i class="fas fa-folder-open"></i> View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mobile Development -->
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="100">
+                    <div class="portfolio-content">
+                        <div class="portfolio-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Development</h3>
+                        <p>Mobile Applications</p>
+                        <div class="portfolio-tags">
+                            <span>Flutter</span>
+                            <span>Firebase</span>
+                            <span>Dart</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'mobile')">
+                                <i class="fas fa-folder-open"></i> View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- UI/UX Design -->
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="200">
+                    <div class="portfolio-content">
+                        <div class="portfolio-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <h3>UI/UX Design</h3>
+                        <p>User Interface & Experience</p>
+                        <div class="portfolio-tags">
+                            <span>Figma</span>
+                            <span>Adobe XD</span>
+                            <span>Sketch</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'design')">
+                                <i class="fas fa-folder-open"></i> View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Database Management section to portfolio grid -->
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="300">
+                    <div class="portfolio-content">
+                        <div class="portfolio-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3>Database Management</h3>
+                        <p>Database Design & Development</p>
+                        <div class="portfolio-tags">
+                            <span>MySQL</span>
+                            <span>PostgreSQL</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'database')">
+                                <i class="fas fa-folder-open"></i> View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Backend Development section to portfolio grid -->
+                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="400">
+                    <div class="portfolio-content">
+                        <div class="portfolio-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h3>Backend Development</h3>
+                        <p>Server-side Applications</p>
+                        <div class="portfolio-tags">
+                            <span>Go</span>
+                            <span>REST API</span>
+                            <span>Microservices</span>
+                        </div>
+                        <div class="portfolio-links">
+                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'backend')">
+                                <i class="fas fa-folder-open"></i> View Projects
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Web Projects Modal -->
+        <div id="webProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Web Development Projects</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-folders">
+                        <!-- OddEven Web Project -->
+                        <div class="project-item" data-project="oddeven">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>OddEven Web Calculator</h4>
+                                <p>HTML, CSS, JavaScript</p>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Projects Modal -->
+        <div id="mobileProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Mobile Development Projects</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-folders">
+                        <div class="project-item" data-project="fitnessapp">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>Fitness Tracker App</h4>
+                                <p>Flutter, Firebase</p>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Design Projects Modal -->
+        <div id="designProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>UI/UX Design Projects</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-folders">
+                        <div class="project-item" data-project="ecommerceui">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>TelyuBooking UI/UX Design</h4>
+                                <p>Figma, UI/UX Design</p>
+                                <small>Facility Booking Platform Design</small>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Database Projects Modal -->
+        <div id="databaseProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Database Management Projects</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-folders">
+                        <div class="project-item" data-project="databasesystem">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>Database Security System Mini Project</h4>
+                                <p>MySQL, Security Implementation</p>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Backend Projects Modal -->
+        <div id="backendProjectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Backend Development Projects</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="project-folders">
+                        <div class="project-item" data-project="goproject">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>Service Motor Management System</h4>
+                                <p>Go</p>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                        <div class="project-item" data-project="athletedata">
+                            <i class="fas fa-folder"></i>
+                            <div class="project-info">
+                                <h4>Athlete Data Management System</h4>
+                                <p>C++, Data Structures & Algorithms</p>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Project Details Modal -->
+        <div id="projectDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="detailsTitle">Project Details</h2>
+                    <span class="close-details">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="projectDetails" class="project-details">
+                        <!-- Details will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>My Contact Information</h2>
+                <p>Feel free to get in touch with me</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info" data-aos="fade-right">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h3>Address</h3>
+                        <p>Bandung, Indonesia</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>mrakhaptatama135@gmail.com</p>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+62 8820 0236 5399</p>
+                    </div>
+                </div>
+                <form id="contactForm" class="contact-form" data-aos="fade-left">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <span class="btn-text">Send Message</span>
+                        <div class="loading-spinner" style="display: none;"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="images/Logo.png" alt="Footer Logo" class="footer-logo-img">
+                    <p>Creating digital excellence.</p>
+                </div>
+                <div class="social-links">
+                    <a href="https://github.com/rkhplace" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    <a href="https://x.com/exoticnuggs?s=21" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="https://www.instagram.com/rkhap_?igsh=MXhicWRoOHo4cnhhbA%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Rkhap. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
