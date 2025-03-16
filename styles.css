@@ -52,14 +52,11 @@ nav {
     padding: 1rem 0;
 }
 
-.logo h1 {
-    font-size: 1.8rem;
-    color: var(--accent-color);
-}
-
 .nav-links {
     display: flex;
     list-style: none;
+    gap: 30px;
+    margin-left: auto; /* Push nav links to the right */
 }
 
 .nav-links li a {
@@ -67,11 +64,12 @@ nav {
     color: var(--text-dark);
     padding: 0.5rem 1rem;
     transition: color 0.3s ease;
+    font-weight: 500;
 }
 
 .nav-links li a:hover,
 .nav-links li a.active {
-    color: var(--secondary-color);
+    color: var(--accent-color);
 }
 
 .menu-toggle {
@@ -79,6 +77,7 @@ nav {
     font-size: 1.5rem;
     cursor: pointer;
     color: var(--text-dark);
+    margin-left: auto; /* Push toggle button to the right */
 }
 
 /* Hero Section - Fixed positioning issue */
@@ -448,22 +447,55 @@ footer {
 
     .nav-links {
         display: none;
-        width: 100%;
+        width: 25%;
         position: absolute;
         top: 100%;
-        left: 0;
-        background: var(--dark-blue);
-        padding: 20px;
+        right: 20px; /* Position from right */
+        transform: none;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
         flex-direction: column;
-        text-align: center;
+        text-align: right;
+        box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        margin-top: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        gap: 0;
     }
 
     .nav-links.active {
         display: flex;
+        animation: fadeIn 0.3s ease forwards;
+        
+    }
+
+    .nav-links.closing {
+        animation: fadeOut 0.3s ease forwards;
     }
 
     .nav-links li {
-        margin: 10px 0;
+        margin: 5px 0;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
+    }
+
+    .nav-links li a {
+        padding: 6px 15px;
+        font-size: 0.95rem;
+        text-align: right;
+        color: white;
+        display: block;
+    }
+
+    .nav-links li a:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--text-light);
+        border-radius: 5px;
     }
 
     .about-content,
@@ -1102,4 +1134,27 @@ footer {
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+/* Add new keyframes for fade animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
 }
