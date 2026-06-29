@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Web</title>
+    <title>Muhammad Rakha Pratama | Portfolio</title>
+    <meta name="description" content="Portfolio of Muhammad Rakha Pratama, an informatics student and software developer building web, mobile, AI, and cloud projects.">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
@@ -44,7 +45,12 @@
         <div class="container">
             <div class="hero-content" data-aos="fade-up">
                 <h1>Muhammad Rakha Pratama</h1>
-                <p>Software Developer & Web Designer</p>
+                <p class="hero-subtitle">Informatics student building web, mobile, AI, and cloud-based products.</p>
+                <div class="hero-highlights">
+                    <span><i class="fas fa-code"></i> 16+ Projects</span>
+                    <span><i class="fas fa-location-dot"></i> Bandung, Indonesia</span>
+                    <span><i class="fab fa-github"></i> @rkhplace</span>
+                </div>
                 <div class="hero-buttons">
                     <a href="#portfolio" class="button">View My Work</a>
                     <a href="#contact" class="button button-outline">Contact Me</a>
@@ -69,11 +75,18 @@
             </div>
             <div class="about-content">
                 <div class="about-image" data-aos="fade-right">
-                    <img src="images/ProfilePict.jpg" alt="My Profile Picture">
+                    <div class="profile-card">
+                        <img src="images/RakhaApplePark.jpeg" alt="Muhammad Rakha Pratama at Apple Park">
+                        <div class="profile-card-caption">
+                            <span>Apple Park Visit</span>
+                            <strong>Curious about technology, products, and the systems behind them.</strong>
+                        </div>
+                    </div>
                 </div>
                 <div class="about-text" data-aos="fade-left">
+                    <span class="about-kicker">Open to build, learn, and collaborate</span>
                     <h3>Computer Science Enthusiast</h3>
-                    <p>As a passionate Informatics Student, I specialize in developing innovative digital solutions. My journey in technology began with my deep curiosity about how computers work and evolved into a professional pursuit of creating impactful software solutions.</p>
+                    <p>As a passionate Informatics Student, I focus on turning ideas into digital products through web development, mobile apps, AI experiments, database design, and cloud deployment. I enjoy projects that combine clean interfaces with practical engineering.</p>
                     
                     <div class="expertise-areas">
                         <h4>Areas of Expertise:</h4>
@@ -93,7 +106,7 @@
 
                     <div class="stats">
                         <div class="stat-item">
-                            <h4>5+</h4>
+                            <h4>16+</h4>
                             <p>Projects Completed</p>
                         </div>
                         <div class="stat-item">
@@ -250,231 +263,18 @@
                 <p>Recent projects I've worked on</p>
             </div>
             
-            <div class="portfolio-grid">
-                <!-- Web Development -->
-                <div class="portfolio-item" data-aos="fade-up">
-                    <div class="portfolio-content">
-                        <div class="portfolio-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <h3>Web Development</h3>
-                        <p>Web Applications & Websites</p>
-                        <div class="portfolio-tags">
-                            <span>HTML</span>
-                            <span>CSS</span>
-                            <span>JavaScript</span>
-                        </div>
-                        <div class="portfolio-links">
-                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'web')">
-                                <i class="fas fa-folder-open"></i> View Projects
-                            </a>
-                        </div>
-                    </div>
+            <div class="portfolio-summary" data-aos="fade-up">
+                <div>
+                    <span class="summary-kicker">GitHub @rkhplace</span>
+                    <h3>Public projects, from web apps to AI experiments</h3>
                 </div>
-
-                <!-- Mobile Development -->
-                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="100">
-                    <div class="portfolio-content">
-                        <div class="portfolio-icon">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h3>Mobile Development</h3>
-                        <p>Mobile Applications</p>
-                        <div class="portfolio-tags">
-                            <span>Flutter</span>
-                            <span>Firebase</span>
-                            <span>Dart</span>
-                        </div>
-                        <div class="portfolio-links">
-                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'mobile')">
-                                <i class="fas fa-folder-open"></i> View Projects
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- UI/UX Design -->
-                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="200">
-                    <div class="portfolio-content">
-                        <div class="portfolio-icon">
-                            <i class="fas fa-paint-brush"></i>
-                        </div>
-                        <h3>UI/UX Design</h3>
-                        <p>User Interface & Experience</p>
-                        <div class="portfolio-tags">
-                            <span>Figma</span>
-                            <span>Adobe XD</span>
-                            <span>Sketch</span>
-                        </div>
-                        <div class="portfolio-links">
-                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'design')">
-                                <i class="fas fa-folder-open"></i> View Projects
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add Database Management section to portfolio grid -->
-                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="300">
-                    <div class="portfolio-content">
-                        <div class="portfolio-icon">
-                            <i class="fas fa-database"></i>
-                        </div>
-                        <h3>Database Management</h3>
-                        <p>Database Design & Development</p>
-                        <div class="portfolio-tags">
-                            <span>MySQL</span>
-                            <span>PostgreSQL</span>
-                            <span>MongoDB</span>
-                        </div>
-                        <div class="portfolio-links">
-                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'database')">
-                                <i class="fas fa-folder-open"></i> View Projects
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Add Backend Development section to portfolio grid -->
-                <div class="portfolio-item" data-aos="fade-up" data-aos-delay="400">
-                    <div class="portfolio-content">
-                        <div class="portfolio-icon">
-                            <i class="fas fa-server"></i>
-                        </div>
-                        <h3>Backend Development</h3>
-                        <p>Server-side Applications</p>
-                        <div class="portfolio-tags">
-                            <span>Go</span>
-                            <span>REST API</span>
-                            <span>Microservices</span>
-                        </div>
-                        <div class="portfolio-links">
-                            <a href="#" class="portfolio-link" onclick="openProjectModal(event, 'backend')">
-                                <i class="fas fa-folder-open"></i> View Projects
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <a href="https://github.com/rkhplace" target="_blank" rel="noopener noreferrer" class="github-profile-link">
+                    <i class="fab fa-github"></i> View GitHub Profile
+                </a>
             </div>
-        </div>
 
-        <!-- Web Projects Modal -->
-        <div id="webProjectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Web Development Projects</h2>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="project-folders">
-                        <!-- OddEven Web Project -->
-                        <div class="project-item" data-project="oddeven">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>OddEven Web Calculator</h4>
-                                <p>HTML, CSS, JavaScript</p>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Projects Modal -->
-        <div id="mobileProjectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Mobile Development Projects</h2>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="project-folders">
-                        <div class="project-item" data-project="fitnessapp">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>Fitness Tracker App</h4>
-                                <p>Flutter, Firebase</p>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Design Projects Modal -->
-        <div id="designProjectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>UI/UX Design Projects</h2>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="project-folders">
-                        <div class="project-item" data-project="ecommerceui">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>TelyuBooking UI/UX Design</h4>
-                                <p>Figma, UI/UX Design</p>
-                                <small>Facility Booking Platform Design</small>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add Database Projects Modal -->
-        <div id="databaseProjectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Database Management Projects</h2>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="project-folders">
-                        <div class="project-item" data-project="databasesystem">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>Database Security System Mini Project</h4>
-                                <p>MySQL, Security Implementation</p>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add Backend Projects Modal -->
-        <div id="backendProjectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Backend Development Projects</h2>
-                    <span class="close-modal">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="project-folders">
-                        <div class="project-item" data-project="goproject">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>Service Motor Management System</h4>
-                                <p>Go</p>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                        <div class="project-item" data-project="athletedata">
-                            <i class="fas fa-folder"></i>
-                            <div class="project-info">
-                                <h4>Athlete Data Management System</h4>
-                                <p>C++, Data Structures & Algorithms</p>
-                            </div>
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </div>
-                </div>
+            <div class="portfolio-grid" id="projectsGrid" aria-live="polite">
+                <!-- Project cards are loaded from script.js -->
             </div>
         </div>
 

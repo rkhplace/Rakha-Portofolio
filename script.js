@@ -1,10 +1,9 @@
 // Initialize AOS
 AOS.init({
-    duration: 1000,
+    duration: 900,
     once: true
 });
 
-// Mobile Menu Functions
 function closeMenu() {
     const navLinks = document.querySelector('.nav-links');
     navLinks.classList.add('closing');
@@ -14,7 +13,6 @@ function closeMenu() {
     }, 300);
 }
 
-// Mobile Menu Toggle with Animation
 document.getElementById('mobile-menu').addEventListener('click', function() {
     const navLinks = document.querySelector('.nav-links');
     if (!navLinks.classList.contains('active')) {
@@ -25,300 +23,478 @@ document.getElementById('mobile-menu').addEventListener('click', function() {
     }
 });
 
-// Close menu when clicking navigation links
 document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', function(e) {
+    link.addEventListener('click', function() {
         if (window.innerWidth <= 768) {
             closeMenu();
         }
     });
 });
 
-// Close menu when clicking outside
-document.addEventListener('click', (e) => {
+document.addEventListener('click', (event) => {
     const navLinks = document.querySelector('.nav-links');
     const mobileMenu = document.getElementById('mobile-menu');
-    if (!navLinks.contains(e.target) && 
-        !mobileMenu.contains(e.target) && 
+    if (!navLinks.contains(event.target) &&
+        !mobileMenu.contains(event.target) &&
         navLinks.classList.contains('active')) {
         closeMenu();
     }
 });
 
-// Smooth Scroll for Navigation Links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
+    anchor.addEventListener('click', function(event) {
+        event.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth'
-            });
+            target.scrollIntoView({ behavior: 'smooth' });
         }
     });
 });
 
-// Active Navigation Link on Scroll
 window.addEventListener('scroll', function() {
-    let sections = document.querySelectorAll('section');
-    let navLinks = document.querySelectorAll('.nav-links a');
-    
+    const sections = document.querySelectorAll('section');
+    const navLinks = document.querySelectorAll('.nav-links a');
+
     sections.forEach(section => {
-        let top = window.scrollY;
-        let offset = section.offsetTop - 150;
-        let height = section.offsetHeight;
-        let id = section.getAttribute('id');
-        
-        if(top >= offset && top < offset + height) {
+        const top = window.scrollY;
+        const offset = section.offsetTop - 150;
+        const height = section.offsetHeight;
+        const id = section.getAttribute('id');
+
+        if (top >= offset && top < offset + height) {
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                document.querySelector('.nav-links a[href*=' + id + ']').classList.add('active');
+                const activeLink = document.querySelector(`.nav-links a[href*="${id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
             });
         }
     });
 });
 
-// Initialize EmailJS
+window.addEventListener('scroll', function() {
+    const header = document.querySelector('header');
+    header.classList.toggle('scrolled', window.scrollY > 50);
+});
+
 (function() {
     emailjs.init("C5UgQpej19VOUFKKJ");
-    console.log("EmailJS Initialized");
 })();
 
-// Contact Form Handler
 document.addEventListener('DOMContentLoaded', function() {
-    // Pastikan form ditemukan
     const form = document.getElementById('contactForm');
-    console.log("Form found:", form);
 
     if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            console.log("Form submitted");
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            // Get form values
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const subject = document.getElementById('subject').value;
-            const message = document.getElementById('message').value;
-
-            console.log("Form data:", { name, email, subject, message });
-
-            // Prepare template parameters
             const templateParams = {
-                from_name: name,
-                from_email: email,
-                subject: subject,
-                message: message,
-                to_name: "Raka"
+                from_name: document.getElementById('name').value,
+                from_email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                to_name: "Rakha"
             };
 
-            console.log("Sending with params:", templateParams);
-
-            // Send email
             emailjs.send('service_fxv3fkg', 'template_c9ujtne', templateParams)
-                .then(function(response) {
-                    console.log("SUCCESS!", response.status, response.text);
+                .then(function() {
                     alert('Message sent successfully!');
                     form.reset();
-                }, function(error) {
-                    console.log("FAILED...", error);
+                }, function() {
                     alert('Failed to send message. Please try again.');
                 });
         });
     }
+
+    renderProjects();
+    setupProjectModal();
 });
 
-// Add scroll effect to header
-window.addEventListener('scroll', function() {
-    const header = document.querySelector('header');
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-
-// Project data
-const projectsData = {
-    // Web Projects
-    oddeven: {
-        title: "OddEven Web Calculator",
-        description: "A web application that divides numbers into odd and even using iteration and recursion methods. This project demonstrates the implementation of basic algorithmic concepts in JavaScript.",
-        techStack: ["HTML (50%)", "CSS (44.4%)", "JavaScript (5.6%)"],
+const projectsData = [
+    {
+        id: "jualin-abp",
+        title: "JUALIN ABP",
+        category: "Mobile / Marketplace",
+        description: "A Dart-based marketplace project with a deployed web preview. Built as a practical product-style application around selling and transaction flows.",
+        techStack: ["Dart", "Flutter", "Vercel"],
         features: [
-            "Input validation",
-            "Iteration method implementation",
-            "Recursion method implementation",
-            "Responsive design",
-            "User-friendly interface"
+            "Marketplace-focused product flow",
+            "Public web deployment",
+            "Mobile-first app structure"
         ],
-        githubLink: "https://github.com/rkhplace/OddEvenWeb",
-        demoLink: "https://rkhplace.github.io/OddEvenWeb/"
+        githubLink: "https://github.com/rkhplace/JUALIN-ABP",
+        demoLink: "https://jualin-4g7j.vercel.app",
+        updated: "2026-06-28",
+        icon: "fa-store"
     },
-    
-    // Mobile Projects
-    fitnessapp: {
-        title: "Fitness Tracker App",
-        description: "A mobile application for tracking daily fitness activities, workouts, and health metrics.",
-        techStack: ["Flutter", "Firebase", "Dart"],
+    {
+        id: "cek-cuaca-py",
+        title: "Cek Cuaca Py",
+        category: "Python Utility",
+        description: "A Python weather-checking project that shows practical API/data handling and command-focused problem solving.",
+        techStack: ["Python", "API", "CLI"],
         features: [
-            "User authentication",
-            "Activity tracking",
-            "Progress visualization",
-            "Workout plans",
-            "Health metrics monitoring"
+            "Weather data lookup",
+            "Python scripting workflow",
+            "Simple utility-oriented interface"
         ],
-        githubLink: "#",
-        demoLink: "#"
+        githubLink: "https://github.com/rkhplace/Cek-Cuaca-Py",
+        demoLink: "",
+        updated: "2026-06-12",
+        icon: "fa-cloud-sun"
     },
-    
-    // Design Projects
-    ecommerceui: {
-        title: "TelyuBooking UI/UX Design",
-        description: "A modern and user-friendly booking platform designed specifically for Telkom University facilities. The design focuses on simplifying the booking process while maintaining the university's brand identity.",
-        techStack: ["Figma", "UI/UX", "Wireframing", "Prototyping"],
+    {
+        id: "trip-planner",
+        title: "Trip Planner",
+        category: "AI Web App",
+        description: "Travel itinerary generator built with Next.js and Groq API. Users enter destination, duration, and preferences to generate travel plans automatically.",
+        techStack: ["Next.js", "JavaScript", "Groq API", "AI"],
         features: [
-            "User-friendly booking interface",
-            "Telkom University brand integration",
-            "Responsive mobile-first design",
-            "Intuitive navigation system",
-            "Streamlined booking process",
-            "Interactive prototype",
-            "Consistent design system"
+            "AI-generated itinerary recommendations",
+            "Destination, duration, and preference input",
+            "Modern web app architecture"
         ],
-        githubLink: "https://github.com/rkhplace/UI-UX-design-TelyuBooking",
-        demoLink: "https://www.figma.com/design/CrRirAsUVin8MYyeEnndIJ/UI%2FUX-design-TelyuBooking?node-id=1-139&t=ZqQghHNL7oKAcNHc-0"
+        githubLink: "https://github.com/rkhplace/Trip-Planner",
+        demoLink: "",
+        updated: "2026-06-12",
+        icon: "fa-route"
     },
-
-    // Database Projects
-    databasesystem: {
-        title: "Database Security System Mini Project",
-        description: "A focused project on implementing security measures in database systems, including access control, data encryption, and audit logging to protect sensitive information.",
-        techStack: ["MySQL"],
+    {
+        id: "komisi-viii",
+        title: "Website Anggota Komisi VIII DPR RI",
+        category: "TypeScript Website",
+        description: "A TypeScript website project for a public representative profile and information experience.",
+        techStack: ["TypeScript", "Web Development", "Frontend"],
         features: [
-            "Implementation of role-based access control (RBAC)",
-            "Data encryption for sensitive information",
-            "Comprehensive audit logging system",
-            "Vulnerability assessment and mitigation",
-            "Detailed documentation of security implementation"
+            "Public-profile website structure",
+            "Responsive information layout",
+            "TypeScript-based frontend"
         ],
-        githubLink: "https://github.com/rkhplace/Database-Security-Mini-Project",
-        demoLink: "https://your-demo-link.com"
+        githubLink: "https://github.com/rkhplace/Website-Anggota-Komisi-VIII-DPR-RI",
+        demoLink: "",
+        updated: "2026-04-03",
+        icon: "fa-landmark"
     },
-
-    // Backend Projects
-    goproject: {
-        title: "Service Motor Management System",
-        description: "Sistem manajemen bengkel motor yang menangani data pelanggan, inventaris spare part, dan transaksi service. Mengimplementasikan berbagai struktur data dan algoritma untuk pengelolaan data yang efisien.",
-        techStack: [
-            "Go",
-            "Binary Search Algorithm",
-            "Insertion Sort",
-            "Selection Sort",
-            "Array & Struct"
-        ],
+    {
+        id: "cyber-security",
+        title: "Tugas Besar Cyber Security",
+        category: "Security Project",
+        description: "A PHP-based cyber security coursework project focused on applying security concepts in a web environment.",
+        techStack: ["PHP", "Cyber Security", "Web"],
         features: [
-            "Manajemen data service pelanggan (CRUD)",
-            "Sistem inventaris gudang spare part",
-            "Pencatatan dan tracking transaksi service",
-            "Pencarian data berdasarkan tanggal/bulan/tahun",
-            "Perhitungan biaya service berdasarkan tipe motor",
-            "Tracking penjualan spare part",
-            "Multi-level menu system"
+            "Security-focused implementation",
+            "Server-side PHP flow",
+            "Course project documentation"
         ],
-        githubLink: "https://github.com/rkhplace/Service-Motor-Management-System",
-        demoLink: "#"
+        githubLink: "https://github.com/rkhplace/Tugas-Besar-Cyber-Security",
+        demoLink: "",
+        updated: "2025-12-20",
+        icon: "fa-shield-halved"
     },
-
-    // New Backend Project
-    athletedata: {
-        title: "Athlete Data Management System",
-        description: "A C++ application for managing athlete and competition data. Implements data structures and algorithms for efficient data processing with Delete First operation.",
+    {
+        id: "tugas-paas",
+        title: "Tugas PaaS",
+        category: "Cloud Deployment",
+        description: "A simple JavaScript app deployed on a PaaS platform, demonstrating cloud hosting and deployment basics.",
+        techStack: ["JavaScript", "PaaS", "Vercel"],
+        features: [
+            "PaaS deployment workflow",
+            "Live hosted application",
+            "Cloud computing practice"
+        ],
+        githubLink: "https://github.com/rkhplace/Tugas-PaaS",
+        demoLink: "https://tugas-paa-s-ashy.vercel.app",
+        updated: "2025-12-12",
+        icon: "fa-cloud"
+    },
+    {
+        id: "azure-scalable-web",
+        title: "Scalable Web App Azure",
+        category: "Cloud Architecture",
+        description: "A scalable web app designed for traffic spikes using Azure App Service, GitHub Actions CI/CD, and Application Insights monitoring.",
+        techStack: ["JavaScript", "Azure", "CI/CD", "Monitoring"],
+        features: [
+            "Auto-scaling cloud architecture",
+            "GitHub Actions deployment pipeline",
+            "Application Insights performance monitoring"
+        ],
+        githubLink: "https://github.com/rkhplace/scalable-web-app-azure",
+        demoLink: "",
+        updated: "2025-11-30",
+        icon: "fa-server"
+    },
+    {
+        id: "ai-health-assistant",
+        title: "AI Health Assistant",
+        category: "AI Application",
+        description: "A TypeScript AI assistant project exploring health-oriented guidance and conversational user experience.",
+        techStack: ["TypeScript", "AI", "Frontend"],
+        features: [
+            "AI assistant interaction pattern",
+            "Health-oriented user flow",
+            "TypeScript implementation"
+        ],
+        githubLink: "https://github.com/rkhplace/AI-Health-Asisstant",
+        demoLink: "",
+        updated: "2025-11-30",
+        icon: "fa-notes-medical"
+    },
+    {
+        id: "perpustakaan-crud",
+        title: "CRUD Website Sistem Peminjaman Buku",
+        category: "CRUD Web App",
+        description: "A library book-loan management website project focused on CRUD operations and data management workflows.",
+        techStack: ["CRUD", "Web App", "Database"],
+        features: [
+            "Book borrowing management flow",
+            "Create, read, update, and delete operations",
+            "Library system use case"
+        ],
+        githubLink: "https://github.com/rkhplace/rkhplace-CRUD-Website-Sistem-Peminjaman-Buku-Perpustakaan",
+        demoLink: "",
+        updated: "2025-08-18",
+        icon: "fa-book-open"
+    },
+    {
+        id: "website-portofolio",
+        title: "Website Portofolio",
+        category: "Personal Website",
+        description: "A personal portfolio website project that presents profile, work, and contact information.",
+        techStack: ["Portfolio", "Frontend", "Personal Site"],
+        features: [
+            "Personal branding page",
+            "Profile and contact sections",
+            "Frontend layout practice"
+        ],
+        githubLink: "https://github.com/rkhplace/Website-Portofolio",
+        demoLink: "",
+        updated: "2025-08-11",
+        icon: "fa-id-card"
+    },
+    {
+        id: "rakha-portofolio",
+        title: "Rakha Portofolio",
+        category: "Current Portfolio",
+        description: "This portfolio website, enhanced to showcase public GitHub projects from the rkhplace account.",
+        techStack: ["HTML", "CSS", "JavaScript"],
+        features: [
+            "Responsive personal website",
+            "Project showcase modal",
+            "Contact form integration"
+        ],
+        githubLink: "https://github.com/rkhplace/Rakha-Portofolio",
+        demoLink: "https://rakhaportofolio.netlify.app/",
+        updated: "2025-03-16",
+        icon: "fa-laptop-code"
+    },
+    {
+        id: "athlete-data",
+        title: "Pengolahan Data Atlet dan Pertandingan",
+        category: "Data Structures",
+        description: "A C++ project for processing athlete and competition data, including a Delete First operation implementation.",
         techStack: ["C++", "Data Structures", "Algorithms"],
         features: [
-            "CRUD operations for athlete data",
-            "Competition data management",
-            "Delete First implementation",
-            "Data processing algorithms",
-            "Efficient data structure usage"
+            "Athlete data management",
+            "Competition data processing",
+            "Delete First operation"
         ],
         githubLink: "https://github.com/rkhplace/Pengolahan-Data-Atlet-Dan-Data-Pertandingan",
-        demoLink: "#"
+        demoLink: "",
+        updated: "2025-01-20",
+        icon: "fa-medal"
+    },
+    {
+        id: "telyubooking",
+        title: "UI/UX Design TelyuBooking",
+        category: "UI/UX Design",
+        description: "A UI/UX design project for a Telkom University facility booking app, created for software development analysis coursework.",
+        techStack: ["Figma", "UI/UX", "Prototyping"],
+        features: [
+            "Facility booking flow",
+            "Mobile-first interface design",
+            "Interactive prototype concept"
+        ],
+        githubLink: "https://github.com/rkhplace/UI-UX-design-TelyuBooking",
+        demoLink: "https://www.figma.com/design/CrRirAsUVin8MYyeEnndIJ/UI%2FUX-design-TelyuBooking?node-id=1-139&t=ZqQghHNL7oKAcNHc-0",
+        updated: "2025-01-19",
+        icon: "fa-pen-ruler"
+    },
+    {
+        id: "service-motor",
+        title: "Service Motor Management System",
+        category: "Backend / Algorithms",
+        description: "A Go-based workshop management system for customer service data, spare-part inventory, and service transactions.",
+        techStack: ["Go", "Binary Search", "Sorting", "Struct"],
+        features: [
+            "Customer service data CRUD",
+            "Spare-part inventory management",
+            "Search and sorting algorithms"
+        ],
+        githubLink: "https://github.com/rkhplace/Service-Motor-Management-System",
+        demoLink: "",
+        updated: "2025-01-19",
+        icon: "fa-screwdriver-wrench"
+    },
+    {
+        id: "database-security",
+        title: "Database Security Mini Project",
+        category: "Database Security",
+        description: "A mini project exploring database security techniques for protecting data in database systems.",
+        techStack: ["Database", "Security", "Access Control"],
+        features: [
+            "Database security concepts",
+            "Access control exploration",
+            "Security documentation"
+        ],
+        githubLink: "https://github.com/rkhplace/Database-Security-Mini-Project",
+        demoLink: "",
+        updated: "2025-01-19",
+        icon: "fa-database"
+    },
+    {
+        id: "oddeven",
+        title: "OddEven Web Calculator",
+        category: "Web Algorithm",
+        description: "A web app that divides numbers into odd and even groups using iteration and recursion.",
+        techStack: ["HTML", "CSS", "JavaScript"],
+        features: [
+            "Odd and even number separation",
+            "Iteration method implementation",
+            "Recursion method implementation"
+        ],
+        githubLink: "https://github.com/rkhplace/OddEvenWeb",
+        demoLink: "https://rkhplace.github.io/OddEvenWeb/",
+        updated: "2025-01-19",
+        icon: "fa-code"
     }
-};
+];
 
-// Function to open specific project modal
-function openProjectModal(event, category) {
-    event.preventDefault();
-    document.getElementById(`${category}ProjectModal`).style.display = 'block';
-    document.body.style.overflow = 'hidden';
+function renderProjects() {
+    const projectsGrid = document.getElementById('projectsGrid');
+    if (!projectsGrid) {
+        return;
+    }
+
+    projectsGrid.innerHTML = projectsData.map((project, index) => `
+        <article class="portfolio-item project-card" data-aos="fade-up" data-aos-delay="${Math.min(index * 40, 240)}">
+            <div class="project-card-top">
+                <div class="portfolio-icon">
+                    <i class="fas ${project.icon}"></i>
+                </div>
+                <span class="project-category-label">${project.category}</span>
+            </div>
+            <div class="portfolio-content">
+                <h3>${project.title}</h3>
+                <p>${project.description}</p>
+                <div class="portfolio-tags">
+                    ${project.techStack.slice(0, 4).map(tech => `<span>${tech}</span>`).join('')}
+                </div>
+            </div>
+            <div class="project-card-meta">
+                <span><i class="fas fa-clock"></i> Updated ${formatProjectDate(project.updated)}</span>
+            </div>
+            <div class="portfolio-links">
+                <button class="portfolio-link project-detail-btn" type="button" data-project="${project.id}">
+                    <i class="fas fa-circle-info"></i> Details
+                </button>
+                <a href="${project.githubLink}" target="_blank" rel="noopener noreferrer" class="portfolio-demo">
+                    <i class="fab fa-github"></i> Code
+                </a>
+                ${project.demoLink ? `
+                    <a href="${project.demoLink}" target="_blank" rel="noopener noreferrer" class="portfolio-demo">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Demo
+                    </a>
+                ` : ''}
+            </div>
+        </article>
+    `).join('');
+
+    document.querySelectorAll('.project-detail-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            showProjectDetails(this.getAttribute('data-project'));
+        });
+    });
 }
 
-// Add event listeners after DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click event listeners to all project items
-    document.querySelectorAll('.project-item[data-project]').forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const projectId = this.getAttribute('data-project');
-            showProjectDetails(projectId);
-        });
-    });
-
-    // Close buttons for all modals
-    document.querySelectorAll('.close-modal, .close-details').forEach(button => {
+function setupProjectModal() {
+    document.querySelectorAll('.close-details').forEach(button => {
         button.addEventListener('click', function() {
-            this.closest('.modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeModal(this.closest('.modal'));
         });
     });
 
-    // Close modals when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
-            event.target.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            closeModal(event.target);
         }
     });
-});
 
-// Show project details
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            document.querySelectorAll('.modal').forEach(closeModal);
+        }
+    });
+}
+
 function showProjectDetails(projectId) {
-    const project = projectsData[projectId];
+    const project = projectsData.find(item => item.id === projectId);
     const detailsModal = document.getElementById('projectDetailsModal');
     const detailsContent = document.getElementById('projectDetails');
-    
+
+    if (!project || !detailsModal || !detailsContent) {
+        return;
+    }
+
     detailsContent.innerHTML = `
         <div class="project-details-header">
+            <span class="project-category-label">${project.category}</span>
             <h3>${project.title}</h3>
             <p>${project.description}</p>
         </div>
-        
+
         <div class="project-tech-stack">
             ${project.techStack.map(tech => `<span class="tech-tag">${tech}</span>`).join('')}
         </div>
-        
+
         <div class="project-features">
             <h4>Key Features:</h4>
             <ul>
                 ${project.features.map(feature => `<li>${feature}</li>`).join('')}
             </ul>
         </div>
-        
+
         <div class="project-links">
-            <a href="${project.githubLink}" target="_blank" rel="noopener noreferrer" 
+            <a href="${project.githubLink}" target="_blank" rel="noopener noreferrer"
                class="project-link-btn github-link">
                 <i class="fab fa-github"></i> View on GitHub
             </a>
-            ${project.demoLink && project.demoLink !== '#' ? `
-                <a href="${project.demoLink}" target="_blank" rel="noopener noreferrer" 
+            ${project.demoLink ? `
+                <a href="${project.demoLink}" target="_blank" rel="noopener noreferrer"
                    class="project-link-btn demo-link">
                     <i class="fas fa-external-link-alt"></i> Live Demo
                 </a>
             ` : ''}
         </div>
     `;
-    
+
     document.getElementById('detailsTitle').textContent = project.title;
     detailsModal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modal) {
+    if (!modal) {
+        return;
+    }
+
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function formatProjectDate(value) {
+    return new Intl.DateTimeFormat('en', {
+        month: 'short',
+        year: 'numeric'
+    }).format(new Date(`${value}T00:00:00`));
 }
