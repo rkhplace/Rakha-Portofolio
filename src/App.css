@@ -92,16 +92,102 @@ body::after {
   pointer-events: none;
   background:
     radial-gradient(
-      620px circle at var(--mouse-x) var(--mouse-y),
-      rgba(255, 255, 255, 0.58),
-      rgba(238, 238, 236, 0.24) 32%,
-      rgba(17, 17, 17, 0.06) 54%,
-      transparent 72%
+      180px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.5),
+      rgba(238, 238, 236, 0.22) 42%,
+      rgba(17, 17, 17, 0.045) 66%,
+      transparent 78%
     );
-  filter: blur(26px);
-  opacity: 0.58;
+  filter: blur(14px);
+  opacity: 0.62;
   transform: translateZ(0);
   will-change: background;
+}
+
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cursor-trail span {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 118px;
+  height: 118px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(238, 238, 236, 0.1) 36%, transparent 62%);
+  filter: blur(22px);
+  opacity: var(--trail-opacity, 0.08);
+  transform: translate3d(var(--trail-x, var(--mouse-x)), var(--trail-y, var(--mouse-y)), 0) translate(-50%, -50%) scale(var(--trail-scale, 0.5));
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.cursor-trail span:nth-child(1) {
+  --trail-x: var(--trail-0-x, var(--mouse-x));
+  --trail-y: var(--trail-0-y, var(--mouse-y));
+  --trail-opacity: 0.16;
+  --trail-scale: 0.9;
+}
+
+.cursor-trail span:nth-child(2) {
+  --trail-x: var(--trail-1-x, var(--mouse-x));
+  --trail-y: var(--trail-1-y, var(--mouse-y));
+  --trail-opacity: 0.12;
+  --trail-scale: 0.78;
+}
+
+.cursor-trail span:nth-child(3) {
+  --trail-x: var(--trail-2-x, var(--mouse-x));
+  --trail-y: var(--trail-2-y, var(--mouse-y));
+  --trail-opacity: 0.09;
+  --trail-scale: 0.68;
+}
+
+.cursor-trail span:nth-child(4) {
+  --trail-x: var(--trail-3-x, var(--mouse-x));
+  --trail-y: var(--trail-3-y, var(--mouse-y));
+  --trail-opacity: 0.065;
+  --trail-scale: 0.58;
+}
+
+.cursor-trail span:nth-child(5) {
+  --trail-x: var(--trail-4-x, var(--mouse-x));
+  --trail-y: var(--trail-4-y, var(--mouse-y));
+  --trail-opacity: 0.045;
+  --trail-scale: 0.48;
+}
+
+.cursor-trail span:nth-child(6) {
+  --trail-x: var(--trail-5-x, var(--mouse-x));
+  --trail-y: var(--trail-5-y, var(--mouse-y));
+  --trail-opacity: 0.032;
+  --trail-scale: 0.38;
+}
+
+.cursor-trail span:nth-child(7) {
+  --trail-x: var(--trail-6-x, var(--mouse-x));
+  --trail-y: var(--trail-6-y, var(--mouse-y));
+  --trail-opacity: 0.022;
+  --trail-scale: 0.3;
+}
+
+.cursor-trail span:nth-child(8) {
+  --trail-x: var(--trail-7-x, var(--mouse-x));
+  --trail-y: var(--trail-7-y, var(--mouse-y));
+  --trail-opacity: 0.014;
+  --trail-scale: 0.24;
+}
+
+main,
+footer {
+  position: relative;
+  z-index: 1;
 }
 
 a {

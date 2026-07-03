@@ -60,6 +60,8 @@ const stats = [
   ["2+", "Years learning"],
 ];
 
+const cursorTrailDots = Array.from({ length: 8 }, (_, index) => index);
+
 const focusItems = [
   {
     title: "Software development",
@@ -331,6 +333,7 @@ function App() {
     let currentY = window.innerHeight * 0.2;
     let targetX = currentX;
     let targetY = currentY;
+    const trail = cursorTrailDots.map(() => ({ x: currentX, y: currentY }));
 
     const setMouseTarget = (event) => {
       targetX = event.clientX;
@@ -338,10 +341,20 @@ function App() {
     };
 
     const animateSpotlight = () => {
-      currentX += (targetX - currentX) * 0.1;
-      currentY += (targetY - currentY) * 0.1;
+      currentX += (targetX - currentX) * 0.24;
+      currentY += (targetY - currentY) * 0.24;
       document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}px`);
       document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}px`);
+
+      trail.forEach((dot, index) => {
+        const leader = index === 0 ? { x: targetX, y: targetY } : trail[index - 1];
+        const friction = index === 0 ? 0.32 : 0.26;
+        dot.x += (leader.x - dot.x) * friction;
+        dot.y += (leader.y - dot.y) * friction;
+        document.documentElement.style.setProperty(`--trail-${index}-x`, `${dot.x.toFixed(1)}px`);
+        document.documentElement.style.setProperty(`--trail-${index}-y`, `${dot.y.toFixed(1)}px`);
+      });
+
       frameId = requestAnimationFrame(animateSpotlight);
     };
 
@@ -465,6 +478,12 @@ function App() {
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </header>
+
+      <div className="cursor-trail" aria-hidden="true">
+        {cursorTrailDots.map((dot) => (
+          <span key={dot} />
+        ))}
+      </div>
 
       <main>
         <section id="home" className="hero section-shell">
