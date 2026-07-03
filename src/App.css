@@ -25,6 +25,8 @@
   --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --logo-shadow-x: 0;
   --logo-shadow-y: 8;
+  --mouse-x: 50vw;
+  --mouse-y: 20vh;
 }
 
 * {
@@ -75,6 +77,31 @@ body::after {
     linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 38%),
     radial-gradient(circle at 18% 40%, rgba(255, 255, 255, 0.38), transparent 18rem),
     radial-gradient(circle at 78% 58%, rgba(203, 204, 201, 0.28), transparent 26rem);
+}
+
+#root {
+  position: relative;
+  isolation: isolate;
+}
+
+#root::before {
+  content: "";
+  position: fixed;
+  inset: -18%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      620px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.58),
+      rgba(238, 238, 236, 0.24) 32%,
+      rgba(17, 17, 17, 0.06) 54%,
+      transparent 72%
+    );
+  filter: blur(26px);
+  opacity: 0.58;
+  transform: translateZ(0);
+  will-change: background;
 }
 
 a {

@@ -326,6 +326,35 @@ function App() {
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
+    let frameId;
+    let currentX = window.innerWidth / 2;
+    let currentY = window.innerHeight * 0.2;
+    let targetX = currentX;
+    let targetY = currentY;
+
+    const setMouseTarget = (event) => {
+      targetX = event.clientX;
+      targetY = event.clientY;
+    };
+
+    const animateSpotlight = () => {
+      currentX += (targetX - currentX) * 0.1;
+      currentY += (targetY - currentY) * 0.1;
+      document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}px`);
+      frameId = requestAnimationFrame(animateSpotlight);
+    };
+
+    window.addEventListener("mousemove", setMouseTarget, { passive: true });
+    frameId = requestAnimationFrame(animateSpotlight);
+
+    return () => {
+      window.removeEventListener("mousemove", setMouseTarget);
+      cancelAnimationFrame(frameId);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) {
       return undefined;
     }
