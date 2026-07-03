@@ -27,6 +27,14 @@ import {
 
 import profileImage from "../images/RakhaApplePark.jpeg";
 import logoImage from "../images/Logo.png";
+import azureLogo from "../images/tech/azure.svg";
+import figmaLogo from "../images/tech/figma.svg";
+import flutterLogo from "../images/tech/flutter.svg";
+import githubLogo from "../images/tech/github.svg";
+import javascriptLogo from "../images/tech/javascript.svg";
+import nextLogo from "../images/tech/nextjs.svg";
+import postgresLogo from "../images/tech/postgresql.svg";
+import reactLogo from "../images/tech/react.svg";
 
 const navItems = [
   ["Home", "#home"],
@@ -43,14 +51,14 @@ const stats = [
 ];
 
 const techStack = [
-  { name: "React", mark: "react" },
-  { name: "Next.js", mark: "next" },
-  { name: "Flutter", mark: "flutter" },
-  { name: "JavaScript", mark: "js" },
-  { name: "Azure", mark: "azure" },
-  { name: "Database", mark: "database" },
-  { name: "Security", mark: "security" },
-  { name: "UI/UX", mark: "uiux" },
+  { name: "React", logo: reactLogo },
+  { name: "Next.js", logo: nextLogo },
+  { name: "Flutter", logo: flutterLogo },
+  { name: "JavaScript", logo: javascriptLogo },
+  { name: "Microsoft Azure", logo: azureLogo },
+  { name: "PostgreSQL", logo: postgresLogo },
+  { name: "Figma", logo: figmaLogo },
+  { name: "GitHub", logo: githubLogo },
 ];
 
 const services = [
@@ -264,55 +272,6 @@ const projects = [
   },
 ];
 
-function TechLogo({ mark }) {
-  if (mark === "react") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <circle cx="24" cy="24" r="4.3" />
-        <ellipse cx="24" cy="24" rx="18" ry="7" fill="none" strokeWidth="2.6" />
-        <ellipse cx="24" cy="24" rx="18" ry="7" fill="none" strokeWidth="2.6" transform="rotate(60 24 24)" />
-        <ellipse cx="24" cy="24" rx="18" ry="7" fill="none" strokeWidth="2.6" transform="rotate(120 24 24)" />
-      </svg>
-    );
-  }
-
-  if (mark === "flutter") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path d="M29 7 10 26l7 7L43 7H29Z" />
-        <path d="M29 41 18 30l7-7 18 18H29Z" opacity="0.72" />
-      </svg>
-    );
-  }
-
-  if (mark === "azure") {
-    return (
-      <svg viewBox="0 0 48 48" aria-hidden="true">
-        <path d="M24 6 8 42h14l3-7h10L24 6Z" />
-        <path d="M27 18 40 42H25l-5-7 7-17Z" opacity="0.7" />
-      </svg>
-    );
-  }
-
-  if (mark === "database") {
-    return <Database size={30} strokeWidth={2.1} />;
-  }
-
-  if (mark === "security") {
-    return <ShieldCheck size={30} strokeWidth={2.1} />;
-  }
-
-  if (mark === "uiux") {
-    return <Layers3 size={30} strokeWidth={2.1} />;
-  }
-
-  return (
-    <span className={`tech-word ${mark === "js" ? "tech-word-square" : ""}`}>
-      {mark === "next" ? "N" : "JS"}
-    </span>
-  );
-}
-
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -422,7 +381,7 @@ function App() {
           <div className="ticker-track">
             {[...techStack, ...techStack].map((tech, index) => (
               <span className="tech-logo" key={`${tech.name}-${index}`} aria-label={tech.name}>
-                <TechLogo mark={tech.mark} />
+                <img src={tech.logo} alt="" aria-hidden="true" />
               </span>
             ))}
           </div>
