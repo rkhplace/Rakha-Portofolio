@@ -414,7 +414,6 @@ function App() {
       <header className="site-header">
         <a className="brand" href="#home" onClick={closeMenu}>
           <img className="brand-logo" src={logoImage} alt="Rakha logo" />
-          <span>Rakha</span>
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
           {navItems.map(([label, href]) => (
