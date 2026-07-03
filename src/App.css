@@ -43,8 +43,9 @@ body {
   min-width: 320px;
   background:
     radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.96), transparent 30rem),
-    radial-gradient(circle at 84% 16%, rgba(210, 212, 211, 0.42), transparent 32rem),
-    radial-gradient(circle at 50% 62%, rgba(188, 190, 188, 0.22), transparent 38rem),
+    radial-gradient(circle at 84% 16%, rgba(210, 212, 211, 0.48), transparent 32rem),
+    radial-gradient(circle at 50% 62%, rgba(188, 190, 188, 0.28), transparent 38rem),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(238, 238, 236, 0.24) 44%, rgba(210, 211, 208, 0.18)),
     var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
@@ -74,9 +75,13 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 38%),
-    radial-gradient(circle at 18% 40%, rgba(255, 255, 255, 0.38), transparent 18rem),
-    radial-gradient(circle at 78% 58%, rgba(203, 204, 201, 0.28), transparent 26rem);
+    linear-gradient(90deg, rgba(17, 17, 17, 0.045), transparent 18%, transparent 82%, rgba(17, 17, 17, 0.04)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34), transparent 28%, rgba(17, 17, 17, 0.032) 58%, transparent 86%),
+    linear-gradient(128deg, transparent 8%, rgba(17, 17, 17, 0.052) 32%, rgba(255, 255, 255, 0.14) 43%, transparent 60%),
+    linear-gradient(238deg, transparent 10%, rgba(120, 121, 118, 0.06) 34%, rgba(255, 255, 255, 0.12) 48%, transparent 70%),
+    radial-gradient(circle at 18% 40%, rgba(255, 255, 255, 0.36), transparent 18rem),
+    radial-gradient(circle at 78% 58%, rgba(203, 204, 201, 0.34), transparent 26rem);
+  opacity: 0.92;
 }
 
 #root {
