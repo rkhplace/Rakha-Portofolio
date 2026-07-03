@@ -323,6 +323,7 @@ function App() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
   const [openFocus, setOpenFocus] = useState(focusItems[0].title);
+  const [isScrolled, setIsScrolled] = useState(false);
   const featuredProjects = useMemo(() => projects.slice(0, 6), []);
 
   const closeMenu = () => setMenuOpen(false);
@@ -333,14 +334,14 @@ function App() {
     let targetY = window.innerHeight * 0.2;
     const trail = cursorTrailDots.map(() => ({ x: targetX, y: targetY }));
 
-    document.documentElement.style.setProperty("--mouse-x", `${targetX.toFixed(1)}px`);
-    document.documentElement.style.setProperty("--mouse-y", `${targetY.toFixed(1)}px`);
+    document.documentElement.style.setProperty("--cursor-x", `${targetX.toFixed(1)}px`);
+    document.documentElement.style.setProperty("--cursor-y", `${targetY.toFixed(1)}px`);
 
     const setMouseTarget = (event) => {
       targetX = event.clientX;
       targetY = event.clientY;
-      document.documentElement.style.setProperty("--mouse-x", `${targetX.toFixed(1)}px`);
-      document.documentElement.style.setProperty("--mouse-y", `${targetY.toFixed(1)}px`);
+      document.documentElement.style.setProperty("--cursor-x", `${targetX.toFixed(1)}px`);
+      document.documentElement.style.setProperty("--cursor-y", `${targetY.toFixed(1)}px`);
     };
 
     const animateSpotlight = () => {
@@ -412,6 +413,7 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       let current = navItems[0];
+      setIsScrolled(window.scrollY > 60);
 
       navItems.forEach((item) => {
         const [, href] = item;
@@ -451,7 +453,7 @@ function App() {
 
   return (
     <>
-      <header className="site-header">
+      <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         <a className="brand" href="#home" onClick={closeMenu}>
           <img className="brand-logo" src={logoImage} alt="Rakha logo" />
         </a>
@@ -477,10 +479,13 @@ function App() {
         </button>
       </header>
 
-      <div className="cursor-trail" aria-hidden="true">
-        {cursorTrailDots.map((dot) => (
-          <span key={dot} />
-        ))}
+      <div className="cursor-effect" aria-hidden="true">
+        <div className="cursor-glow" />
+        <div className="cursor-shadow-trail">
+          {cursorTrailDots.map((dot) => (
+            <span key={dot} />
+          ))}
+        </div>
       </div>
 
       <main>

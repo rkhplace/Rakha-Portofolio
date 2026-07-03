@@ -25,8 +25,8 @@
   --font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --logo-shadow-x: 0;
   --logo-shadow-y: 8;
-  --mouse-x: 50vw;
-  --mouse-y: 20vh;
+  --cursor-x: 50vw;
+  --cursor-y: 20vh;
 }
 
 * {
@@ -84,27 +84,7 @@ body::after {
   isolation: isolate;
 }
 
-#root::before {
-  content: "";
-  position: fixed;
-  inset: -18%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      180px circle at var(--mouse-x) var(--mouse-y),
-      rgba(255, 255, 255, 0.5),
-      rgba(238, 238, 236, 0.22) 42%,
-      rgba(17, 17, 17, 0.045) 66%,
-      transparent 78%
-    );
-  filter: blur(14px);
-  opacity: 0.62;
-  transform: translateZ(0);
-  will-change: background;
-}
-
-.cursor-trail {
+.cursor-effect {
   position: fixed;
   inset: 0;
   z-index: 0;
@@ -112,76 +92,103 @@ body::after {
   pointer-events: none;
 }
 
-.cursor-trail span {
+.cursor-glow {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 92px;
-  height: 92px;
+  top: var(--cursor-y, 20vh);
+  left: var(--cursor-x, 50vw);
+  width: 112px;
+  height: 112px;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.24), rgba(238, 238, 236, 0.11) 34%, transparent 64%);
-  filter: blur(18px);
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.12) 36%,
+      rgba(180, 180, 180, 0.05) 58%,
+      transparent 76%
+    );
+  filter: blur(10px);
+  opacity: 0.82;
+  transform: translate(-50%, -50%);
+  will-change: top, left;
+}
+
+.cursor-shadow-trail span {
+  position: fixed;
+  top: var(--trail-y, var(--cursor-y, 20vh));
+  left: var(--trail-x, var(--cursor-x, 50vw));
+  width: 156px;
+  height: 156px;
+  border-radius: 999px;
+  background:
+    radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.13) 0%,
+      rgba(255, 255, 255, 0.052) 38%,
+      rgba(180, 180, 180, 0.018) 62%,
+      transparent 82%
+    );
+  filter: blur(30px);
   opacity: var(--trail-opacity, 0.08);
-  transform: translate3d(var(--trail-x, var(--mouse-x)), var(--trail-y, var(--mouse-y)), 0) translate(-50%, -50%) scale(var(--trail-scale, 0.5));
+  transform: translate(-50%, -50%) scale(var(--trail-scale, 1));
   mix-blend-mode: screen;
-  will-change: transform, opacity;
+  will-change: top, left, transform, opacity;
 }
 
-.cursor-trail span:nth-child(1) {
-  --trail-x: var(--trail-0-x, var(--mouse-x));
-  --trail-y: var(--trail-0-y, var(--mouse-y));
-  --trail-opacity: 0.16;
-  --trail-scale: 0.9;
+.cursor-shadow-trail span:nth-child(1) {
+  --trail-x: var(--trail-0-x, var(--cursor-x));
+  --trail-y: var(--trail-0-y, var(--cursor-y));
+  --trail-opacity: 0.11;
+  --trail-scale: 0.92;
 }
 
-.cursor-trail span:nth-child(2) {
-  --trail-x: var(--trail-1-x, var(--mouse-x));
-  --trail-y: var(--trail-1-y, var(--mouse-y));
-  --trail-opacity: 0.12;
-  --trail-scale: 0.78;
+.cursor-shadow-trail span:nth-child(2) {
+  --trail-x: var(--trail-1-x, var(--cursor-x));
+  --trail-y: var(--trail-1-y, var(--cursor-y));
+  --trail-opacity: 0.085;
+  --trail-scale: 1;
 }
 
-.cursor-trail span:nth-child(3) {
-  --trail-x: var(--trail-2-x, var(--mouse-x));
-  --trail-y: var(--trail-2-y, var(--mouse-y));
-  --trail-opacity: 0.09;
-  --trail-scale: 0.68;
+.cursor-shadow-trail span:nth-child(3) {
+  --trail-x: var(--trail-2-x, var(--cursor-x));
+  --trail-y: var(--trail-2-y, var(--cursor-y));
+  --trail-opacity: 0.062;
+  --trail-scale: 1.08;
 }
 
-.cursor-trail span:nth-child(4) {
-  --trail-x: var(--trail-3-x, var(--mouse-x));
-  --trail-y: var(--trail-3-y, var(--mouse-y));
-  --trail-opacity: 0.065;
-  --trail-scale: 0.58;
+.cursor-shadow-trail span:nth-child(4) {
+  --trail-x: var(--trail-3-x, var(--cursor-x));
+  --trail-y: var(--trail-3-y, var(--cursor-y));
+  --trail-opacity: 0.044;
+  --trail-scale: 1.16;
 }
 
-.cursor-trail span:nth-child(5) {
-  --trail-x: var(--trail-4-x, var(--mouse-x));
-  --trail-y: var(--trail-4-y, var(--mouse-y));
-  --trail-opacity: 0.045;
-  --trail-scale: 0.48;
+.cursor-shadow-trail span:nth-child(5) {
+  --trail-x: var(--trail-4-x, var(--cursor-x));
+  --trail-y: var(--trail-4-y, var(--cursor-y));
+  --trail-opacity: 0.03;
+  --trail-scale: 1.24;
 }
 
-.cursor-trail span:nth-child(6) {
-  --trail-x: var(--trail-5-x, var(--mouse-x));
-  --trail-y: var(--trail-5-y, var(--mouse-y));
-  --trail-opacity: 0.032;
-  --trail-scale: 0.38;
+.cursor-shadow-trail span:nth-child(6) {
+  --trail-x: var(--trail-5-x, var(--cursor-x));
+  --trail-y: var(--trail-5-y, var(--cursor-y));
+  --trail-opacity: 0.02;
+  --trail-scale: 1.32;
 }
 
-.cursor-trail span:nth-child(7) {
-  --trail-x: var(--trail-6-x, var(--mouse-x));
-  --trail-y: var(--trail-6-y, var(--mouse-y));
-  --trail-opacity: 0.022;
-  --trail-scale: 0.3;
+.cursor-shadow-trail span:nth-child(7) {
+  --trail-x: var(--trail-6-x, var(--cursor-x));
+  --trail-y: var(--trail-6-y, var(--cursor-y));
+  --trail-opacity: 0.013;
+  --trail-scale: 1.4;
 }
 
-.cursor-trail span:nth-child(8) {
-  --trail-x: var(--trail-7-x, var(--mouse-x));
-  --trail-y: var(--trail-7-y, var(--mouse-y));
-  --trail-opacity: 0.014;
-  --trail-scale: 0.24;
+.cursor-shadow-trail span:nth-child(8) {
+  --trail-x: var(--trail-7-x, var(--cursor-x));
+  --trail-y: var(--trail-7-y, var(--cursor-y));
+  --trail-opacity: 0.008;
+  --trail-scale: 1.48;
 }
 
 main,
@@ -223,6 +230,33 @@ textarea {
     inset 0 -1px 0 rgba(255, 255, 255, 0.45),
     0 18px 58px rgba(17, 17, 17, 0.13);
   backdrop-filter: blur(32px) saturate(150%);
+  transition:
+    top 480ms ease-out,
+    width 480ms ease-out,
+    min-height 480ms ease-out,
+    padding 480ms ease-out,
+    border-radius 480ms ease-out,
+    background 480ms ease-out,
+    border-color 480ms ease-out,
+    box-shadow 480ms ease-out,
+    backdrop-filter 480ms ease-out;
+}
+
+.site-header.scrolled {
+  top: 10px;
+  width: min(1240px, calc(100% - 28px));
+  min-height: 58px;
+  border-color: rgba(255, 255, 255, 0.72);
+  border-radius: 30px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.28)),
+    rgba(255, 255, 255, 0.42);
+  padding: 6px 12px 6px 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.5),
+    0 22px 70px rgba(17, 17, 17, 0.17);
+  backdrop-filter: blur(40px) saturate(165%);
 }
 
 .brand {
@@ -1050,6 +1084,14 @@ footer a {
     width: calc(100% - 24px);
     min-height: 58px;
     padding: 8px 10px 8px 12px;
+  }
+
+  .site-header.scrolled {
+    top: 8px;
+    width: calc(100% - 16px);
+    min-height: 54px;
+    border-radius: 26px;
+    padding: 6px 8px 6px 10px;
   }
 
   .brand {
