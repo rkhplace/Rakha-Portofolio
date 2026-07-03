@@ -413,7 +413,9 @@ function App() {
   useEffect(() => {
     const handleScroll = () => {
       let current = navItems[0];
-      setIsScrolled(window.scrollY > 12);
+      const nextScrolled = window.scrollY > 8;
+
+      setIsScrolled((previous) => (previous === nextScrolled ? previous : nextScrolled));
 
       navItems.forEach((item) => {
         const [, href] = item;
