@@ -455,17 +455,6 @@ function App() {
               />
             ))}
           </div>
-
-          <div className="archive-list">
-            {projects.slice(6).map((project) => (
-              <button key={project.id} type="button" onClick={() => setSelectedProject(project)}>
-                <span>{project.year}</span>
-                <strong>{project.title}</strong>
-                <em>{project.type}</em>
-                <ArrowUpRight size={16} />
-              </button>
-            ))}
-          </div>
         </section>
 
         <section id="contact" className="section-shell contact">

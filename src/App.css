@@ -435,8 +435,7 @@ textarea {
 
 .stat-card span,
 .focus-list div,
-.project-card p,
-.archive-list em {
+.project-card p {
   color: var(--muted);
 }
 
@@ -595,51 +594,6 @@ textarea {
 .project-actions button {
   background: linear-gradient(135deg, #111517, #2d3434);
   color: white;
-}
-
-.archive-list {
-  display: grid;
-  margin-top: 16px;
-  overflow: hidden;
-  border: 1px solid var(--glass-border);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.46);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    0 16px 48px rgba(8, 10, 12, 0.09);
-  backdrop-filter: blur(26px) saturate(150%);
-}
-
-.archive-list button {
-  display: grid;
-  grid-template-columns: 64px 1fr 190px 22px;
-  align-items: center;
-  gap: 14px;
-  border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.58);
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  padding: 14px 18px;
-  text-align: left;
-  transition: background 180ms ease;
-}
-
-.archive-list button:last-child {
-  border-bottom: 0;
-}
-
-.archive-list button:hover {
-  background: rgba(255, 255, 255, 0.58);
-}
-
-.archive-list span {
-  color: #2f363a;
-  font-weight: 800;
-}
-
-.archive-list strong {
-  font-size: 0.98rem;
 }
 
 .contact {
