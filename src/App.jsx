@@ -329,26 +329,24 @@ function App() {
 
   useEffect(() => {
     let frameId;
-    let currentX = window.innerWidth / 2;
-    let currentY = window.innerHeight * 0.2;
-    let targetX = currentX;
-    let targetY = currentY;
-    const trail = cursorTrailDots.map(() => ({ x: currentX, y: currentY }));
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight * 0.2;
+    const trail = cursorTrailDots.map(() => ({ x: targetX, y: targetY }));
+
+    document.documentElement.style.setProperty("--mouse-x", `${targetX.toFixed(1)}px`);
+    document.documentElement.style.setProperty("--mouse-y", `${targetY.toFixed(1)}px`);
 
     const setMouseTarget = (event) => {
       targetX = event.clientX;
       targetY = event.clientY;
+      document.documentElement.style.setProperty("--mouse-x", `${targetX.toFixed(1)}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${targetY.toFixed(1)}px`);
     };
 
     const animateSpotlight = () => {
-      currentX += (targetX - currentX) * 0.24;
-      currentY += (targetY - currentY) * 0.24;
-      document.documentElement.style.setProperty("--mouse-x", `${currentX.toFixed(1)}px`);
-      document.documentElement.style.setProperty("--mouse-y", `${currentY.toFixed(1)}px`);
-
       trail.forEach((dot, index) => {
         const leader = index === 0 ? { x: targetX, y: targetY } : trail[index - 1];
-        const friction = index === 0 ? 0.32 : 0.26;
+        const friction = index === 0 ? 0.68 : 0.46;
         dot.x += (leader.x - dot.x) * friction;
         dot.y += (leader.y - dot.y) * friction;
         document.documentElement.style.setProperty(`--trail-${index}-x`, `${dot.x.toFixed(1)}px`);

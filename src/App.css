@@ -116,12 +116,12 @@ body::after {
   position: fixed;
   top: 0;
   left: 0;
-  width: 118px;
-  height: 118px;
+  width: 92px;
+  height: 92px;
   border-radius: 999px;
   background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.22), rgba(238, 238, 236, 0.1) 36%, transparent 62%);
-  filter: blur(22px);
+    radial-gradient(circle, rgba(255, 255, 255, 0.24), rgba(238, 238, 236, 0.11) 34%, transparent 64%);
+  filter: blur(18px);
   opacity: var(--trail-opacity, 0.08);
   transform: translate3d(var(--trail-x, var(--mouse-x)), var(--trail-y, var(--mouse-y)), 0) translate(-50%, -50%) scale(var(--trail-scale, 0.5));
   mix-blend-mode: screen;
