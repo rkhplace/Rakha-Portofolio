@@ -60,6 +60,29 @@ const stats = [
   ["2+", "Years learning"],
 ];
 
+const focusItems = [
+  {
+    title: "Software development",
+    text: "Building web apps, CRUD systems, utilities, and portfolio interfaces with readable structure.",
+  },
+  {
+    title: "Mobile app development",
+    text: "Designing mobile-first flows and Flutter-based interfaces for product prototypes.",
+  },
+  {
+    title: "Web technologies",
+    text: "Working with React, Next.js, JavaScript, TypeScript, APIs, and deployment workflows.",
+  },
+  {
+    title: "Database management",
+    text: "Practicing database-driven features, CRUD operations, access control, and data organization.",
+  },
+  {
+    title: "Artificial intelligence",
+    text: "Integrating AI into practical tools such as planners, assistants, and workflow helpers.",
+  },
+];
+
 const techStack = [
   { name: "React", logo: reactLogo },
   { name: "Next.js", logo: nextLogo },
@@ -297,9 +320,54 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
+  const [openFocus, setOpenFocus] = useState(focusItems[0].title);
   const featuredProjects = useMemo(() => projects.slice(0, 6), []);
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (!window.matchMedia("(pointer: fine)").matches) {
+      return undefined;
+    }
+
+    let frameId;
+    let currentX = 0;
+    let currentY = 8;
+    let targetX = 0;
+    let targetY = 8;
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+    const setShadowTarget = (event) => {
+      const logo = document.querySelector(".brand-logo");
+      if (!logo) {
+        return;
+      }
+
+      const rect = logo.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      targetX = clamp((event.clientX - centerX) / 130, -4, 4);
+      targetY = clamp((event.clientY - centerY) / 130, -3, 6);
+    };
+
+    const animateShadow = () => {
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      document.documentElement.style.setProperty("--logo-shadow-x", currentX.toFixed(2));
+      document.documentElement.style.setProperty("--logo-shadow-y", currentY.toFixed(2));
+      frameId = requestAnimationFrame(animateShadow);
+    };
+
+    window.addEventListener("pointermove", setShadowTarget, { passive: true });
+    frameId = requestAnimationFrame(animateShadow);
+
+    return () => {
+      window.removeEventListener("pointermove", setShadowTarget);
+      cancelAnimationFrame(frameId);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -345,7 +413,7 @@ function App() {
     <>
       <header className="site-header">
         <a className="brand" href="#home" onClick={closeMenu}>
-          <img src={logoImage} alt="Rakha logo" />
+          <img className="brand-logo" src={logoImage} alt="Rakha logo" />
           <span>Rakha</span>
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
@@ -435,17 +503,21 @@ function App() {
               </div>
             </div>
             <div className="focus-list">
-              {[
-                "Software development",
-                "Mobile app development",
-                "Web technologies",
-                "Database management",
-                "Artificial intelligence",
-              ].map((item) => (
-                <div key={item}>
-                  <span />
-                  {item}
-                </div>
+              {focusItems.map((item) => (
+                <button
+                  className={openFocus === item.title ? "focus-item open" : "focus-item"}
+                  key={item.title}
+                  type="button"
+                  aria-expanded={openFocus === item.title}
+                  onClick={() => setOpenFocus((current) => (current === item.title ? "" : item.title))}
+                >
+                  <span className="focus-dot" />
+                  <span className="focus-content">
+                    <strong>{item.title}</strong>
+                    <small>{item.text}</small>
+                  </span>
+                  <span className="focus-chevron" aria-hidden="true" />
+                </button>
               ))}
             </div>
           </div>
