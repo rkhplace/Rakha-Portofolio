@@ -1,17 +1,19 @@
 :root {
-  --bg: #f2f3f3;
+  --bg: #f5f5f3;
   --surface: #ffffff;
-  --surface-soft: #e9ebeb;
-  --ink: #080a0c;
-  --muted: #5f6468;
-  --line: rgba(8, 10, 12, 0.1);
-  --line-strong: rgba(8, 10, 12, 0.18);
-  --accent: #20272a;
-  --accent-dark: #111518;
-  --glass: rgba(255, 255, 255, 0.48);
-  --glass-strong: rgba(255, 255, 255, 0.62);
-  --glass-border: rgba(255, 255, 255, 0.78);
-  --shadow: 0 28px 90px rgba(9, 13, 17, 0.16);
+  --surface-soft: #eeeeec;
+  --ink: #111111;
+  --muted: #6b6b66;
+  --line: rgba(17, 17, 17, 0.08);
+  --line-strong: rgba(17, 17, 17, 0.14);
+  --accent: #171717;
+  --accent-dark: #111111;
+  --glass: rgba(255, 255, 255, 0.46);
+  --glass-strong: rgba(255, 255, 255, 0.68);
+  --glass-border: rgba(255, 255, 255, 0.68);
+  --shadow: 0 30px 90px rgba(17, 17, 17, 0.14);
+  --radius-lg: 30px;
+  --radius-md: 24px;
 }
 
 * {
@@ -27,9 +29,9 @@ body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at 10% 14%, rgba(255, 255, 255, 0.95), transparent 28rem),
-    radial-gradient(circle at 88% 12%, rgba(191, 198, 203, 0.38), transparent 30rem),
-    radial-gradient(circle at 28% 82%, rgba(14, 18, 22, 0.16), transparent 34rem),
+    radial-gradient(circle at 14% 10%, rgba(255, 255, 255, 0.96), transparent 30rem),
+    radial-gradient(circle at 84% 16%, rgba(210, 212, 211, 0.42), transparent 32rem),
+    radial-gradient(circle at 50% 62%, rgba(188, 190, 188, 0.22), transparent 38rem),
     var(--bg);
   color: var(--ink);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -44,10 +46,10 @@ body::before {
   pointer-events: none;
   z-index: -1;
   background-image:
-    linear-gradient(rgba(8, 10, 12, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 10, 12, 0.045) 1px, transparent 1px);
+    linear-gradient(rgba(17, 17, 17, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 17, 17, 0.045) 1px, transparent 1px);
   background-size: 72px 72px;
-  mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0.72), transparent 88%);
+  mask-image: linear-gradient(to bottom, black, rgba(0, 0, 0, 0.74), transparent 90%);
 }
 
 body::after {
@@ -57,8 +59,9 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 16% 42%, rgba(255, 255, 255, 0.74), transparent 18rem),
-    radial-gradient(circle at 72% 58%, rgba(205, 213, 217, 0.32), transparent 24rem);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.46), transparent 38%),
+    radial-gradient(circle at 18% 40%, rgba(255, 255, 255, 0.76), transparent 19rem),
+    radial-gradient(circle at 78% 58%, rgba(226, 226, 222, 0.42), transparent 26rem);
 }
 
 a {
@@ -73,53 +76,56 @@ textarea {
 
 .site-header {
   position: fixed;
-  top: 18px;
+  top: 24px;
   left: 50%;
   z-index: 50;
   display: flex;
-  width: min(1060px, calc(100% - 40px));
-  min-height: 58px;
+  width: min(1080px, calc(100% - 48px));
+  min-height: 66px;
   transform: translateX(-50%);
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
+  gap: 24px;
   border: 1px solid var(--glass-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.44);
-  padding: 8px 12px 8px 16px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.32)),
+    rgba(255, 255, 255, 0.42);
+  padding: 9px 14px 9px 18px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.92),
     inset 0 -1px 0 rgba(255, 255, 255, 0.45),
-    0 18px 56px rgba(8, 10, 12, 0.14);
-  backdrop-filter: blur(28px) saturate(160%);
+    0 18px 58px rgba(17, 17, 17, 0.13);
+  backdrop-filter: blur(32px) saturate(150%);
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
-  font-weight: 700;
+  font-size: 1.08rem;
+  font-weight: 760;
 }
 
 .brand img {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   object-fit: contain;
-  border-radius: 8px;
-  box-shadow: 0 10px 24px rgba(8, 10, 12, 0.28);
+  border-radius: 10px;
+  box-shadow: 0 12px 26px rgba(17, 17, 17, 0.22);
 }
 
 .nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .nav a {
   border-radius: 999px;
-  padding: 9px 16px;
-  color: #34383b;
+  padding: 10px 18px;
+  color: #343431;
   font-size: 0.95rem;
   font-weight: 650;
   text-decoration: none;
@@ -128,12 +134,12 @@ textarea {
 
 .nav a:hover,
 .nav a.active {
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(255, 255, 255, 0.68);
   color: var(--ink);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.95),
     inset 0 -1px 0 rgba(255, 255, 255, 0.52),
-    0 12px 30px rgba(8, 10, 12, 0.14);
+    0 12px 30px rgba(17, 17, 17, 0.12);
 }
 
 .menu-button {
@@ -149,7 +155,7 @@ textarea {
 }
 
 .section-shell {
-  width: min(1200px, calc(100% - 40px));
+  width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
 }
 
@@ -157,30 +163,49 @@ textarea {
   display: grid;
   position: relative;
   min-height: auto;
-  grid-template-columns: minmax(0, 0.9fr) minmax(320px, 0.7fr);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.76fr);
   align-items: center;
-  gap: 30px;
-  margin-top: 104px;
-  padding: 28px 32px;
+  gap: 42px;
+  margin-top: 116px;
+  padding: 38px 42px;
   border: 1px solid var(--glass-border);
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.32) 58%, rgba(255, 255, 255, 0.22)),
     rgba(255, 255, 255, 0.38);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.95),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.42),
-    0 24px 82px rgba(8, 10, 12, 0.16);
-  backdrop-filter: blur(30px) saturate(150%);
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.46),
+    0 30px 90px rgba(17, 17, 17, 0.14);
+  backdrop-filter: blur(34px) saturate(145%);
 }
 
 .hero::before {
   content: "";
   position: absolute;
-  inset: 9px;
-  z-index: -1;
+  inset: 10px;
+  z-index: 0;
   border: 1px solid rgba(255, 255, 255, 0.62);
-  border-radius: 22px;
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, transparent 0%, transparent 42%, rgba(255, 255, 255, 0.42) 52%, transparent 66%),
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.74), transparent 24%);
+  opacity: 0.62;
+  pointer-events: none;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .hero-copy h1,
@@ -193,15 +218,15 @@ textarea {
 }
 
 .hero-copy h1 {
-  max-width: 540px;
-  font-size: clamp(2.45rem, 3.85vw, 4.05rem);
+  max-width: 600px;
+  font-size: clamp(2.6rem, 4.15vw, 4.35rem);
 }
 
 .hero-copy p {
   max-width: 500px;
   margin: 16px 0 0;
-  color: #4d5358;
-  font-size: clamp(0.92rem, 1vw, 1rem);
+  color: var(--muted);
+  font-size: clamp(0.95rem, 1vw, 1.03rem);
 }
 
 .eyebrow {
@@ -209,7 +234,7 @@ textarea {
   align-items: center;
   gap: 8px;
   margin-bottom: 14px;
-  color: #41474b;
+  color: #3f3f3a;
   font-size: 0.78rem;
   font-weight: 750;
   letter-spacing: 0;
@@ -242,21 +267,22 @@ textarea {
 }
 
 .button.primary {
-  background: linear-gradient(135deg, #111517, #2d3434);
+  background: linear-gradient(135deg, #111111, #2a2a27);
   color: white;
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 18px 42px rgba(8, 10, 12, 0.28);
+    0 18px 42px rgba(17, 17, 17, 0.26);
 }
 
 .button.ghost {
   border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.48);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.28));
   color: var(--ink);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    0 14px 34px rgba(8, 10, 12, 0.1);
-  backdrop-filter: blur(18px);
+    0 14px 34px rgba(17, 17, 17, 0.1);
+  backdrop-filter: blur(22px);
 }
 
 .button.ghost.dark {
@@ -268,27 +294,39 @@ textarea {
   position: relative;
   max-width: 520px;
   justify-self: end;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid var(--glass-border);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.42);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.24)),
+    rgba(255, 255, 255, 0.38);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.94),
-    0 18px 56px rgba(8, 10, 12, 0.16);
-  backdrop-filter: blur(24px) saturate(140%);
+    inset 0 -1px 0 rgba(255, 255, 255, 0.36),
+    0 18px 56px rgba(17, 17, 17, 0.14);
+  backdrop-filter: blur(26px) saturate(140%);
 }
 
 .hero-panel::before {
-  display: none;
+  content: "";
+  position: absolute;
+  inset: 10px;
+  z-index: 1;
+  border-radius: 22px;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.28), transparent 32%, rgba(255, 255, 255, 0.22) 52%, transparent 64%);
+  pointer-events: none;
 }
 
 .portrait-wrap {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.74);
-  border-radius: 17px;
+  border-radius: 22px;
   background: #d8d2c8;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    0 14px 34px rgba(17, 17, 17, 0.12);
 }
 
 .portrait-wrap img {
@@ -297,7 +335,7 @@ textarea {
   aspect-ratio: 4 / 2.85;
   object-fit: cover;
   object-position: 63% center;
-  filter: saturate(0.98) contrast(1.03);
+  filter: saturate(0.92) contrast(1.04);
 }
 
 .project-type {
@@ -310,7 +348,7 @@ textarea {
 .ticker {
   position: relative;
   overflow: hidden;
-  width: min(1200px, calc(100% - 40px));
+  width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -348,13 +386,13 @@ textarea {
   height: 50px;
   flex: 0 0 62px;
   place-items: center;
-  border-color: rgba(255, 255, 255, 0.72);
+  border-color: rgba(255, 255, 255, 0.74);
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.24)),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.24)),
     rgba(255, 255, 255, 0.34);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    0 12px 30px rgba(8, 10, 12, 0.08);
+    0 12px 30px rgba(17, 17, 17, 0.08);
   backdrop-filter: blur(22px) saturate(165%);
 }
 
@@ -380,12 +418,13 @@ textarea {
 .services,
 .portfolio,
 .contact {
-  padding: 76px 0;
+  padding: 82px 0;
+  scroll-margin-top: 110px;
 }
 
 .section-heading {
-  max-width: 780px;
-  margin-bottom: 28px;
+  max-width: 860px;
+  margin-bottom: 30px;
 }
 
 .section-heading.split {
@@ -398,7 +437,7 @@ textarea {
 
 .section-heading h2,
 .contact h2 {
-  font-size: clamp(1.8rem, 3.1vw, 3.1rem);
+  font-size: clamp(2rem, 3.4vw, 3.65rem);
   line-height: 1.04;
 }
 
@@ -423,15 +462,15 @@ textarea {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--glass-border);
-  border-radius: 22px;
+  border-radius: 28px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.34) 48%, rgba(255, 255, 255, 0.18)),
-    rgba(255, 255, 255, 0.34);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.32) 50%, rgba(255, 255, 255, 0.2)),
+    rgba(255, 255, 255, 0.36);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.98),
     inset 0 -1px 0 rgba(255, 255, 255, 0.34),
     inset 1px 0 0 rgba(255, 255, 255, 0.3),
-    0 18px 58px rgba(8, 10, 12, 0.12);
+    0 22px 68px rgba(17, 17, 17, 0.11);
   backdrop-filter: blur(34px) saturate(175%);
 }
 
@@ -538,13 +577,6 @@ textarea {
   font-weight: 700;
 }
 
-.focus-list div::after {
-  content: "⌄";
-  margin-left: auto;
-  color: #2e3438;
-  font-size: 1rem;
-}
-
 .focus-list div:last-child {
   border-bottom: 0;
 }
@@ -574,12 +606,13 @@ textarea {
 .service-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 16px;
 }
 
 .service-card {
   min-height: 230px;
-  padding: 20px;
+  border-radius: var(--radius-md);
+  padding: 22px;
 }
 
 .service-card svg,
@@ -622,15 +655,16 @@ textarea {
 .featured-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 18px;
 }
 
 .project-card {
   display: flex;
-  min-height: 292px;
+  min-height: 306px;
   flex-direction: column;
   justify-content: space-between;
-  padding: 18px;
+  border-radius: 28px;
+  padding: 22px;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
@@ -642,21 +676,22 @@ textarea {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.96),
     inset 0 -1px 0 rgba(255, 255, 255, 0.36),
-    0 28px 82px rgba(8, 10, 12, 0.18);
+    0 28px 82px rgba(17, 17, 17, 0.16);
   transform: translateY(-4px);
 }
 
 .project-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.5);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.24));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.88),
-    0 12px 24px rgba(8, 10, 12, 0.1);
+    0 12px 24px rgba(17, 17, 17, 0.1);
 }
 
 .project-icon.large {
@@ -667,7 +702,7 @@ textarea {
 .project-actions {
   display: flex;
   gap: 10px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .project-actions button,
@@ -688,13 +723,16 @@ textarea {
   font-weight: 750;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
-    0 10px 22px rgba(8, 10, 12, 0.08);
+    0 10px 22px rgba(17, 17, 17, 0.08);
   backdrop-filter: blur(18px) saturate(160%);
 }
 
 .project-actions button {
-  background: linear-gradient(135deg, #111517, #2d3434);
+  background: linear-gradient(135deg, #111111, #2a2a27);
   color: white;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    0 14px 30px rgba(17, 17, 17, 0.22);
 }
 
 .contact {
@@ -748,19 +786,24 @@ footer a {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: rgba(23, 26, 22, 0.36);
+  background: rgba(17, 17, 17, 0.28);
   padding: 24px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
 }
 
 .modal-card {
   position: relative;
   width: min(600px, 100%);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: #fbfaf7;
+  border: 1px solid var(--glass-border);
+  border-radius: 28px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0.34)),
+    rgba(255, 255, 255, 0.46);
   padding: 30px;
-  box-shadow: 0 26px 74px rgba(0, 0, 0, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 26px 74px rgba(17, 17, 17, 0.18);
+  backdrop-filter: blur(30px) saturate(150%);
 }
 
 .modal-close {
@@ -773,8 +816,9 @@ footer a {
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: white;
+  background: rgba(255, 255, 255, 0.72);
   cursor: pointer;
+  backdrop-filter: blur(18px);
 }
 
 .modal-card h2 {
@@ -793,12 +837,14 @@ footer a {
   }
 
   .hero {
-    gap: 34px;
-    padding-top: 118px;
+    gap: 28px;
+    padding: 34px 30px;
   }
 
   .hero-panel {
-    max-width: 560px;
+    width: 100%;
+    max-width: 620px;
+    justify-self: center;
   }
 
   .section-heading.split {
@@ -814,8 +860,19 @@ footer a {
 
 @media (max-width: 720px) {
   .site-header {
-    top: 12px;
+    top: 14px;
     width: calc(100% - 24px);
+    min-height: 58px;
+    padding: 8px 10px 8px 12px;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+
+  .brand img {
+    width: 32px;
+    height: 32px;
   }
 
   .menu-button {
@@ -832,9 +889,10 @@ footer a {
     align-items: stretch;
     border: 1px solid rgba(255, 255, 255, 0.56);
     border-radius: 24px;
-    background: rgba(245, 244, 241, 0.95);
+    background: rgba(255, 255, 255, 0.86);
     padding: 10px;
     box-shadow: var(--shadow);
+    backdrop-filter: blur(28px) saturate(150%);
   }
 
   .nav.open {
@@ -848,16 +906,18 @@ footer a {
   .section-shell,
   .ticker,
   footer {
-    width: min(100% - 28px, 1200px);
+    width: min(100% - 28px, 1180px);
   }
 
   .hero {
     min-height: auto;
-    padding: 118px 0 66px;
+    margin-top: 94px;
+    padding: 24px 18px;
+    border-radius: 24px;
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.8rem, 13vw, 4.1rem);
+    font-size: clamp(2.35rem, 11vw, 3.35rem);
   }
 
   .hero-actions,
@@ -876,7 +936,7 @@ footer a {
   .services,
   .portfolio,
   .contact {
-    padding: 78px 0;
+    padding: 64px 0;
   }
 
   .stats-grid,
@@ -890,16 +950,6 @@ footer a {
   .project-card,
   .modal-card {
     padding: 22px;
-  }
-
-  .archive-list button {
-    grid-template-columns: 1fr 24px;
-    gap: 8px;
-  }
-
-  .archive-list span,
-  .archive-list em {
-    grid-column: 1 / -1;
   }
 
   footer {
