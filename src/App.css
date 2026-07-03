@@ -300,13 +300,6 @@ textarea {
   filter: saturate(0.98) contrast(1.03);
 }
 
-.panel-meta {
-  display: grid;
-  gap: 4px;
-  padding: 12px 8px 3px;
-}
-
-.panel-meta span,
 .project-type {
   color: var(--accent);
   font-size: 0.78rem;
@@ -314,21 +307,28 @@ textarea {
   text-transform: uppercase;
 }
 
-.panel-meta strong {
-  font-size: 0.94rem;
-  line-height: 1.4;
-}
-
 .ticker {
-  display: flex;
+  position: relative;
+  overflow: hidden;
   width: min(1200px, calc(100% - 40px));
   margin: 0 auto;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 16px 0;
+  padding: 18px 0;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 18px;
+  animation: tech-slide 28s linear infinite;
+  will-change: transform;
+}
+
+.ticker:hover .ticker-track {
+  animation-play-state: paused;
 }
 
 .ticker span,
@@ -340,6 +340,57 @@ textarea {
   font-size: 0.82rem;
   font-weight: 650;
   padding: 7px 11px;
+}
+
+.tech-logo {
+  display: grid;
+  width: 62px;
+  height: 50px;
+  flex: 0 0 62px;
+  place-items: center;
+  border-color: rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.24)),
+    rgba(255, 255, 255, 0.34);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.88),
+    0 12px 30px rgba(8, 10, 12, 0.08);
+  backdrop-filter: blur(22px) saturate(165%);
+}
+
+.tech-logo svg {
+  width: 30px;
+  height: 30px;
+  fill: #111518;
+  stroke: #111518;
+}
+
+.tech-word {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: #111518;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.tech-word-square {
+  border-radius: 9px;
+  font-size: 0.86rem;
+}
+
+@keyframes tech-slide {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 9px));
+  }
 }
 
 .about,
