@@ -373,9 +373,16 @@ textarea {
   display: flex;
   width: max-content;
   align-items: center;
-  gap: 18px;
-  animation: tech-slide 28s linear infinite;
+  animation: tech-slide 44s linear infinite;
   will-change: transform;
+}
+
+.ticker-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 18px;
+  padding-right: 18px;
 }
 
 .ticker:hover .ticker-track {
@@ -411,8 +418,8 @@ textarea {
 
 .tech-logo img {
   display: block;
-  width: 31px;
-  height: 31px;
+  width: 32px;
+  height: 32px;
   object-fit: contain;
   filter: drop-shadow(0 5px 9px rgba(8, 10, 12, 0.12));
 }
@@ -423,7 +430,7 @@ textarea {
   }
 
   to {
-    transform: translateX(calc(-50% - 9px));
+    transform: translateX(calc(-100% / 3));
   }
 }
 

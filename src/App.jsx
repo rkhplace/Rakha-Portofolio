@@ -18,7 +18,6 @@ import {
   Route,
   Server,
   ShieldCheck,
-  Sparkles,
   Store,
   TerminalSquare,
   Trophy,
@@ -28,13 +27,24 @@ import {
 import profileImage from "../images/RakhaApplePark.jpeg";
 import logoImage from "../images/Logo.png";
 import azureLogo from "../images/tech/azure.svg";
+import cppLogo from "../images/tech/cplusplus.svg";
+import cssLogo from "../images/tech/css3.svg";
+import dartLogo from "../images/tech/dart.svg";
 import figmaLogo from "../images/tech/figma.svg";
 import flutterLogo from "../images/tech/flutter.svg";
 import githubLogo from "../images/tech/github.svg";
+import goLogo from "../images/tech/go.svg";
+import htmlLogo from "../images/tech/html5.svg";
 import javascriptLogo from "../images/tech/javascript.svg";
+import netlifyLogo from "../images/tech/netlify.svg";
 import nextLogo from "../images/tech/nextjs.svg";
+import phpLogo from "../images/tech/php.svg";
 import postgresLogo from "../images/tech/postgresql.svg";
+import pythonLogo from "../images/tech/python.svg";
 import reactLogo from "../images/tech/react.svg";
+import typescriptLogo from "../images/tech/typescript.svg";
+import vercelLogo from "../images/tech/vercel.svg";
+import viteLogo from "../images/tech/vite.svg";
 
 const navItems = [
   ["Home", "#home"],
@@ -55,8 +65,19 @@ const techStack = [
   { name: "Next.js", logo: nextLogo },
   { name: "Flutter", logo: flutterLogo },
   { name: "JavaScript", logo: javascriptLogo },
+  { name: "TypeScript", logo: typescriptLogo },
+  { name: "Dart", logo: dartLogo },
+  { name: "Python", logo: pythonLogo },
+  { name: "PHP", logo: phpLogo },
+  { name: "Go", logo: goLogo },
+  { name: "C++", logo: cppLogo },
+  { name: "HTML5", logo: htmlLogo },
+  { name: "CSS3", logo: cssLogo },
   { name: "Microsoft Azure", logo: azureLogo },
   { name: "PostgreSQL", logo: postgresLogo },
+  { name: "Vite", logo: viteLogo },
+  { name: "Vercel", logo: vercelLogo },
+  { name: "Netlify", logo: netlifyLogo },
   { name: "Figma", logo: figmaLogo },
   { name: "GitHub", logo: githubLogo },
 ];
@@ -65,25 +86,25 @@ const services = [
   {
     icon: Code2,
     title: "Frontend Engineering",
-    text: "Responsive interfaces, reusable components, and interaction details for websites that feel crisp.",
+    text: "Responsive interfaces, reusable components, and clean interaction details for web projects.",
     tags: ["React", "JavaScript", "UI Systems"],
   },
   {
     icon: MonitorSmartphone,
     title: "Mobile Product",
-    text: "Cross-platform product thinking with Dart and Flutter, from flows to deployment previews.",
+    text: "Mobile-first product flows using Dart and Flutter, from layout planning to deployment preview.",
     tags: ["Flutter", "Dart", "Mobile UX"],
   },
   {
     icon: Brain,
-    title: "AI Experiments",
-    text: "Useful AI-powered workflows, assistants, and generation features built into real user journeys.",
+    title: "AI Integration",
+    text: "Practical AI features for assistants, planning tools, and workflow automation.",
     tags: ["AI", "Groq API", "Next.js"],
   },
   {
     icon: Cloud,
     title: "Cloud Deployment",
-    text: "Practical deployment setups using PaaS, Azure, CI/CD, and monitoring-oriented architecture.",
+    text: "Deployment practice using PaaS, Azure, CI/CD, and monitoring tools.",
     tags: ["Azure", "Vercel", "CI/CD"],
   },
 ];
@@ -94,7 +115,7 @@ const projects = [
     title: "JUALIN ABP",
     type: "Marketplace App",
     description:
-      "A Dart-based marketplace project with a deployed web preview and mobile-first product flow.",
+      "Dart-based marketplace project with web preview and mobile-first product flow.",
     stack: ["Dart", "Flutter", "Vercel"],
     href: "https://github.com/rkhplace/JUALIN-ABP",
     demo: "https://jualin-4g7j.vercel.app",
@@ -106,7 +127,7 @@ const projects = [
     title: "Trip Planner",
     type: "AI Travel App",
     description:
-      "Next.js travel itinerary generator using AI to create plans from destination, duration, and preferences.",
+      "Next.js travel planner that creates itineraries from destination, duration, and preferences.",
     stack: ["Next.js", "JavaScript", "Groq API"],
     href: "https://github.com/rkhplace/Trip-Planner",
     icon: Route,
@@ -117,7 +138,7 @@ const projects = [
     title: "Cek Cuaca Py",
     type: "Python Utility",
     description:
-      "A weather checking utility that shows practical API/data handling through Python scripting.",
+      "Python weather utility for practicing API requests and data handling.",
     stack: ["Python", "API", "CLI"],
     href: "https://github.com/rkhplace/Cek-Cuaca-Py",
     icon: Cloud,
@@ -128,7 +149,7 @@ const projects = [
     title: "Website Anggota Komisi VIII DPR RI",
     type: "Public Profile Site",
     description:
-      "A TypeScript website project for public representative profile and information presentation.",
+      "TypeScript website for public profile and information presentation.",
     stack: ["TypeScript", "Frontend", "Content"],
     href: "https://github.com/rkhplace/Website-Anggota-Komisi-VIII-DPR-RI",
     icon: Globe2,
@@ -139,7 +160,7 @@ const projects = [
     title: "Tugas Besar Cyber Security",
     type: "Security Coursework",
     description:
-      "A PHP-based cyber security project focused on applying security concepts in web environments.",
+      "PHP coursework project focused on applying web security concepts.",
     stack: ["PHP", "Security", "Web"],
     href: "https://github.com/rkhplace/Tugas-Besar-Cyber-Security",
     icon: ShieldCheck,
@@ -150,7 +171,7 @@ const projects = [
     title: "Tugas PaaS",
     type: "Cloud App",
     description:
-      "A simple JavaScript application deployed on PaaS to practice modern hosting workflow.",
+      "JavaScript application deployed on PaaS for hosting workflow practice.",
     stack: ["JavaScript", "PaaS", "Vercel"],
     href: "https://github.com/rkhplace/Tugas-PaaS",
     demo: "https://tugas-paa-s-ashy.vercel.app",
@@ -162,7 +183,7 @@ const projects = [
     title: "Scalable Web App Azure",
     type: "Cloud Architecture",
     description:
-      "Azure App Service project with GitHub Actions CI/CD and monitoring through Application Insights.",
+      "Azure App Service project with GitHub Actions CI/CD and Application Insights monitoring.",
     stack: ["Azure", "CI/CD", "Monitoring"],
     href: "https://github.com/rkhplace/scalable-web-app-azure",
     icon: Server,
@@ -173,7 +194,7 @@ const projects = [
     title: "AI Health Assistant",
     type: "AI Assistant",
     description:
-      "A TypeScript AI assistant project exploring health-oriented guidance and conversational UX.",
+      "TypeScript assistant project for health-related Q&A and conversational interface practice.",
     stack: ["TypeScript", "AI", "UX"],
     href: "https://github.com/rkhplace/AI-Health-Asisstant",
     icon: Brain,
@@ -206,11 +227,11 @@ const projects = [
     title: "Rakha Portofolio",
     type: "Current Portfolio",
     description:
-      "The live portfolio codebase, now rebuilt as a modern React application for Netlify deployment.",
+      "Current portfolio codebase rebuilt with React, Vite, and Netlify deployment.",
     stack: ["React", "Vite", "Netlify"],
     href: "https://github.com/rkhplace/Rakha-Portofolio",
     demo: "https://rakhaportofolio.netlify.app/",
-    icon: Sparkles,
+    icon: Code2,
     year: "2025",
   },
   {
@@ -353,12 +374,12 @@ function App() {
         <section id="home" className="hero section-shell">
           <div className="hero-copy">
             <span className="eyebrow">
-              <Sparkles size={16} /> Developer portfolio
+              Informatics Student
             </span>
             <h1>Muhammad Rakha Pratama</h1>
             <p>
-              Informatics student from Bandung building web apps, mobile
-              products, AI workflows, and cloud-ready digital experiences.
+              Informatics student from Bandung focused on web development,
+              mobile products, AI integration, and cloud deployment.
             </p>
             <div className="hero-actions">
               <a className="button primary" href="#portfolio">
@@ -379,10 +400,14 @@ function App() {
 
         <section className="ticker" aria-label="Core skills">
           <div className="ticker-track">
-            {[...techStack, ...techStack].map((tech, index) => (
-              <span className="tech-logo" key={`${tech.name}-${index}`} aria-label={tech.name}>
-                <img src={tech.logo} alt="" aria-hidden="true" />
-              </span>
+            {[0, 1, 2].map((group) => (
+              <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
+                {techStack.map((tech) => (
+                  <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
+                    <img src={tech.logo} alt="" aria-hidden="true" />
+                  </span>
+                ))}
+              </div>
             ))}
           </div>
         </section>
@@ -390,15 +415,15 @@ function App() {
         <section id="about" className="section-shell about">
           <div className="section-heading">
             <span className="eyebrow">About</span>
-            <h2>Sharp execution, practical experiments, and a taste for premium interfaces.</h2>
+            <h2>I build practical software projects and keep improving the details.</h2>
           </div>
           <div className="about-grid">
             <div className="about-copy">
               <p>
-                My projects cover marketplaces, AI itinerary generation, cyber
-                security coursework, cloud deployments, data structures, database
-                security, and product design. I like building things that can be
-                shown, tested, and improved.
+                My projects cover marketplaces, itinerary planning, cyber
+                security coursework, cloud deployment, data structures, database
+                security, and product design. I focus on work that can be tested,
+                reviewed, and improved.
               </p>
               <div className="stats-grid">
                 {stats.map(([value, label]) => (
@@ -430,11 +455,11 @@ function App() {
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Capabilities</span>
-              <h2>From concept to deployable experience.</h2>
+              <h2>Skills I use across my projects.</h2>
             </div>
             <p>
-              A compact stack of skills shaped by coursework, real repositories,
-              and fast product experimentation.
+              A compact set of skills developed through coursework, public
+              repositories, and deployment practice.
             </p>
           </div>
           <div className="service-grid">
@@ -457,7 +482,7 @@ function App() {
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Selected work</span>
-              <h2>Public GitHub projects, presented like product case studies.</h2>
+              <h2>Selected public projects from my GitHub.</h2>
             </div>
             <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
               See all repositories <ArrowUpRight size={17} />
@@ -479,7 +504,7 @@ function App() {
         <section id="contact" className="section-shell contact">
           <div>
             <span className="eyebrow">Contact</span>
-            <h2>Let us build something useful and polished.</h2>
+            <h2>Open to project discussions and collaboration.</h2>
           </div>
           <div className="contact-card">
             <a href="mailto:mrakhaptatama135@gmail.com">
