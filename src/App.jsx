@@ -310,11 +310,10 @@ function App() {
             <span className="eyebrow">
               <Sparkles size={16} /> Developer portfolio
             </span>
-            <h1>Building digital products with clean logic and cinematic polish.</h1>
+            <h1>Muhammad Rakha Pratama</h1>
             <p>
-              I am Muhammad Rakha Pratama, an Informatics student from Bandung
-              exploring web apps, mobile products, AI workflows, cloud deployment,
-              and interface design.
+              Informatics student from Bandung building web apps, mobile
+              products, AI workflows, and cloud-ready digital experiences.
             </p>
             <div className="hero-actions">
               <a className="button primary" href="#portfolio">
