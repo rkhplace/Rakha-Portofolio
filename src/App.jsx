@@ -256,9 +256,30 @@ const projects = [
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [activeSection, setActiveSection] = useState("Home");
   const featuredProjects = useMemo(() => projects.slice(0, 6), []);
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      let current = navItems[0];
+
+      navItems.forEach((item) => {
+        const [, href] = item;
+        const section = document.querySelector(href);
+        if (section && window.scrollY >= section.offsetTop - 180) {
+          current = item;
+        }
+      });
+
+      setActiveSection(current[0]);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!selectedProject) {
@@ -289,7 +310,12 @@ function App() {
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
           {navItems.map(([label, href]) => (
-            <a key={href} href={href} onClick={closeMenu}>
+            <a
+              key={href}
+              href={href}
+              className={activeSection === label ? "active" : undefined}
+              onClick={closeMenu}
+            >
               {label}
             </a>
           ))}
@@ -465,7 +491,7 @@ function App() {
       </main>
 
       <footer>
-        <span>© 2026 Muhammad Rakha Pratama</span>
+        <span>{"\u00a9"} 2026 Muhammad Rakha Pratama</span>
         <a href="#home">Back to top</a>
       </footer>
 
@@ -547,3 +573,4 @@ function ProjectModal({ project, onClose }) {
 }
 
 export default App;
+
