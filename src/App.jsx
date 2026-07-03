@@ -1,0 +1,550 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  ArrowUpRight,
+  BookOpen,
+  Brain,
+  Cloud,
+  Code2,
+  Database,
+  Github,
+  Globe2,
+  Instagram,
+  Layers3,
+  Linkedin,
+  Mail,
+  MapPin,
+  Menu,
+  MonitorSmartphone,
+  Route,
+  Server,
+  ShieldCheck,
+  Sparkles,
+  Store,
+  TerminalSquare,
+  Trophy,
+  X,
+} from "lucide-react";
+
+import profileImage from "../images/RakhaApplePark.jpeg";
+import logoImage from "../images/Logo.png";
+
+const navItems = [
+  ["Home", "#home"],
+  ["About", "#about"],
+  ["Services", "#services"],
+  ["Projects", "#portfolio"],
+  ["Contact", "#contact"],
+];
+
+const stats = [
+  ["16+", "Public projects"],
+  ["5+", "Languages"],
+  ["2+", "Years learning"],
+];
+
+const services = [
+  {
+    icon: Code2,
+    title: "Frontend Engineering",
+    text: "Responsive interfaces, reusable components, and interaction details for websites that feel crisp.",
+    tags: ["React", "JavaScript", "UI Systems"],
+  },
+  {
+    icon: MonitorSmartphone,
+    title: "Mobile Product",
+    text: "Cross-platform product thinking with Dart and Flutter, from flows to deployment previews.",
+    tags: ["Flutter", "Dart", "Mobile UX"],
+  },
+  {
+    icon: Brain,
+    title: "AI Experiments",
+    text: "Useful AI-powered workflows, assistants, and generation features built into real user journeys.",
+    tags: ["AI", "Groq API", "Next.js"],
+  },
+  {
+    icon: Cloud,
+    title: "Cloud Deployment",
+    text: "Practical deployment setups using PaaS, Azure, CI/CD, and monitoring-oriented architecture.",
+    tags: ["Azure", "Vercel", "CI/CD"],
+  },
+];
+
+const projects = [
+  {
+    id: "jualin-abp",
+    title: "JUALIN ABP",
+    type: "Marketplace App",
+    description:
+      "A Dart-based marketplace project with a deployed web preview and mobile-first product flow.",
+    stack: ["Dart", "Flutter", "Vercel"],
+    href: "https://github.com/rkhplace/JUALIN-ABP",
+    demo: "https://jualin-4g7j.vercel.app",
+    icon: Store,
+    year: "2026",
+  },
+  {
+    id: "trip-planner",
+    title: "Trip Planner",
+    type: "AI Travel App",
+    description:
+      "Next.js travel itinerary generator using AI to create plans from destination, duration, and preferences.",
+    stack: ["Next.js", "JavaScript", "Groq API"],
+    href: "https://github.com/rkhplace/Trip-Planner",
+    icon: Route,
+    year: "2026",
+  },
+  {
+    id: "cek-cuaca-py",
+    title: "Cek Cuaca Py",
+    type: "Python Utility",
+    description:
+      "A weather checking utility that shows practical API/data handling through Python scripting.",
+    stack: ["Python", "API", "CLI"],
+    href: "https://github.com/rkhplace/Cek-Cuaca-Py",
+    icon: Cloud,
+    year: "2026",
+  },
+  {
+    id: "dpr-ri",
+    title: "Website Anggota Komisi VIII DPR RI",
+    type: "Public Profile Site",
+    description:
+      "A TypeScript website project for public representative profile and information presentation.",
+    stack: ["TypeScript", "Frontend", "Content"],
+    href: "https://github.com/rkhplace/Website-Anggota-Komisi-VIII-DPR-RI",
+    icon: Globe2,
+    year: "2026",
+  },
+  {
+    id: "cyber-security",
+    title: "Tugas Besar Cyber Security",
+    type: "Security Coursework",
+    description:
+      "A PHP-based cyber security project focused on applying security concepts in web environments.",
+    stack: ["PHP", "Security", "Web"],
+    href: "https://github.com/rkhplace/Tugas-Besar-Cyber-Security",
+    icon: ShieldCheck,
+    year: "2025",
+  },
+  {
+    id: "paas",
+    title: "Tugas PaaS",
+    type: "Cloud App",
+    description:
+      "A simple JavaScript application deployed on PaaS to practice modern hosting workflow.",
+    stack: ["JavaScript", "PaaS", "Vercel"],
+    href: "https://github.com/rkhplace/Tugas-PaaS",
+    demo: "https://tugas-paa-s-ashy.vercel.app",
+    icon: Cloud,
+    year: "2025",
+  },
+  {
+    id: "azure",
+    title: "Scalable Web App Azure",
+    type: "Cloud Architecture",
+    description:
+      "Azure App Service project with GitHub Actions CI/CD and monitoring through Application Insights.",
+    stack: ["Azure", "CI/CD", "Monitoring"],
+    href: "https://github.com/rkhplace/scalable-web-app-azure",
+    icon: Server,
+    year: "2025",
+  },
+  {
+    id: "ai-health",
+    title: "AI Health Assistant",
+    type: "AI Assistant",
+    description:
+      "A TypeScript AI assistant project exploring health-oriented guidance and conversational UX.",
+    stack: ["TypeScript", "AI", "UX"],
+    href: "https://github.com/rkhplace/AI-Health-Asisstant",
+    icon: Brain,
+    year: "2025",
+  },
+  {
+    id: "library-crud",
+    title: "CRUD Sistem Peminjaman Buku",
+    type: "Data App",
+    description:
+      "Library loan management website centered on CRUD operations and database-driven workflows.",
+    stack: ["CRUD", "Database", "Web"],
+    href: "https://github.com/rkhplace/rkhplace-CRUD-Website-Sistem-Peminjaman-Buku-Perpustakaan",
+    icon: BookOpen,
+    year: "2025",
+  },
+  {
+    id: "website-portofolio",
+    title: "Website Portofolio",
+    type: "Personal Site",
+    description:
+      "A personal website project for profile, work showcase, and contact presentation.",
+    stack: ["Portfolio", "Frontend", "Personal Brand"],
+    href: "https://github.com/rkhplace/Website-Portofolio",
+    icon: Globe2,
+    year: "2025",
+  },
+  {
+    id: "rakha-portofolio",
+    title: "Rakha Portofolio",
+    type: "Current Portfolio",
+    description:
+      "The live portfolio codebase, now rebuilt as a modern React application for Netlify deployment.",
+    stack: ["React", "Vite", "Netlify"],
+    href: "https://github.com/rkhplace/Rakha-Portofolio",
+    demo: "https://rakhaportofolio.netlify.app/",
+    icon: Sparkles,
+    year: "2025",
+  },
+  {
+    id: "telyubooking",
+    title: "UI/UX Design TelyuBooking",
+    type: "Product Design",
+    description:
+      "Facility booking app design for Telkom University with mobile-first booking flow and prototype concept.",
+    stack: ["Figma", "UI/UX", "Prototype"],
+    href: "https://github.com/rkhplace/UI-UX-design-TelyuBooking",
+    demo: "https://www.figma.com/design/CrRirAsUVin8MYyeEnndIJ/UI%2FUX-design-TelyuBooking?node-id=1-139&t=ZqQghHNL7oKAcNHc-0",
+    icon: Layers3,
+    year: "2025",
+  },
+  {
+    id: "service-motor",
+    title: "Service Motor Management System",
+    type: "Backend Logic",
+    description:
+      "Go-based workshop system for service data, spare-part inventory, transactions, search, and sorting.",
+    stack: ["Go", "Algorithms", "Struct"],
+    href: "https://github.com/rkhplace/Service-Motor-Management-System",
+    icon: TerminalSquare,
+    year: "2025",
+  },
+  {
+    id: "athlete-data",
+    title: "Pengolahan Data Atlet",
+    type: "Data Structures",
+    description:
+      "C++ project for processing athlete and competition data with Delete First operation implementation.",
+    stack: ["C++", "Data Structure", "Algorithm"],
+    href: "https://github.com/rkhplace/Pengolahan-Data-Atlet-Dan-Data-Pertandingan",
+    icon: Trophy,
+    year: "2025",
+  },
+  {
+    id: "database-security",
+    title: "Database Security Mini Project",
+    type: "Database Security",
+    description:
+      "Mini project exploring database protection techniques, access control, and security documentation.",
+    stack: ["Database", "Security", "Access Control"],
+    href: "https://github.com/rkhplace/Database-Security-Mini-Project",
+    icon: Database,
+    year: "2025",
+  },
+  {
+    id: "oddeven",
+    title: "OddEven Web Calculator",
+    type: "Web Algorithm",
+    description:
+      "A web calculator separating odd and even numbers with iteration and recursion approaches.",
+    stack: ["HTML", "CSS", "JavaScript"],
+    href: "https://github.com/rkhplace/OddEvenWeb",
+    demo: "https://rkhplace.github.io/OddEvenWeb/",
+    icon: Code2,
+    year: "2025",
+  },
+];
+
+function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const featuredProjects = useMemo(() => projects.slice(0, 6), []);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (!selectedProject) {
+      document.body.style.overflow = "";
+      return undefined;
+    }
+
+    document.body.style.overflow = "hidden";
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelectedProject(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [selectedProject]);
+
+  return (
+    <>
+      <header className="site-header">
+        <a className="brand" href="#home" onClick={closeMenu}>
+          <img src={logoImage} alt="Rakha logo" />
+          <span>Rakha</span>
+        </a>
+        <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
+          {navItems.map(([label, href]) => (
+            <a key={href} href={href} onClick={closeMenu}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <button
+          className="menu-button"
+          type="button"
+          aria-label="Toggle navigation"
+          onClick={() => setMenuOpen((value) => !value)}
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </header>
+
+      <main>
+        <section id="home" className="hero section-shell">
+          <div className="hero-copy">
+            <span className="eyebrow">
+              <Sparkles size={16} /> Developer portfolio
+            </span>
+            <h1>Building digital products with clean logic and cinematic polish.</h1>
+            <p>
+              I am Muhammad Rakha Pratama, an Informatics student from Bandung
+              exploring web apps, mobile products, AI workflows, cloud deployment,
+              and interface design.
+            </p>
+            <div className="hero-actions">
+              <a className="button primary" href="#portfolio">
+                View projects <ArrowUpRight size={17} />
+              </a>
+              <a className="button ghost" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
+                GitHub <Github size={17} />
+              </a>
+            </div>
+          </div>
+
+          <aside className="hero-panel">
+            <div className="portrait-wrap">
+              <img src={profileImage} alt="Muhammad Rakha Pratama" />
+            </div>
+            <div className="panel-meta">
+              <span>Current focus</span>
+              <strong>React interfaces, AI products, cloud-ready apps.</strong>
+            </div>
+          </aside>
+        </section>
+
+        <section className="ticker" aria-label="Core skills">
+          {["React", "Next.js", "Flutter", "AI", "Azure", "Database", "Security", "UI/UX"].map((skill) => (
+            <span key={skill}>{skill}</span>
+          ))}
+        </section>
+
+        <section id="about" className="section-shell about">
+          <div className="section-heading">
+            <span className="eyebrow">About</span>
+            <h2>Sharp execution, practical experiments, and a taste for premium interfaces.</h2>
+          </div>
+          <div className="about-grid">
+            <div className="about-copy">
+              <p>
+                My projects cover marketplaces, AI itinerary generation, cyber
+                security coursework, cloud deployments, data structures, database
+                security, and product design. I like building things that can be
+                shown, tested, and improved.
+              </p>
+              <div className="stats-grid">
+                {stats.map(([value, label]) => (
+                  <div className="stat-card" key={label}>
+                    <strong>{value}</strong>
+                    <span>{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="focus-list">
+              {[
+                "Software development",
+                "Mobile app development",
+                "Web technologies",
+                "Database management",
+                "Artificial intelligence",
+              ].map((item) => (
+                <div key={item}>
+                  <span />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="services" className="section-shell services">
+          <div className="section-heading split">
+            <div>
+              <span className="eyebrow">Capabilities</span>
+              <h2>From concept to deployable experience.</h2>
+            </div>
+            <p>
+              A compact stack of skills shaped by coursework, real repositories,
+              and fast product experimentation.
+            </p>
+          </div>
+          <div className="service-grid">
+            {services.map(({ icon: Icon, title, text, tags }) => (
+              <article className="service-card" key={title}>
+                <Icon size={24} />
+                <h3>{title}</h3>
+                <p>{text}</p>
+                <div className="tag-row">
+                  {tags.map((tag) => (
+                    <span key={tag}>{tag}</span>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="portfolio" className="section-shell portfolio">
+          <div className="section-heading split">
+            <div>
+              <span className="eyebrow">Selected work</span>
+              <h2>Public GitHub projects, presented like product case studies.</h2>
+            </div>
+            <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
+              See all repositories <ArrowUpRight size={17} />
+            </a>
+          </div>
+
+          <div className="featured-grid">
+            {featuredProjects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onSelect={() => setSelectedProject(project)}
+              />
+            ))}
+          </div>
+
+          <div className="archive-list">
+            {projects.slice(6).map((project) => (
+              <button key={project.id} type="button" onClick={() => setSelectedProject(project)}>
+                <span>{project.year}</span>
+                <strong>{project.title}</strong>
+                <em>{project.type}</em>
+                <ArrowUpRight size={16} />
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section id="contact" className="section-shell contact">
+          <div>
+            <span className="eyebrow">Contact</span>
+            <h2>Let us build something useful and polished.</h2>
+          </div>
+          <div className="contact-card">
+            <a href="mailto:mrakhaptatama135@gmail.com">
+              <Mail size={18} /> mrakhaptatama135@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noreferrer">
+              <Linkedin size={18} /> LinkedIn
+            </a>
+            <a href="https://www.instagram.com/rkhap_/" target="_blank" rel="noreferrer">
+              <Instagram size={18} /> Instagram
+            </a>
+            <span>
+              <MapPin size={18} /> Bandung, Indonesia
+            </span>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <span>© 2026 Muhammad Rakha Pratama</span>
+        <a href="#home">Back to top</a>
+      </footer>
+
+      {selectedProject && (
+        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+      )}
+    </>
+  );
+}
+
+function ProjectCard({ project, index, onSelect }) {
+  const Icon = project.icon;
+  return (
+    <article className={`project-card card-${index + 1}`}>
+      <div className="project-icon">
+        <Icon size={24} />
+      </div>
+      <div>
+        <span className="project-type">{project.type}</span>
+        <h3>{project.title}</h3>
+        <p>{project.description}</p>
+      </div>
+      <div className="tag-row">
+        {project.stack.map((tag) => (
+          <span key={tag}>{tag}</span>
+        ))}
+      </div>
+      <div className="project-actions">
+        <button type="button" onClick={onSelect}>
+          Details
+        </button>
+        <a href={project.href} target="_blank" rel="noreferrer">
+          Code <ArrowUpRight size={15} />
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function ProjectModal({ project, onClose }) {
+  const Icon = project.icon;
+
+  return (
+    <div
+      className="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="project-title"
+      onMouseDown={onClose}
+    >
+      <div className="modal-card" onMouseDown={(event) => event.stopPropagation()}>
+        <button className="modal-close" type="button" onClick={onClose} aria-label="Close project details">
+          <X size={20} />
+        </button>
+        <div className="project-icon large">
+          <Icon size={30} />
+        </div>
+        <span className="project-type">{project.type}</span>
+        <h2 id="project-title">{project.title}</h2>
+        <p>{project.description}</p>
+        <div className="tag-row">
+          {project.stack.map((tag) => (
+            <span key={tag}>{tag}</span>
+          ))}
+        </div>
+        <div className="modal-actions">
+          <a className="button primary" href={project.href} target="_blank" rel="noreferrer">
+            View code <Github size={17} />
+          </a>
+          {project.demo && (
+            <a className="button ghost dark" href={project.demo} target="_blank" rel="noreferrer">
+              Live demo <ArrowUpRight size={17} />
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
