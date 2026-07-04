@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 
 import profileImage from "../images/RakhaApplePark.jpeg";
+import logoImage from "../images/Logo.png";
 import azureLogo from "../images/tech/azure.svg";
 import cppLogo from "../images/tech/cplusplus.svg";
 import cssLogo from "../images/tech/css3.svg";
@@ -456,8 +457,7 @@ function App() {
     <>
       <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         <a className="brand" href="#home" onClick={closeMenu}>
-          <span className="brand-mark" aria-hidden="true">Rk</span>
-          <span className="brand-name">Rkhap</span>
+          <img className="brand-mark" src={logoImage} alt="Rakha logo" />
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
           {navItems.map(([label, href]) => (
