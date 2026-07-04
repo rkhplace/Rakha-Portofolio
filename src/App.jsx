@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 
 import profileImage from "../images/RakhaApplePark.jpeg";
-import logoImage from "../images/Logo.png";
 import azureLogo from "../images/tech/azure.svg";
 import cppLogo from "../images/tech/cplusplus.svg";
 import cssLogo from "../images/tech/css3.svg";
@@ -322,7 +321,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
-  const [openFocus, setOpenFocus] = useState(focusItems[0].title);
+  const [openFocus, setOpenFocus] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const featuredProjects = useMemo(() => projects.slice(0, 6), []);
 
@@ -380,7 +379,7 @@ function App() {
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
     const setShadowTarget = (event) => {
-      const logo = document.querySelector(".brand-logo");
+      const logo = document.querySelector(".brand-mark");
       if (!logo) {
         return;
       }
@@ -457,7 +456,8 @@ function App() {
     <>
       <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         <a className="brand" href="#home" onClick={closeMenu}>
-          <img className="brand-logo" src={logoImage} alt="Rakha logo" />
+          <span className="brand-mark" aria-hidden="true">Rk</span>
+          <span className="brand-name">Rkhap</span>
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
           {navItems.map(([label, href]) => (
