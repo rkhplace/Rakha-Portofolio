@@ -318,15 +318,90 @@ const projects = [
   },
 ];
 
+const fallbackProjects = projects.slice(0, 6);
+
+const languageIcons = {
+  CSS: Globe2,
+  Dart: MonitorSmartphone,
+  Go: TerminalSquare,
+  HTML: Globe2,
+  JavaScript: Code2,
+  PHP: ShieldCheck,
+  Python: Cloud,
+  TypeScript: Code2,
+};
+
+const projectDescriptionFallback =
+  "Public GitHub repository by Rakha, kept available for code review and project reference.";
+
+const projectSkeletons = Array.from({ length: 6 }, (_, index) => index);
+
+const normalizeClientRepo = (repo) => {
+  const language = repo.type || repo.language || "GitHub Repository";
+  const stack = Array.isArray(repo.stack) && repo.stack.length > 0 ? repo.stack : [language];
+
+  return {
+    id: repo.id,
+    title: repo.title || repo.name || "GitHub Repository",
+    type: language,
+    description: repo.description || projectDescriptionFallback,
+    stack,
+    href: repo.href || repo.html_url,
+    demo: repo.demo || repo.homepage || "",
+    icon: languageIcons[language] || Github,
+    updatedAt: repo.updatedAt || repo.updated_at,
+  };
+};
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
   const [openFocus, setOpenFocus] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
-  const featuredProjects = useMemo(() => projects.slice(0, 6), []);
+  const [githubProjects, setGithubProjects] = useState([]);
+  const [projectsLoading, setProjectsLoading] = useState(true);
+  const featuredProjects = useMemo(
+    () => (githubProjects.length > 0 ? githubProjects : fallbackProjects),
+    [githubProjects],
+  );
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadGithubProjects = async () => {
+      try {
+        const response = await fetch("/api/github-repos");
+
+        if (!response.ok) {
+          throw new Error("GitHub repository API request failed");
+        }
+
+        const data = await response.json();
+        const repos = Array.isArray(data.repos) ? data.repos.map(normalizeClientRepo).slice(0, 6) : [];
+
+        if (isMounted && repos.length > 0) {
+          setGithubProjects(repos);
+        }
+      } catch {
+        if (isMounted) {
+          setGithubProjects([]);
+        }
+      } finally {
+        if (isMounted) {
+          setProjectsLoading(false);
+        }
+      }
+    };
+
+    loadGithubProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     let frameId;
@@ -614,14 +689,16 @@ function App() {
           </div>
 
           <div className="featured-grid">
-            {featuredProjects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-                onSelect={() => setSelectedProject(project)}
-              />
-            ))}
+            {projectsLoading
+              ? projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)
+              : featuredProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  onSelect={() => setSelectedProject(project)}
+                />
+              ))}
           </div>
         </section>
 
@@ -677,12 +754,40 @@ function ProjectCard({ project, index, onSelect }) {
         ))}
       </div>
       <div className="project-actions">
-        <button type="button" onClick={onSelect}>
-          Details
-        </button>
-        <a href={project.href} target="_blank" rel="noreferrer">
+        {project.demo ? (
+          <a className="project-details-link" href={project.demo} target="_blank" rel="noopener noreferrer">
+            Live demo <ArrowUpRight size={15} />
+          </a>
+        ) : (
+          <button type="button" onClick={onSelect}>
+            Details
+          </button>
+        )}
+        <a href={project.href} target="_blank" rel="noopener noreferrer">
           Code <ArrowUpRight size={15} />
         </a>
+      </div>
+    </article>
+  );
+}
+
+function ProjectSkeletonCard() {
+  return (
+    <article className="project-card project-card-skeleton" aria-hidden="true">
+      <span className="skeleton-icon" />
+      <div className="skeleton-content">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="skeleton-tags">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="skeleton-actions">
+        <span />
+        <span />
       </div>
     </article>
   );
