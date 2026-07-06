@@ -1153,24 +1153,25 @@ footer a {
   z-index: 100;
   display: grid;
   place-items: center;
-  background: rgba(17, 17, 17, 0.28);
+  background: rgba(17, 17, 17, 0.34);
   padding: 24px;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
 }
 
 .modal-card {
   position: relative;
   width: min(600px, 100%);
-  border: 1px solid var(--glass-border);
+  border: 1px solid rgba(255, 255, 255, 0.62);
   border-radius: 28px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08)),
-    rgba(255, 255, 255, 0.09);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(238, 238, 236, 0.56)),
+    rgba(245, 245, 243, 0.76);
   padding: 30px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    0 26px 74px rgba(17, 17, 17, 0.18);
-  backdrop-filter: blur(28px) saturate(165%);
+    inset 0 1px 0 rgba(255, 255, 255, 0.84),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.32),
+    0 28px 78px rgba(17, 17, 17, 0.2);
+  backdrop-filter: blur(18px) saturate(135%);
 }
 
 .modal-close {
@@ -1183,9 +1184,9 @@ footer a {
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.72);
   cursor: pointer;
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(12px);
 }
 
 .modal-card h2 {
@@ -1206,15 +1207,15 @@ footer a {
 .modal-meta div {
   display: grid;
   gap: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.54);
+  border: 1px solid rgba(17, 17, 17, 0.06);
   border-radius: 18px;
   background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.05)),
-    rgba(255, 255, 255, 0.045);
+    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(238, 238, 236, 0.34)),
+    rgba(255, 255, 255, 0.42);
   padding: 12px 14px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 10px 24px rgba(17, 17, 17, 0.08);
+    0 8px 18px rgba(17, 17, 17, 0.055);
 }
 
 .modal-meta span {
