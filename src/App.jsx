@@ -353,6 +353,24 @@ const normalizeClientRepo = (repo) => {
   };
 };
 
+const formatProjectDate = (dateValue) => {
+  if (!dateValue) {
+    return "Not available";
+  }
+
+  const date = new Date(dateValue);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Not available";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+};
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -795,6 +813,8 @@ function ProjectSkeletonCard() {
 
 function ProjectModal({ project, onClose }) {
   const Icon = project.icon;
+  const updatedLabel = project.updatedAt ? formatProjectDate(project.updatedAt) : project.year || "Not available";
+  const primaryStack = project.stack?.[0] || project.type || "Repository";
 
   return (
     <div
@@ -814,17 +834,31 @@ function ProjectModal({ project, onClose }) {
         <span className="project-type">{project.type}</span>
         <h2 id="project-title">{project.title}</h2>
         <p>{project.description}</p>
+        <div className="modal-meta" aria-label="Repository metadata">
+          <div>
+            <span>Primary tech</span>
+            <strong>{primaryStack}</strong>
+          </div>
+          <div>
+            <span>Last updated</span>
+            <strong>{updatedLabel}</strong>
+          </div>
+          <div>
+            <span>Preview</span>
+            <strong>{project.demo ? "Live demo available" : "Code repository"}</strong>
+          </div>
+        </div>
         <div className="tag-row">
           {project.stack.map((tag) => (
             <span key={tag}>{tag}</span>
           ))}
         </div>
         <div className="modal-actions">
-          <a className="button primary" href={project.href} target="_blank" rel="noreferrer">
+          <a className="button primary" href={project.href} target="_blank" rel="noopener noreferrer">
             View code <Github size={17} />
           </a>
           {project.demo && (
-            <a className="button ghost dark" href={project.demo} target="_blank" rel="noreferrer">
+            <a className="button ghost dark" href={project.demo} target="_blank" rel="noopener noreferrer">
               Live demo <ArrowUpRight size={17} />
             </a>
           )}
