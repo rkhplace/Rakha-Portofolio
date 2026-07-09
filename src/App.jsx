@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -49,7 +50,7 @@ import viteLogo from "../images/tech/vite.svg";
 const navItems = [
   ["Home", "#home"],
   ["About", "#about"],
-  ["Services", "#services"],
+  ["Skills", "#services"],
   ["Projects", "#portfolio"],
   ["Contact", "#contact"],
 ];
@@ -336,6 +337,27 @@ const projectDescriptionFallback =
 
 const projectSkeletons = Array.from({ length: 6 }, (_, index) => index);
 
+const fadeUpVariants = {
+  hidden: { opacity: 0, y: 18 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const staggerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const viewportOnce = { once: true, amount: 0.18, margin: "0px 0px -80px 0px" };
+
 const normalizeClientRepo = (repo) => {
   const language = repo.type || repo.language || "GitHub Repository";
   const stack = Array.isArray(repo.stack) && repo.stack.length > 0 ? repo.stack : [language];
@@ -372,6 +394,7 @@ const formatProjectDate = (dateValue) => {
 };
 
 function App() {
+  const reduceMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
@@ -585,33 +608,50 @@ function App() {
 
       <main>
         <section id="home" className="hero section-shell">
-          <div className="hero-copy">
-            <span className="eyebrow">
+          <BackgroundStreaks className="hero-streaks" />
+          <motion.div
+            className="hero-copy"
+            initial={reduceMotion ? false : "hidden"}
+            animate="visible"
+            variants={staggerVariants}
+          >
+            <motion.span className="eyebrow" variants={fadeUpVariants}>
               Informatics Student
-            </span>
-            <h1>Muhammad Rakha Pratama</h1>
-            <p>
+            </motion.span>
+            <motion.h1 variants={fadeUpVariants}>Muhammad Rakha Pratama</motion.h1>
+            <motion.p variants={fadeUpVariants}>
               Informatics student from Bandung focused on web development,
               mobile products, AI integration, and cloud deployment.
-            </p>
-            <div className="hero-actions">
+            </motion.p>
+            <motion.div className="hero-actions" variants={fadeUpVariants}>
               <a className="button primary" href="#portfolio">
                 View projects <ArrowUpRight size={17} />
               </a>
               <a className="button ghost" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
                 GitHub <Github size={17} />
               </a>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          <aside className="hero-panel">
+          <motion.aside
+            className="hero-panel"
+            initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+          >
             <div className="portrait-wrap">
               <img src={profileImage} alt="Muhammad Rakha Pratama" />
             </div>
-          </aside>
+          </motion.aside>
         </section>
 
-        <section className="ticker" aria-label="Core skills">
+        <motion.section
+          className="ticker"
+          aria-label="Core skills"
+          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+        >
           <div className="ticker-track">
             {[0, 1, 2].map((group) => (
               <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
@@ -623,9 +663,9 @@ function App() {
               </div>
             ))}
           </div>
-        </section>
+        </motion.section>
 
-        <section id="about" className="section-shell about">
+        <AnimatedSection id="about" className="section-shell about">
           <div className="section-heading">
             <span className="eyebrow">About</span>
             <h2>I build practical software projects and keep improving the details.</h2>
@@ -666,12 +706,12 @@ function App() {
               ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section id="services" className="section-shell services">
+        <AnimatedSection id="services" className="section-shell services">
           <div className="section-heading split">
             <div>
-              <span className="eyebrow">Capabilities</span>
+              <span className="eyebrow">Skills</span>
               <h2>Skills I use across my projects.</h2>
             </div>
             <p>
@@ -693,9 +733,9 @@ function App() {
               </article>
             ))}
           </div>
-        </section>
+        </AnimatedSection>
 
-        <section id="portfolio" className="section-shell portfolio">
+        <AnimatedSection id="portfolio" className="section-shell portfolio">
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Selected work</span>
@@ -706,7 +746,13 @@ function App() {
             </a>
           </div>
 
-          <div className="featured-grid">
+          <motion.div
+            className="featured-grid"
+            initial={reduceMotion ? false : "hidden"}
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerVariants}
+          >
             {projectsLoading
               ? projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)
               : featuredProjects.map((project, index) => (
@@ -717,10 +763,11 @@ function App() {
                   onSelect={() => setSelectedProject(project)}
                 />
               ))}
-          </div>
-        </section>
+          </motion.div>
+        </AnimatedSection>
 
-        <section id="contact" className="section-shell contact">
+        <AnimatedSection id="contact" className="section-shell contact">
+          <BackgroundStreaks className="contact-streaks" />
           <div>
             <span className="eyebrow">Contact</span>
             <h2>Open to project discussions and collaboration.</h2>
@@ -739,7 +786,7 @@ function App() {
               <MapPin size={18} /> Bandung, Indonesia
             </span>
           </div>
-        </section>
+        </AnimatedSection>
       </main>
 
       <footer>
@@ -755,9 +802,15 @@ function App() {
 }
 
 function ProjectCard({ project, index, onSelect }) {
+  const reduceMotion = useReducedMotion();
   const Icon = project.icon;
   return (
-    <article className={`project-card card-${index + 1}`}>
+    <motion.article
+      className={`project-card card-${index + 1}`}
+      variants={fadeUpVariants}
+      whileHover={reduceMotion ? undefined : { y: -5 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
       <div className="project-icon">
         <Icon size={24} />
       </div>
@@ -785,7 +838,7 @@ function ProjectCard({ project, index, onSelect }) {
           Code <ArrowUpRight size={15} />
         </a>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -866,6 +919,27 @@ function ProjectModal({ project, onClose }) {
       </div>
     </div>
   );
+}
+
+function AnimatedSection({ id, className, children }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <motion.section
+      id={id}
+      className={className}
+      initial={reduceMotion ? false : "hidden"}
+      whileInView="visible"
+      viewport={viewportOnce}
+      variants={fadeUpVariants}
+    >
+      {children}
+    </motion.section>
+  );
+}
+
+function BackgroundStreaks({ className = "" }) {
+  return <div className={`background-streaks ${className}`} aria-hidden="true" />;
 }
 
 export default App;

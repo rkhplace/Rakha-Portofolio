@@ -27,6 +27,7 @@
   --logo-shadow-y: 8;
   --cursor-x: 50vw;
   --cursor-y: 20vh;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 * {
@@ -226,6 +227,12 @@ a {
   color: inherit;
 }
 
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(17, 17, 17, 0.58);
+  outline-offset: 4px;
+}
+
 button,
 input,
 textarea {
@@ -382,6 +389,72 @@ textarea {
   backdrop-filter: blur(46px) saturate(190%) contrast(1.05);
 }
 
+.background-streaks {
+  position: absolute;
+  inset: -24% -10%;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.46;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse at center, #000 0%, rgba(0, 0, 0, 0.72) 48%, transparent 80%);
+}
+
+.background-streaks::before {
+  content: "";
+  position: absolute;
+  inset: -18%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 38px,
+      rgba(255, 255, 255, 0.26) 39px,
+      rgba(255, 255, 255, 0.08) 42px,
+      transparent 54px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 92px,
+      rgba(17, 17, 17, 0.035) 94px,
+      transparent 102px
+    ),
+    linear-gradient(110deg, transparent 12%, rgba(255, 255, 255, 0.26) 42%, transparent 68%);
+  filter: blur(18px);
+  transform: translate3d(-2%, 0, 0) skewX(-4deg);
+  animation: streak-drift 18s var(--ease-out) infinite alternate;
+}
+
+.background-streaks::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 28%, rgba(255, 255, 255, 0.42) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 74% 62%, rgba(17, 17, 17, 0.08) 0 1px, transparent 1.4px);
+  background-size: 18px 18px, 23px 23px;
+  opacity: 0.12;
+  mix-blend-mode: soft-light;
+}
+
+.hero-streaks {
+  opacity: 0.5;
+}
+
+.contact-streaks {
+  inset: -34% -18%;
+  opacity: 0.26;
+}
+
+@keyframes streak-drift {
+  from {
+    transform: translate3d(-2.5%, -0.8%, 0) skewX(-4deg);
+  }
+
+  to {
+    transform: translate3d(2.5%, 0.8%, 0) skewX(4deg);
+  }
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -467,7 +540,7 @@ textarea {
   font-weight: 650;
   white-space: nowrap;
   text-decoration: none;
-  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+  transition: transform 180ms var(--ease-out), box-shadow 180ms ease, background 180ms ease;
 }
 
 .button:hover {
@@ -960,7 +1033,7 @@ textarea {
   justify-content: space-between;
   border-radius: 28px;
   padding: 22px;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  transition: transform 180ms var(--ease-out), border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .project-card:hover {
@@ -1104,9 +1177,16 @@ textarea {
 
 .contact {
   display: grid;
+  position: relative;
+  overflow: hidden;
   grid-template-columns: 1fr 0.78fr;
   gap: 28px;
   align-items: start;
+}
+
+.contact > *:not(.background-streaks) {
+  position: relative;
+  z-index: 1;
 }
 
 .contact-card {
@@ -1477,5 +1557,24 @@ footer a {
 
   .stat-card span {
     font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .cursor-effect {
+    display: none;
   }
 }
