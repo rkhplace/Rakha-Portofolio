@@ -670,29 +670,38 @@ function App() {
             <span className="eyebrow">About</span>
             <h2>I build practical software projects and keep improving the details.</h2>
           </div>
-          <div className="about-grid">
-            <div className="about-copy">
+          <motion.div
+            className="about-grid"
+            initial={reduceMotion ? false : "hidden"}
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerVariants}
+          >
+            <motion.div className="about-copy" variants={fadeUpVariants}>
               <p>
                 My projects cover marketplaces, itinerary planning, cyber
                 security coursework, cloud deployment, data structures, database
                 security, and product design. I focus on work that can be tested,
                 reviewed, and improved.
               </p>
-              <div className="stats-grid">
+              <motion.div className="stats-grid" variants={staggerVariants}>
                 {stats.map(([value, label]) => (
-                  <div className="stat-card" key={label}>
+                  <motion.div className="stat-card" key={label} variants={fadeUpVariants}>
                     <strong>{value}</strong>
                     <span>{label}</span>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
-            </div>
-            <div className="focus-list">
+              </motion.div>
+            </motion.div>
+            <motion.div className="focus-list" variants={staggerVariants}>
               {focusItems.map((item) => (
-                <button
+                <motion.button
                   className={openFocus === item.title ? "focus-item open" : "focus-item"}
                   key={item.title}
                   type="button"
+                  variants={fadeUpVariants}
+                  whileHover={reduceMotion ? undefined : { x: 3 }}
+                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                   aria-expanded={openFocus === item.title}
                   onClick={() => setOpenFocus((current) => (current === item.title ? "" : item.title))}
                 >
@@ -702,10 +711,10 @@ function App() {
                     <small>{item.text}</small>
                   </span>
                   <span className="focus-chevron" aria-hidden="true" />
-                </button>
+                </motion.button>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </AnimatedSection>
 
         <AnimatedSection id="services" className="section-shell services">
@@ -719,9 +728,21 @@ function App() {
               repositories, and deployment practice.
             </p>
           </div>
-          <div className="service-grid">
+          <motion.div
+            className="service-grid"
+            initial={reduceMotion ? false : "hidden"}
+            whileInView="visible"
+            viewport={viewportOnce}
+            variants={staggerVariants}
+          >
             {services.map(({ icon: Icon, title, text, tags }) => (
-              <article className="service-card" key={title}>
+              <motion.article
+                className="service-card"
+                key={title}
+                variants={fadeUpVariants}
+                whileHover={reduceMotion ? undefined : { y: -5 }}
+                transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
+              >
                 <Icon size={24} />
                 <h3>{title}</h3>
                 <p>{text}</p>
@@ -730,9 +751,9 @@ function App() {
                     <span key={tag}>{tag}</span>
                   ))}
                 </div>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </AnimatedSection>
 
         <AnimatedSection id="portfolio" className="section-shell portfolio">
