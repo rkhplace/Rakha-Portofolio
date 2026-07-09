@@ -338,11 +338,11 @@ const projectDescriptionFallback =
 const projectSkeletons = Array.from({ length: 6 }, (_, index) => index);
 
 const fadeUpVariants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 28 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.62, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.86, ease: [0.16, 1, 0.3, 1] },
   },
 };
 
@@ -350,13 +350,13 @@ const staggerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.08,
+      staggerChildren: 0.13,
+      delayChildren: 0.1,
     },
   },
 };
 
-const viewportOnce = { once: true, amount: 0.18, margin: "0px 0px -80px 0px" };
+const viewportOnce = { once: true, amount: 0.12, margin: "0px 0px -110px 0px" };
 
 const normalizeClientRepo = (repo) => {
   const language = repo.type || repo.language || "GitHub Repository";
@@ -637,7 +637,7 @@ function App() {
             className="hero-panel"
             initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.12 }}
+            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
           >
             <div className="portrait-wrap">
               <img src={profileImage} alt="Muhammad Rakha Pratama" />
@@ -809,7 +809,7 @@ function ProjectCard({ project, index, onSelect }) {
       className={`project-card card-${index + 1}`}
       variants={fadeUpVariants}
       whileHover={reduceMotion ? undefined : { y: -5 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="project-icon">
         <Icon size={24} />
