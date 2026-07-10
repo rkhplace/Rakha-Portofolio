@@ -791,8 +791,6 @@ function App() {
             </a>
           </div>
 
-          {!projectsLoading && <ProjectShowcase projects={featuredProjects} onSelect={setSelectedProject} />}
-
           <motion.div
             className="featured-grid section-shell"
             initial={reduceMotion ? false : "hidden"}
@@ -802,7 +800,7 @@ function App() {
           >
             {projectsLoading
               ? projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)
-              : featuredProjects.slice(3).map((project, index) => (
+              : featuredProjects.map((project, index) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -905,7 +903,7 @@ function ProjectCard({ project, index, onSelect }) {
       <div className="project-actions">
         {project.demo ? (
           <a className="project-details-link" href={project.demo} target="_blank" rel="noopener noreferrer">
-            Live demo <ArrowUpRight size={15} />
+            Live preview <ArrowUpRight size={15} />
           </a>
         ) : (
           <button type="button" onClick={onSelect}>
@@ -913,73 +911,10 @@ function ProjectCard({ project, index, onSelect }) {
           </button>
         )}
         <a href={project.href} target="_blank" rel="noopener noreferrer">
-          Code <ArrowUpRight size={15} />
+          Repository <ArrowUpRight size={15} />
         </a>
       </div>
     </motion.article>
-  );
-}
-
-function ProjectShowcase({ projects, onSelect }) {
-  const showcaseProjects = projects.slice(0, 3);
-
-  return (
-    <section className="project-cinema section-shell" aria-label="Featured project showcase">
-      <div className="project-rail">
-        {showcaseProjects.map((project, index) => {
-          const Icon = project.icon;
-          return (
-            <article className="project-scene" key={`scene-${project.id}`}>
-              <span className="scene-number">{String(index + 1).padStart(2, "0")}</span>
-              <div className="scene-copy">
-                <div className="project-icon">
-                  <Icon size={24} />
-                </div>
-                <span className="project-type">{project.type}</span>
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-                <dl className="scene-meta">
-                  <div>
-                    <dt>Problem</dt>
-                    <dd>Turn an idea into a testable public project.</dd>
-                  </div>
-                  <div>
-                    <dt>Solution</dt>
-                    <dd>Build a focused app surface with clear repository structure.</dd>
-                  </div>
-                  <div>
-                    <dt>Role</dt>
-                    <dd>Interface, logic, deployment, and project documentation.</dd>
-                  </div>
-                </dl>
-                <div className="tag-row">
-                  {project.stack.map((tag) => <span key={tag}>{tag}</span>)}
-                </div>
-                <div className="project-actions">
-                  {project.demo ? (
-                    <a className="project-details-link" href={project.demo} target="_blank" rel="noopener noreferrer">
-                      Live preview <ArrowUpRight size={15} />
-                    </a>
-                  ) : (
-                    <button type="button" onClick={() => onSelect(project)}>Details</button>
-                  )}
-                  <a href={project.href} target="_blank" rel="noopener noreferrer">
-                    Repository <ArrowUpRight size={15} />
-                  </a>
-                </div>
-              </div>
-              <div className="scene-visual" aria-hidden="true">
-                <div className="browser-mockup reveal-image">
-                  <span />
-                  <strong>{project.title}</strong>
-                  <small>{project.type}</small>
-                </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
   );
 }
 
