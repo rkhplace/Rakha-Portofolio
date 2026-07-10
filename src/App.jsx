@@ -136,8 +136,6 @@ const techStack = [
   { name: "GitHub", logo: githubLogo },
 ];
 
-const heroParallaxTags = ["React", "Next.js", "PostgreSQL", "WebGIS", "Flutter", "Laravel"];
-
 const services = [
   {
     icon: Code2,
@@ -431,17 +429,14 @@ function App() {
     damping: 28,
     mass: 0.28,
   });
-  const heroCopyY = useTransform(smoothScroll, [0, 0.32], [0, 72]);
-  const heroCopyOpacity = useTransform(smoothScroll, [0, 0.26], [1, 0.86]);
-  const heroPanelY = useTransform(smoothScroll, [0, 0.34], [0, -88]);
-  const heroPanelScale = useTransform(smoothScroll, [0, 0.34], [1, 0.955]);
-  const heroStreakY = useTransform(smoothScroll, [0, 0.34], [0, 118]);
-  const heroOrbitX = useTransform(smoothScroll, [0, 0.34], [0, -96]);
-  const heroOrbitY = useTransform(smoothScroll, [0, 0.34], [0, 54]);
-  const tickerY = useTransform(smoothScroll, [0, 0.3], [0, -38]);
-  const tagRiseY = useTransform(smoothScroll, [0, 0.34], [0, -104]);
-  const tagSinkY = useTransform(smoothScroll, [0, 0.34], [0, 76]);
-  const tagDriftX = useTransform(smoothScroll, [0, 0.34], [0, 48]);
+  const heroCopyY = useTransform(smoothScroll, [0, 0.34], [0, 42]);
+  const heroCopyOpacity = useTransform(smoothScroll, [0, 0.28], [1, 0.9]);
+  const heroPanelY = useTransform(smoothScroll, [0, 0.34], [0, -58]);
+  const heroPanelScale = useTransform(smoothScroll, [0, 0.34], [1, 0.97]);
+  const heroStreakY = useTransform(smoothScroll, [0, 0.34], [0, 74]);
+  const heroOrbitX = useTransform(smoothScroll, [0, 0.34], [0, -46]);
+  const heroOrbitY = useTransform(smoothScroll, [0, 0.34], [0, 34]);
+  const tickerY = useTransform(smoothScroll, [0, 0.3], [0, -18]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
@@ -663,23 +658,6 @@ function App() {
             aria-hidden="true"
             style={reduceMotion ? undefined : { x: heroOrbitX, y: heroOrbitY }}
           />
-          <div className="hero-parallax-tags" aria-hidden="true">
-            {heroParallaxTags.map((tag, index) => (
-              <motion.span
-                key={tag}
-                style={
-                  reduceMotion
-                    ? undefined
-                    : {
-                        x: index % 2 === 0 ? tagDriftX : 0,
-                        y: index % 2 === 0 ? tagRiseY : tagSinkY,
-                      }
-                }
-              >
-                {tag}
-              </motion.span>
-            ))}
-          </div>
           <motion.div
             className="hero-copy"
             initial={reduceMotion ? false : "hidden"}
