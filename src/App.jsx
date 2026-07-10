@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import {
   ArrowUpRight,
   BookOpen,
@@ -52,6 +55,7 @@ const navItems = [
   ["About", "#about"],
   ["Skills", "#services"],
   ["Projects", "#portfolio"],
+  ["Experience", "#experience"],
   ["Contact", "#contact"],
 ];
 
@@ -61,28 +65,59 @@ const stats = [
   ["2+", "Years learning"],
 ];
 
+gsap.registerPlugin(ScrollTrigger);
+
 const cursorTrailDots = Array.from({ length: 8 }, (_, index) => index);
 
-const focusItems = [
+const heroLabels = ["React", "Next.js", "Flutter", "Laravel", "WebGIS", "PostgreSQL"];
+
+const aboutChapters = [
   {
-    title: "Software development",
-    text: "Building web apps, CRUD systems, utilities, and portfolio interfaces with readable structure.",
+    kicker: "01",
+    title: "Computer Science Student",
+    text: "S1 Informatics student from Bandung who keeps turning coursework into public repositories, deployable apps, and interface experiments.",
   },
   {
-    title: "Mobile app development",
-    text: "Designing mobile-first flows and Flutter-based interfaces for product prototypes.",
+    kicker: "02",
+    title: "Frontend Development",
+    text: "Focused on building responsive interfaces with readable structure, polished interaction details, and practical component thinking.",
   },
   {
-    title: "Web technologies",
-    text: "Working with React, Next.js, JavaScript, TypeScript, APIs, and deployment workflows.",
+    kicker: "03",
+    title: "Full-stack Product Building",
+    text: "Comfortable connecting UI work with APIs, CRUD logic, databases, deployment workflows, and small AI-powered product features.",
   },
   {
-    title: "Database management",
-    text: "Practicing database-driven features, CRUD operations, access control, and data organization.",
+    kicker: "04",
+    title: "WebGIS and Geospatial Exploration",
+    text: "Currently interested in map-based interfaces, dashboards, location-aware products, and data visualization for real-world context.",
+  },
+];
+
+const timelineItems = [
+  {
+    year: "2026",
+    title: "Portfolio and public project system",
+    text: "Rebuilt this portfolio around React, Netlify deployment, and dynamic GitHub repository data.",
+    tags: ["React", "Netlify", "GitHub API"],
   },
   {
-    title: "Artificial intelligence",
-    text: "Integrating AI into practical tools such as planners, assistants, and workflow helpers.",
+    year: "2026",
+    title: "Mobile-first marketplace project",
+    text: "Created JUALIN ABP as a marketplace-style product flow with Flutter/Dart foundations and web preview.",
+    tags: ["Flutter", "Dart", "Product"],
+  },
+  {
+    year: "2025",
+    title: "Cloud and security coursework",
+    text: "Built projects around Azure deployment, PaaS workflows, cyber security, and database security practice.",
+    tags: ["Azure", "Security", "Database"],
+  },
+  {
+    year: "2025",
+    title: "Algorithms and data structures practice",
+    text: "Explored C++, Go, CRUD systems, search, sorting, and structured problem solving through public repositories.",
+    tags: ["C++", "Go", "Algorithms"],
   },
 ];
 
@@ -398,7 +433,6 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
-  const [openFocus, setOpenFocus] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [githubProjects, setGithubProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
@@ -408,6 +442,191 @@ function App() {
   );
 
   const closeMenu = () => setMenuOpen(false);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      return undefined;
+    }
+
+    const pointerFine = window.matchMedia("(pointer: fine)").matches;
+    const largeScreen = window.matchMedia("(min-width: 981px)").matches;
+    const cardPointerCleanups = [];
+    const lenis = new Lenis({
+      duration: 1.05,
+      smoothWheel: true,
+      wheelMultiplier: 0.9,
+      touchMultiplier: 1,
+    });
+
+    const updateScroll = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(updateScroll);
+    gsap.ticker.lagSmoothing(0);
+
+    const context = gsap.context(() => {
+      gsap.to(".hero-streaks", {
+        y: 70,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.8,
+        },
+      });
+
+      gsap.to(".hero-copy", {
+        y: -52,
+        opacity: 0.78,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.9,
+        },
+      });
+
+      gsap.to(".hero-panel", {
+        y: 82,
+        rotate: -1.2,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
+
+      gsap.utils.toArray(".float-label").forEach((label, index) => {
+        gsap.to(label, {
+          y: index % 2 === 0 ? -34 : 38,
+          x: index % 3 === 0 ? 18 : -14,
+          rotate: index % 2 === 0 ? 1.4 : -1.1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        });
+      });
+
+      gsap.utils.toArray(".reveal-image").forEach((image) => {
+        gsap.fromTo(
+          image,
+          { clipPath: "inset(18% 0 18% 0)", scale: 1.035 },
+          {
+            clipPath: "inset(0% 0 0% 0)",
+            scale: 1,
+            duration: 1.1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: image,
+              start: "top 82%",
+              once: true,
+            },
+          },
+        );
+      });
+
+      if (largeScreen) {
+        gsap.to(".about-progress-bar", {
+          scaleY: 1,
+          transformOrigin: "top",
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".about-story",
+            start: "top 20%",
+            end: "bottom 72%",
+            scrub: 0.8,
+          },
+        });
+
+        gsap.utils.toArray(".story-chapter").forEach((chapter) => {
+          gsap.fromTo(
+            chapter,
+            { opacity: 0.36, y: 34 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.7,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: chapter,
+                start: "top 70%",
+                end: "bottom 42%",
+                scrub: 0.5,
+              },
+            },
+          );
+        });
+
+        const rail = document.querySelector(".project-rail");
+        if (rail) {
+          const scrollDistance = () => rail.scrollWidth - window.innerWidth + 96;
+          gsap.to(rail, {
+            x: () => -scrollDistance(),
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".project-cinema",
+              start: "top top",
+              end: () => `+=${Math.max(scrollDistance(), 900)}`,
+              pin: true,
+              scrub: 0.75,
+              invalidateOnRefresh: true,
+            },
+          });
+        }
+      }
+
+      gsap.utils.toArray(".timeline-item").forEach((item) => {
+        gsap.fromTo(
+          item,
+          { opacity: 0.38, x: -24 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 78%",
+              once: true,
+            },
+          },
+        );
+      });
+
+      if (pointerFine) {
+        gsap.utils.toArray(".project-card").forEach((card) => {
+          const handleCardPointer = (event) => {
+            const rect = card.getBoundingClientRect();
+            card.style.setProperty("--card-x", `${event.clientX - rect.left}px`);
+            card.style.setProperty("--card-y", `${event.clientY - rect.top}px`);
+          };
+
+          card.addEventListener("pointermove", handleCardPointer, { passive: true });
+          cardPointerCleanups.push(() => card.removeEventListener("pointermove", handleCardPointer));
+        });
+      }
+    });
+
+    ScrollTrigger.refresh();
+
+    return () => {
+      cardPointerCleanups.forEach((cleanup) => cleanup());
+      context.revert();
+      gsap.ticker.remove(updateScroll);
+      lenis.destroy();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [reduceMotion, featuredProjects.length]);
 
   useEffect(() => {
     let isMounted = true;
@@ -609,6 +828,7 @@ function App() {
       <main>
         <section id="home" className="hero section-shell">
           <BackgroundStreaks className="hero-streaks" />
+          <div className="hero-orbit" aria-hidden="true" />
           <motion.div
             className="hero-copy"
             initial={reduceMotion ? false : "hidden"}
@@ -616,22 +836,32 @@ function App() {
             variants={staggerVariants}
           >
             <motion.span className="eyebrow" variants={fadeUpVariants}>
-              Informatics Student
+              Frontend Engineer
             </motion.span>
-            <motion.h1 variants={fadeUpVariants}>Muhammad Rakha Pratama</motion.h1>
+            <motion.h1 className="masked-title" variants={fadeUpVariants}>
+              <span>Muhammad Rakha</span>
+              <span>Pratama</span>
+            </motion.h1>
             <motion.p variants={fadeUpVariants}>
-              Informatics student from Bandung focused on web development,
-              mobile products, AI integration, and cloud deployment.
+              Informatics student focused on clean frontend interfaces,
+              full-stack product building, AI workflows, and geospatial-ready
+              digital experiences.
             </motion.p>
             <motion.div className="hero-actions" variants={fadeUpVariants}>
               <a className="button primary" href="#portfolio">
                 View projects <ArrowUpRight size={17} />
               </a>
-              <a className="button ghost" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
-                GitHub <Github size={17} />
+              <a className="button ghost" href="#about">
+                About me <ArrowUpRight size={17} />
               </a>
             </motion.div>
           </motion.div>
+
+          <div className="floating-labels" aria-hidden="true">
+            {heroLabels.map((label, index) => (
+              <span className={`float-label label-${index + 1}`} key={label}>{label}</span>
+            ))}
+          </div>
 
           <motion.aside
             className="hero-panel"
@@ -639,10 +869,11 @@ function App() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
           >
-            <div className="portrait-wrap">
+            <div className="portrait-wrap reveal-image">
               <img src={profileImage} alt="Muhammad Rakha Pratama" />
             </div>
           </motion.aside>
+          <span className="scroll-indicator" aria-hidden="true">Scroll</span>
         </section>
 
         <motion.section
@@ -665,13 +896,16 @@ function App() {
           </div>
         </motion.section>
 
-        <AnimatedSection id="about" className="section-shell about">
-          <div className="section-heading">
+        <AnimatedSection id="about" className="section-shell about about-story">
+          <div className="about-sticky">
             <span className="eyebrow">About</span>
             <h2>I build practical software projects and keep improving the details.</h2>
+            <div className="about-progress" aria-hidden="true">
+              <span className="about-progress-bar" />
+            </div>
           </div>
           <motion.div
-            className="about-grid"
+            className="about-grid story-grid"
             initial={reduceMotion ? false : "hidden"}
             whileInView="visible"
             viewport={viewportOnce}
@@ -693,25 +927,13 @@ function App() {
                 ))}
               </motion.div>
             </motion.div>
-            <motion.div className="focus-list" variants={staggerVariants}>
-              {focusItems.map((item) => (
-                <motion.button
-                  className={openFocus === item.title ? "focus-item open" : "focus-item"}
-                  key={item.title}
-                  type="button"
-                  variants={fadeUpVariants}
-                  whileHover={reduceMotion ? undefined : { x: 3 }}
-                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                  aria-expanded={openFocus === item.title}
-                  onClick={() => setOpenFocus((current) => (current === item.title ? "" : item.title))}
-                >
-                  <span className="focus-dot" />
-                  <span className="focus-content">
-                    <strong>{item.title}</strong>
-                    <small>{item.text}</small>
-                  </span>
-                  <span className="focus-chevron" aria-hidden="true" />
-                </motion.button>
+            <motion.div className="story-chapters" variants={staggerVariants}>
+              {aboutChapters.map((chapter) => (
+                <article className="story-chapter" key={chapter.title}>
+                  <span>{chapter.kicker}</span>
+                  <h3>{chapter.title}</h3>
+                  <p>{chapter.text}</p>
+                </article>
               ))}
             </motion.div>
           </motion.div>
@@ -756,19 +978,21 @@ function App() {
           </motion.div>
         </AnimatedSection>
 
-        <AnimatedSection id="portfolio" className="section-shell portfolio">
+        <AnimatedSection id="portfolio" className="portfolio">
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Selected work</span>
-              <h2>Selected public projects from my GitHub.</h2>
+              <h2>Public projects, presented with more depth.</h2>
             </div>
             <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
               See all repositories <ArrowUpRight size={17} />
             </a>
           </div>
 
+          {!projectsLoading && <ProjectShowcase projects={featuredProjects} onSelect={setSelectedProject} />}
+
           <motion.div
-            className="featured-grid"
+            className="featured-grid section-shell"
             initial={reduceMotion ? false : "hidden"}
             whileInView="visible"
             viewport={viewportOnce}
@@ -787,11 +1011,42 @@ function App() {
           </motion.div>
         </AnimatedSection>
 
+        <AnimatedSection id="experience" className="section-shell timeline-section">
+          <div className="section-heading split">
+            <div>
+              <span className="eyebrow">Experience</span>
+              <h2>Learning timeline through shipped work.</h2>
+            </div>
+            <p>
+              A compact view of milestones from coursework, deployment practice,
+              product experiments, and portfolio improvements.
+            </p>
+          </div>
+          <div className="timeline-list">
+            {timelineItems.map((item) => (
+              <article className="timeline-item" key={item.title}>
+                <span className="timeline-year">{item.year}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                  <div className="tag-row">
+                    {item.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </AnimatedSection>
+
         <AnimatedSection id="contact" className="section-shell contact">
           <BackgroundStreaks className="contact-streaks" />
           <div>
             <span className="eyebrow">Contact</span>
-            <h2>Open to project discussions and collaboration.</h2>
+            <h2>Have an idea worth building?</h2>
+            <p className="contact-lede">
+              I am open to collaboration, internship conversations, and practical
+              product work that benefits from clean interfaces and clear systems.
+            </p>
           </div>
           <div className="contact-card">
             <a href="mailto:mrakhaptatama135@gmail.com">
@@ -860,6 +1115,69 @@ function ProjectCard({ project, index, onSelect }) {
         </a>
       </div>
     </motion.article>
+  );
+}
+
+function ProjectShowcase({ projects, onSelect }) {
+  const showcaseProjects = projects.slice(0, 4);
+
+  return (
+    <section className="project-cinema section-shell" aria-label="Featured project showcase">
+      <div className="project-rail">
+        {showcaseProjects.map((project, index) => {
+          const Icon = project.icon;
+          return (
+            <article className="project-scene" key={`scene-${project.id}`}>
+              <span className="scene-number">{String(index + 1).padStart(2, "0")}</span>
+              <div className="scene-copy">
+                <div className="project-icon">
+                  <Icon size={24} />
+                </div>
+                <span className="project-type">{project.type}</span>
+                <h3>{project.title}</h3>
+                <p>{project.description}</p>
+                <dl className="scene-meta">
+                  <div>
+                    <dt>Problem</dt>
+                    <dd>Turn an idea into a testable public project.</dd>
+                  </div>
+                  <div>
+                    <dt>Solution</dt>
+                    <dd>Build a focused app surface with clear repository structure.</dd>
+                  </div>
+                  <div>
+                    <dt>Role</dt>
+                    <dd>Interface, logic, deployment, and project documentation.</dd>
+                  </div>
+                </dl>
+                <div className="tag-row">
+                  {project.stack.map((tag) => <span key={tag}>{tag}</span>)}
+                </div>
+                <div className="project-actions">
+                  {project.demo ? (
+                    <a className="project-details-link" href={project.demo} target="_blank" rel="noopener noreferrer">
+                      Live preview <ArrowUpRight size={15} />
+                    </a>
+                  ) : (
+                    <button type="button" onClick={() => onSelect(project)}>Details</button>
+                  )}
+                  <a href={project.href} target="_blank" rel="noopener noreferrer">
+                    Repository <ArrowUpRight size={15} />
+                  </a>
+                </div>
+              </div>
+              <div className="scene-visual" aria-hidden="true">
+                <div className="browser-mockup reveal-image">
+                  <span />
+                  <strong>{project.title}</strong>
+                  <small>{project.type}</small>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
