@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "lenis";
 import {
   ArrowUpRight,
   BookOpen,
@@ -65,11 +62,7 @@ const stats = [
   ["2+", "Years learning"],
 ];
 
-gsap.registerPlugin(ScrollTrigger);
-
 const cursorTrailDots = Array.from({ length: 8 }, (_, index) => index);
-
-const heroLabels = ["React", "Next.js", "Flutter", "Laravel", "WebGIS", "PostgreSQL"];
 
 const aboutChapters = [
   {
@@ -444,196 +437,6 @@ function App() {
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
-    if (reduceMotion) {
-      return undefined;
-    }
-
-    const pointerFine = window.matchMedia("(pointer: fine)").matches;
-    const largeScreen = window.matchMedia("(min-width: 981px)").matches;
-
-    if (!largeScreen) {
-      return undefined;
-    }
-
-    const cardPointerCleanups = [];
-    const lenis = new Lenis({
-      duration: 1.05,
-      smoothWheel: true,
-      wheelMultiplier: 0.9,
-      touchMultiplier: 1,
-    });
-
-    const updateScroll = (time) => {
-      lenis.raf(time * 1000);
-    };
-
-    lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add(updateScroll);
-    gsap.ticker.lagSmoothing(0);
-
-    const context = gsap.context(() => {
-      gsap.to(".hero-streaks", {
-        y: 70,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.8,
-        },
-      });
-
-      gsap.to(".hero-copy", {
-        y: -52,
-        opacity: 0.78,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 0.9,
-        },
-      });
-
-      gsap.to(".hero-panel", {
-        y: 82,
-        rotate: -1.2,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
-
-      gsap.utils.toArray(".float-label").forEach((label, index) => {
-        gsap.to(label, {
-          y: index % 2 === 0 ? -34 : 38,
-          x: index % 3 === 0 ? 18 : -14,
-          rotate: index % 2 === 0 ? 1.4 : -1.1,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.2,
-          },
-        });
-      });
-
-      gsap.utils.toArray(".reveal-image").forEach((image) => {
-        gsap.fromTo(
-          image,
-          { clipPath: "inset(18% 0 18% 0)", scale: 1.035 },
-          {
-            clipPath: "inset(0% 0 0% 0)",
-            scale: 1,
-            duration: 1.1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: image,
-              start: "top 82%",
-              once: true,
-            },
-          },
-        );
-      });
-
-      if (largeScreen && !projectsLoading) {
-        gsap.to(".about-progress-bar", {
-          scaleY: 1,
-          transformOrigin: "top",
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".about-story",
-            start: "top 20%",
-            end: "bottom 72%",
-            scrub: 0.8,
-          },
-        });
-
-        gsap.utils.toArray(".story-chapter").forEach((chapter) => {
-          gsap.fromTo(
-            chapter,
-            { opacity: 0.36, y: 34 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.7,
-              ease: "power2.out",
-              scrollTrigger: {
-                trigger: chapter,
-                start: "top 70%",
-                end: "bottom 42%",
-                scrub: 0.5,
-              },
-            },
-          );
-        });
-
-        const rail = document.querySelector(".project-rail");
-        if (rail) {
-          const scrollDistance = () => rail.scrollWidth - window.innerWidth + 96;
-          gsap.to(rail, {
-            x: () => -scrollDistance(),
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".project-cinema",
-              start: "top top",
-              end: () => `+=${Math.max(scrollDistance(), 900)}`,
-              pin: true,
-              scrub: 0.75,
-              invalidateOnRefresh: true,
-            },
-          });
-        }
-      }
-
-      gsap.utils.toArray(".timeline-item").forEach((item) => {
-        gsap.fromTo(
-          item,
-          { opacity: 0.38, x: -24 },
-          {
-            opacity: 1,
-            x: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: item,
-              start: "top 78%",
-              once: true,
-            },
-          },
-        );
-      });
-
-      if (pointerFine) {
-        gsap.utils.toArray(".project-card").forEach((card) => {
-          const handleCardPointer = (event) => {
-            const rect = card.getBoundingClientRect();
-            card.style.setProperty("--card-x", `${event.clientX - rect.left}px`);
-            card.style.setProperty("--card-y", `${event.clientY - rect.top}px`);
-          };
-
-          card.addEventListener("pointermove", handleCardPointer, { passive: true });
-          cardPointerCleanups.push(() => card.removeEventListener("pointermove", handleCardPointer));
-        });
-      }
-    });
-
-    ScrollTrigger.refresh();
-
-    return () => {
-      cardPointerCleanups.forEach((cleanup) => cleanup());
-      context.revert();
-      gsap.ticker.remove(updateScroll);
-      lenis.destroy();
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, [reduceMotion, projectsLoading, featuredProjects.length]);
-
-  useEffect(() => {
     let isMounted = true;
 
     const loadGithubProjects = async () => {
@@ -862,12 +665,6 @@ function App() {
             </motion.div>
           </motion.div>
 
-          <div className="floating-labels" aria-hidden="true">
-            {heroLabels.map((label, index) => (
-              <span className={`float-label label-${index + 1}`} key={label}>{label}</span>
-            ))}
-          </div>
-
           <motion.aside
             className="hero-panel"
             initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
@@ -1005,7 +802,7 @@ function App() {
           >
             {projectsLoading
               ? projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)
-              : featuredProjects.map((project, index) => (
+              : featuredProjects.slice(3).map((project, index) => (
                 <ProjectCard
                   key={project.id}
                   project={project}
@@ -1124,7 +921,7 @@ function ProjectCard({ project, index, onSelect }) {
 }
 
 function ProjectShowcase({ projects, onSelect }) {
-  const showcaseProjects = projects.slice(0, 4);
+  const showcaseProjects = projects.slice(0, 3);
 
   return (
     <section className="project-cinema section-shell" aria-label="Featured project showcase">
