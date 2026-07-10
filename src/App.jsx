@@ -887,6 +887,7 @@ function ProjectCard({ project, index, onSelect }) {
       whileHover={reduceMotion ? undefined : { y: -5 }}
       transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
     >
+      <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
       <div className="project-icon">
         <Icon size={24} />
       </div>
@@ -895,6 +896,20 @@ function ProjectCard({ project, index, onSelect }) {
         <h3>{project.title}</h3>
         <p>{project.description}</p>
       </div>
+      <dl className="project-meta-grid">
+        <div>
+          <dt>Problem</dt>
+          <dd>Turn an idea into a testable public project.</dd>
+        </div>
+        <div>
+          <dt>Solution</dt>
+          <dd>Build a focused app surface with clear repository structure.</dd>
+        </div>
+        <div>
+          <dt>Role</dt>
+          <dd>Interface, logic, deployment, and documentation.</dd>
+        </div>
+      </dl>
       <div className="tag-row">
         {project.stack.map((tag) => (
           <span key={tag}>{tag}</span>

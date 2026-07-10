@@ -1200,13 +1200,24 @@ textarea {
 }
 
 .project-card {
+  position: relative;
   display: flex;
-  min-height: 306px;
+  min-height: 356px;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
   border-radius: 28px;
   padding: 22px;
+  background:
+    radial-gradient(circle at 78% 6%, rgba(17, 17, 17, 0.08), transparent 26%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08) 46%, rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.055);
   transition: transform 180ms var(--ease-out), border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.project-card > *:not(.project-number) {
+  position: relative;
+  z-index: 1;
 }
 
 .project-card:hover {
@@ -1219,6 +1230,19 @@ textarea {
     inset 0 -1px 0 rgba(255, 255, 255, 0.36),
     0 28px 82px rgba(17, 17, 17, 0.16);
   transform: translateY(-4px);
+}
+
+.project-number {
+  position: absolute;
+  top: -22px;
+  right: 16px;
+  z-index: 0;
+  color: rgba(17, 17, 17, 0.065);
+  font-size: clamp(5.8rem, 10vw, 8.8rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  pointer-events: none;
 }
 
 .project-icon {
@@ -1242,6 +1266,7 @@ textarea {
 
 .project-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin-top: 20px;
 }
@@ -1266,6 +1291,34 @@ textarea {
     inset 0 1px 0 rgba(255, 255, 255, 0.78),
     0 10px 22px rgba(17, 17, 17, 0.08);
   backdrop-filter: blur(18px) saturate(160%);
+}
+
+.project-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0 0;
+}
+
+.project-meta-grid div {
+  border-left: 1px solid rgba(17, 17, 17, 0.1);
+  padding-left: 12px;
+}
+
+.project-meta-grid dt {
+  margin-bottom: 5px;
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 780;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.project-meta-grid dd {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.32;
 }
 
 .project-actions button,
@@ -1625,6 +1678,10 @@ footer a {
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .project-meta-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 720px) {
@@ -1789,6 +1846,10 @@ footer a {
   .service-grid,
   .featured-grid {
     grid-template-columns: 1fr;
+  }
+
+  .project-card {
+    min-height: auto;
   }
 
   .story-chapter {
