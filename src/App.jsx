@@ -901,7 +901,7 @@ function App() {
           </div>
         </motion.section>
 
-        <AnimatedSection id="about" className="section-shell about about-story">
+        <section id="about" className="section-shell about about-story">
           <div className="about-sticky">
             <span className="eyebrow">About</span>
             <h2>I build practical software projects and keep improving the details.</h2>
@@ -942,7 +942,7 @@ function App() {
               ))}
             </motion.div>
           </motion.div>
-        </AnimatedSection>
+        </section>
 
         <AnimatedSection id="services" className="section-shell services">
           <div className="section-heading split">
@@ -983,7 +983,7 @@ function App() {
           </motion.div>
         </AnimatedSection>
 
-        <AnimatedSection id="portfolio" className="portfolio">
+        <section id="portfolio" className="portfolio">
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Selected work</span>
@@ -1014,7 +1014,7 @@ function App() {
                 />
               ))}
           </motion.div>
-        </AnimatedSection>
+        </section>
 
         <AnimatedSection id="experience" className="section-shell timeline-section">
           <div className="section-heading split">

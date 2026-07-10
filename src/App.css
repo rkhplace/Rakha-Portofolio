@@ -533,7 +533,7 @@ textarea {
 
 .hero-copy h1 {
   max-width: 650px;
-  font-size: clamp(3.2rem, 6.2vw, 6.7rem);
+  font-size: clamp(2.95rem, 5.4vw, 5.85rem);
   font-weight: 650;
   letter-spacing: -0.035em;
 }
@@ -583,12 +583,12 @@ textarea {
   backdrop-filter: blur(24px) saturate(165%);
 }
 
-.label-1 { top: 16%; left: 44%; }
-.label-2 { top: 28%; right: 7%; }
-.label-3 { bottom: 22%; right: 4%; }
-.label-4 { bottom: 12%; left: 40%; }
-.label-5 { top: 52%; left: 5%; }
-.label-6 { top: 12%; right: 26%; }
+.label-1 { top: 17%; left: 47%; }
+.label-2 { top: 29%; right: 5%; }
+.label-3 { bottom: 21%; right: 5%; }
+.label-4 { bottom: 11%; left: 43%; }
+.label-5 { bottom: 28%; left: 41%; }
+.label-6 { top: 13%; right: 25%; }
 
 .eyebrow {
   display: inline-flex;
@@ -851,15 +851,14 @@ textarea {
 }
 
 .about-story {
-  display: grid;
-  grid-template-columns: 0.84fr 1fr;
-  gap: clamp(28px, 5vw, 70px);
+  display: block;
 }
 
 .about-sticky {
-  position: sticky;
-  top: 124px;
-  align-self: start;
+  position: relative;
+  top: auto;
+  max-width: 920px;
+  margin-bottom: 28px;
 }
 
 .about-sticky h2 {
@@ -870,6 +869,7 @@ textarea {
 }
 
 .about-progress {
+  display: none;
   position: relative;
   overflow: hidden;
   width: 2px;
@@ -890,15 +890,17 @@ textarea {
 
 .story-grid {
   grid-template-columns: 1fr;
+  gap: 18px;
 }
 
 .story-chapters {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
 .story-chapter {
-  min-height: 220px;
+  min-height: 210px;
   border: 1px solid var(--glass-border);
   border-radius: 30px;
   background:
@@ -961,6 +963,10 @@ textarea {
   display: grid;
   grid-template-columns: 1fr 0.8fr;
   gap: 20px;
+}
+
+.about-grid.story-grid {
+  grid-template-columns: 1fr;
 }
 
 .about-copy,
@@ -1244,7 +1250,7 @@ textarea {
   position: relative;
   display: grid;
   width: min(1060px, calc(100vw - 80px));
-  min-height: 540px;
+  min-height: min(640px, calc(100vh - 150px));
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.75fr);
   align-items: center;
   gap: clamp(22px, 4vw, 52px);
@@ -1774,6 +1780,10 @@ footer a {
     display: none;
   }
 
+  .story-chapters {
+    grid-template-columns: 1fr;
+  }
+
   .project-cinema {
     width: min(100% - 28px, 1180px);
   }
@@ -1802,6 +1812,12 @@ footer a {
   .service-grid,
   .featured-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 1180px) {
+  .float-label {
+    display: none;
   }
 }
 
