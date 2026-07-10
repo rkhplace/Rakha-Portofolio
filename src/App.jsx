@@ -450,6 +450,11 @@ function App() {
 
     const pointerFine = window.matchMedia("(pointer: fine)").matches;
     const largeScreen = window.matchMedia("(min-width: 981px)").matches;
+
+    if (!largeScreen) {
+      return undefined;
+    }
+
     const cardPointerCleanups = [];
     const lenis = new Lenis({
       duration: 1.05,
@@ -535,7 +540,7 @@ function App() {
         );
       });
 
-      if (largeScreen) {
+      if (largeScreen && !projectsLoading) {
         gsap.to(".about-progress-bar", {
           scaleY: 1,
           transformOrigin: "top",
@@ -626,7 +631,7 @@ function App() {
       lenis.destroy();
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [reduceMotion, featuredProjects.length]);
+  }, [reduceMotion, projectsLoading, featuredProjects.length]);
 
   useEffect(() => {
     let isMounted = true;

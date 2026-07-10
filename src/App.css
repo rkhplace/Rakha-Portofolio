@@ -36,12 +36,14 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
   overflow-x: hidden;
 }
 
 body {
   margin: 0;
   min-width: 320px;
+  width: 100%;
   background:
     radial-gradient(ellipse at 10% 17%, rgba(17, 17, 17, 0.16), transparent 18rem),
     radial-gradient(ellipse at 86% 18%, rgba(17, 17, 17, 0.11), transparent 24rem),
@@ -90,6 +92,7 @@ body::after {
 
 #root {
   position: relative;
+  overflow-x: clip;
   isolation: isolate;
 }
 
@@ -505,6 +508,12 @@ textarea {
   z-index: 0;
 }
 
+.hero .hero-orbit,
+.hero .floating-labels,
+.hero .scroll-indicator {
+  position: absolute;
+}
+
 .hero-copy {
   grid-column: 1;
 }
@@ -730,6 +739,7 @@ textarea {
 .ticker {
   position: relative;
   overflow: hidden;
+  contain: paint;
   width: min(1220px, calc(100% - 48px));
   margin: 14px auto 0;
   border-top: 0;
@@ -1216,7 +1226,8 @@ textarea {
 }
 
 .project-cinema {
-  overflow: visible;
+  overflow: hidden;
+  contain: paint;
   width: 100%;
   margin: 0 auto 38px;
 }
