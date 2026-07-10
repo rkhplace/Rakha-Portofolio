@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -135,6 +135,8 @@ const techStack = [
   { name: "Figma", logo: figmaLogo },
   { name: "GitHub", logo: githubLogo },
 ];
+
+const heroParallaxTags = ["React", "Next.js", "PostgreSQL", "WebGIS", "Flutter", "Laravel"];
 
 const services = [
   {
@@ -423,6 +425,23 @@ const formatProjectDate = (dateValue) => {
 
 function App() {
   const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll();
+  const smoothScroll = useSpring(scrollYProgress, {
+    stiffness: 82,
+    damping: 28,
+    mass: 0.28,
+  });
+  const heroCopyY = useTransform(smoothScroll, [0, 0.32], [0, 72]);
+  const heroCopyOpacity = useTransform(smoothScroll, [0, 0.26], [1, 0.86]);
+  const heroPanelY = useTransform(smoothScroll, [0, 0.34], [0, -88]);
+  const heroPanelScale = useTransform(smoothScroll, [0, 0.34], [1, 0.955]);
+  const heroStreakY = useTransform(smoothScroll, [0, 0.34], [0, 118]);
+  const heroOrbitX = useTransform(smoothScroll, [0, 0.34], [0, -96]);
+  const heroOrbitY = useTransform(smoothScroll, [0, 0.34], [0, 54]);
+  const tickerY = useTransform(smoothScroll, [0, 0.3], [0, -38]);
+  const tagRiseY = useTransform(smoothScroll, [0, 0.34], [0, -104]);
+  const tagSinkY = useTransform(smoothScroll, [0, 0.34], [0, 76]);
+  const tagDriftX = useTransform(smoothScroll, [0, 0.34], [0, 48]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
@@ -635,13 +654,38 @@ function App() {
 
       <main>
         <section id="home" className="hero section-shell">
-          <BackgroundStreaks className="hero-streaks" />
-          <div className="hero-orbit" aria-hidden="true" />
+          <BackgroundStreaks
+            className="hero-streaks"
+            style={reduceMotion ? undefined : { y: heroStreakY }}
+          />
+          <motion.div
+            className="hero-orbit"
+            aria-hidden="true"
+            style={reduceMotion ? undefined : { x: heroOrbitX, y: heroOrbitY }}
+          />
+          <div className="hero-parallax-tags" aria-hidden="true">
+            {heroParallaxTags.map((tag, index) => (
+              <motion.span
+                key={tag}
+                style={
+                  reduceMotion
+                    ? undefined
+                    : {
+                        x: index % 2 === 0 ? tagDriftX : 0,
+                        y: index % 2 === 0 ? tagRiseY : tagSinkY,
+                      }
+                }
+              >
+                {tag}
+              </motion.span>
+            ))}
+          </div>
           <motion.div
             className="hero-copy"
             initial={reduceMotion ? false : "hidden"}
             animate="visible"
             variants={staggerVariants}
+            style={reduceMotion ? undefined : { y: heroCopyY, opacity: heroCopyOpacity }}
           >
             <motion.span className="eyebrow" variants={fadeUpVariants}>
               Frontend Engineer
@@ -670,6 +714,7 @@ function App() {
             initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
+            style={reduceMotion ? undefined : { y: heroPanelY, scale: heroPanelScale }}
           >
             <div className="portrait-wrap reveal-image">
               <img src={profileImage} alt="Muhammad Rakha Pratama" />
@@ -684,6 +729,7 @@ function App() {
           initial={reduceMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          style={reduceMotion ? undefined : { y: tickerY }}
         >
           <div className="ticker-track">
             {[0, 1, 2].map((group) => (
@@ -1029,8 +1075,8 @@ function AnimatedSection({ id, className, children }) {
   );
 }
 
-function BackgroundStreaks({ className = "" }) {
-  return <div className={`background-streaks ${className}`} aria-hidden="true" />;
+function BackgroundStreaks({ className = "", style }) {
+  return <motion.div className={`background-streaks ${className}`} style={style} aria-hidden="true" />;
 }
 
 export default App;

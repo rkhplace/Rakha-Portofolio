@@ -408,6 +408,63 @@ textarea {
   pointer-events: none;
 }
 
+.hero-parallax-tags {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero-parallax-tags span {
+  position: absolute;
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.68);
+  border-radius: 999px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0.08)),
+    rgba(255, 255, 255, 0.08);
+  color: #404448;
+  padding: 0 14px;
+  font-size: 0.82rem;
+  font-weight: 680;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 14px 32px rgba(17, 17, 17, 0.1);
+  backdrop-filter: blur(22px) saturate(170%);
+}
+
+.hero-parallax-tags span:nth-child(1) {
+  top: 17%;
+  left: 49%;
+}
+
+.hero-parallax-tags span:nth-child(2) {
+  top: 30%;
+  right: 4%;
+}
+
+.hero-parallax-tags span:nth-child(3) {
+  top: 12%;
+  right: 25%;
+}
+
+.hero-parallax-tags span:nth-child(4) {
+  left: 42%;
+  bottom: 26%;
+}
+
+.hero-parallax-tags span:nth-child(5) {
+  right: 3%;
+  bottom: 20%;
+}
+
+.hero-parallax-tags span:nth-child(6) {
+  left: 44%;
+  bottom: 8%;
+}
+
 .background-streaks {
   position: absolute;
   grid-area: 1 / 1 / -1 / -1;
@@ -509,16 +566,20 @@ textarea {
 }
 
 .hero .hero-orbit,
+.hero .hero-parallax-tags,
 .hero .scroll-indicator {
   position: absolute;
 }
 
 .hero-copy {
   grid-column: 1;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-panel {
   grid-column: 2;
+  z-index: 2;
 }
 
 .hero-copy h1,
@@ -1757,6 +1818,7 @@ footer a {
   }
 
   .hero-orbit,
+  .hero-parallax-tags,
   .scroll-indicator {
     display: none;
   }
