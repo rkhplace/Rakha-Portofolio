@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowUpRight,
@@ -815,24 +815,19 @@ function App() {
             </a>
           </div>
 
-          <motion.div
-            className="featured-grid section-shell"
-            initial={reduceMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={viewportOnce}
-            variants={staggerVariants}
-          >
-            {projectsLoading
-              ? projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)
-              : featuredProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  onSelect={() => setSelectedProject(project)}
-                />
-              ))}
-          </motion.div>
+          {projectsLoading ? (
+            <motion.div
+              className="featured-grid section-shell"
+              initial={reduceMotion ? false : "hidden"}
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={staggerVariants}
+            >
+              {projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)}
+            </motion.div>
+          ) : (
+            <ProjectStoryRail projects={featuredProjects} onSelect={setSelectedProject} />
+          )}
         </section>
 
         <AnimatedSection id="experience" className="section-shell timeline-section">
@@ -898,6 +893,82 @@ function App() {
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </>
+  );
+}
+
+function ProjectStoryRail({ projects, onSelect }) {
+  const reduceMotion = useReducedMotion();
+  const sectionRef = useRef(null);
+  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const [travelDistance, setTravelDistance] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 86,
+    damping: 30,
+    mass: 0.28,
+  });
+  const x = useTransform(smoothProgress, [0, 1], [0, -travelDistance]);
+
+  useEffect(() => {
+    const measure = () => {
+      if (!viewportRef.current || !trackRef.current) {
+        return;
+      }
+
+      const viewportWidth = viewportRef.current.offsetWidth;
+      const trackWidth = trackRef.current.scrollWidth;
+      setTravelDistance(Math.max(0, trackWidth - viewportWidth));
+    };
+
+    measure();
+    const resizeObserver = new ResizeObserver(measure);
+
+    if (viewportRef.current) {
+      resizeObserver.observe(viewportRef.current);
+    }
+
+    if (trackRef.current) {
+      resizeObserver.observe(trackRef.current);
+    }
+
+    window.addEventListener("resize", measure, { passive: true });
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [projects.length]);
+
+  return (
+    <section
+      ref={sectionRef}
+      className={`project-story section-shell ${reduceMotion ? "project-story-static" : ""}`}
+      style={{ "--project-count": projects.length }}
+      aria-label="Project case studies"
+    >
+      <div className="project-story-sticky">
+        <div className="project-story-viewport" ref={viewportRef}>
+          <motion.div
+            ref={trackRef}
+            className="project-story-track"
+            style={reduceMotion ? undefined : { x }}
+          >
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                index={index}
+                onSelect={() => onSelect(project)}
+              />
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 }
 
