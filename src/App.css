@@ -209,69 +209,6 @@ footer {
   z-index: 1;
 }
 
-.journey-nav {
-  position: fixed;
-  top: 50%;
-  left: 22px;
-  z-index: 20;
-  display: grid;
-  gap: 8px;
-  transform: translateY(-50%);
-}
-
-.journey-nav a {
-  display: grid;
-  width: 96px;
-  grid-template-columns: 24px 1fr;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.56);
-  border-radius: 999px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.08)),
-    rgba(255, 255, 255, 0.06);
-  color: rgba(17, 17, 17, 0.46);
-  padding: 7px 9px;
-  text-decoration: none;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    0 14px 34px rgba(17, 17, 17, 0.08);
-  backdrop-filter: blur(24px) saturate(160%);
-  transition: width 180ms ease, color 180ms ease, background 180ms ease, border-color 180ms ease;
-}
-
-.journey-nav a span {
-  font-size: 0.68rem;
-  font-weight: 760;
-}
-
-.journey-nav a strong {
-  overflow: hidden;
-  font-size: 0.72rem;
-  font-weight: 680;
-  opacity: 0;
-  text-transform: uppercase;
-  transform: translateX(-4px);
-  transition: opacity 180ms ease, transform 180ms ease;
-  white-space: nowrap;
-}
-
-.journey-nav a.active,
-.journey-nav a:hover {
-  width: 132px;
-  border-color: rgba(255, 255, 255, 0.82);
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.56), rgba(255, 255, 255, 0.18)),
-    rgba(255, 255, 255, 0.12);
-  color: var(--ink);
-}
-
-.journey-nav a.active strong,
-.journey-nav a:hover strong {
-  opacity: 1;
-  transform: translateX(0);
-}
-
 main::before {
   content: "";
   position: absolute;
@@ -1845,10 +1782,6 @@ footer a {
 }
 
 @media (max-width: 980px) {
-  .journey-nav {
-    display: none;
-  }
-
   .hero,
   .about-grid,
   .about-story,

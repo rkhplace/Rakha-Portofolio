@@ -56,15 +56,6 @@ const navItems = [
   ["Contact", "#contact"],
 ];
 
-const journeyItems = [
-  ["01", "Identity", "Home"],
-  ["02", "Context", "About"],
-  ["03", "Tools", "Skills"],
-  ["04", "Proof", "Projects"],
-  ["05", "Timeline", "Experience"],
-  ["06", "Contact", "Contact"],
-];
-
 const stats = [
   ["16+", "Public projects"],
   ["5+", "Languages"],
@@ -669,19 +660,6 @@ function App() {
           ))}
         </div>
       </div>
-
-      <aside className="journey-nav" aria-label="Portfolio journey">
-        {journeyItems.map(([number, label, section]) => (
-          <a
-            key={section}
-            className={activeSection === section ? "active" : undefined}
-            href={navItems.find(([item]) => item === section)?.[1] || "#home"}
-          >
-            <span>{number}</span>
-            <strong>{label}</strong>
-          </a>
-        ))}
-      </aside>
 
       <main>
         <section id="home" className="hero section-shell">
