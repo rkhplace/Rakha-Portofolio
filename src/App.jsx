@@ -924,7 +924,7 @@ function ProjectStoryRail({ projects, onSelect }) {
       const trackWidth = trackRef.current.scrollWidth;
       const nextTravel = Math.max(0, trackWidth - viewportWidth);
       setTravelDistance(nextTravel);
-      setScrollHeight(Math.max(840, Math.min(1360, nextTravel * 0.28 + 640)));
+      setScrollHeight(Math.max(window.innerHeight + 680, window.innerHeight + nextTravel));
     };
 
     measure();
