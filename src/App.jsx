@@ -902,6 +902,7 @@ function ProjectStoryRail({ projects, onSelect }) {
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const [travelDistance, setTravelDistance] = useState(0);
+  const [scrollHeight, setScrollHeight] = useState(1120);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
@@ -921,7 +922,9 @@ function ProjectStoryRail({ projects, onSelect }) {
 
       const viewportWidth = viewportRef.current.offsetWidth;
       const trackWidth = trackRef.current.scrollWidth;
-      setTravelDistance(Math.max(0, trackWidth - viewportWidth));
+      const nextTravel = Math.max(0, trackWidth - viewportWidth);
+      setTravelDistance(nextTravel);
+      setScrollHeight(Math.max(840, Math.min(1360, nextTravel * 0.28 + 640)));
     };
 
     measure();
@@ -947,7 +950,7 @@ function ProjectStoryRail({ projects, onSelect }) {
     <section
       ref={sectionRef}
       className={`project-story section-shell ${reduceMotion ? "project-story-static" : ""}`}
-      style={{ "--project-count": projects.length }}
+      style={{ "--project-count": projects.length, "--project-scroll-height": `${scrollHeight}px` }}
       aria-label="Project case studies"
     >
       <div className="project-story-sticky">
