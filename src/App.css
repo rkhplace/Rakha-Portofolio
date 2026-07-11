@@ -1202,21 +1202,52 @@ textarea {
   position: sticky;
   top: 86px;
   display: grid;
-  min-height: calc(100vh - 86px);
+  min-height: calc(100vh - 106px);
   align-items: center;
   overflow: hidden;
 }
 
 .project-story-viewport {
+  position: relative;
   overflow: hidden;
   width: 100%;
-  padding: 8px 0 10px;
+  border-radius: 34px;
+  padding: 14px 12px 16px;
+}
+
+.project-story-viewport::before,
+.project-story-viewport::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  width: clamp(72px, 9vw, 138px);
+  pointer-events: none;
+}
+
+.project-story-viewport::before {
+  left: 0;
+  background:
+    linear-gradient(90deg, rgba(238, 238, 236, 0.72), rgba(238, 238, 236, 0.26) 48%, transparent),
+    radial-gradient(ellipse at left center, rgba(17, 17, 17, 0.16), transparent 62%);
+  box-shadow: inset 22px 0 42px rgba(17, 17, 17, 0.1);
+}
+
+.project-story-viewport::after {
+  right: 0;
+  background:
+    linear-gradient(270deg, rgba(238, 238, 236, 0.72), rgba(238, 238, 236, 0.26) 48%, transparent),
+    radial-gradient(ellipse at right center, rgba(17, 17, 17, 0.16), transparent 62%);
+  box-shadow: inset -22px 0 42px rgba(17, 17, 17, 0.1);
 }
 
 .project-story-track {
+  position: relative;
+  z-index: 1;
   display: flex;
   width: max-content;
-  gap: 18px;
+  gap: 16px;
   align-items: stretch;
   will-change: transform;
 }
@@ -1257,8 +1288,8 @@ textarea {
 .project-card {
   position: relative;
   display: flex;
-  min-height: max(520px, calc(100vh - 128px));
-  flex: 0 0 min(650px, calc(100vw - 96px));
+  min-height: clamp(430px, calc(100vh - 198px), 500px);
+  flex: 0 0 min(570px, calc(100vw - 112px));
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
@@ -1756,6 +1787,12 @@ footer a {
 
   .project-story-viewport {
     padding: 0;
+    border-radius: 0;
+  }
+
+  .project-story-viewport::before,
+  .project-story-viewport::after {
+    display: none;
   }
 
   .project-story-track {
