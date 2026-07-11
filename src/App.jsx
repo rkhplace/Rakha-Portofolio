@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -903,18 +903,22 @@ function ProjectStoryRail({ projects, onSelect }) {
   const trackRef = useRef(null);
   const [travelDistance, setTravelDistance] = useState(0);
   const [scrollHeight, setScrollHeight] = useState(1120);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end end"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 86,
-    damping: 30,
-    mass: 0.28,
-  });
-  const x = useTransform(smoothProgress, [0, 1], [0, -travelDistance]);
+  const railProgress = useMotionValue(0);
+  const x = useTransform(railProgress, [0, 1], [0, -travelDistance]);
 
   useEffect(() => {
+    const stickyOffset = 86;
+
+    const updateProgress = (distance = travelDistance) => {
+      if (!sectionRef.current) {
+        return;
+      }
+
+      const start = sectionRef.current.offsetTop - stickyOffset;
+      const nextProgress = distance > 0 ? (window.scrollY - start) / distance : 0;
+      railProgress.set(Math.min(1, Math.max(0, nextProgress)));
+    };
+
     const measure = () => {
       if (!viewportRef.current || !trackRef.current) {
         return;
@@ -924,7 +928,8 @@ function ProjectStoryRail({ projects, onSelect }) {
       const trackWidth = trackRef.current.scrollWidth;
       const nextTravel = Math.max(0, trackWidth - viewportWidth);
       setTravelDistance(nextTravel);
-      setScrollHeight(Math.max(window.innerHeight + 680, window.innerHeight + nextTravel));
+      setScrollHeight(Math.max(window.innerHeight, nextTravel + window.innerHeight - stickyOffset));
+      updateProgress(nextTravel);
     };
 
     measure();
@@ -938,13 +943,17 @@ function ProjectStoryRail({ projects, onSelect }) {
       resizeObserver.observe(trackRef.current);
     }
 
+    const handleScroll = () => updateProgress();
+
     window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", handleScroll);
     };
-  }, [projects.length]);
+  }, [projects.length, railProgress, travelDistance]);
 
   return (
     <section
