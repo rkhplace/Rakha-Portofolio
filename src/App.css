@@ -1219,27 +1219,27 @@ textarea {
 .project-story-viewport::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -18px;
+  bottom: -18px;
   z-index: 3;
-  width: clamp(72px, 9vw, 138px);
+  width: clamp(130px, 16vw, 230px);
   pointer-events: none;
+  filter: blur(10px);
+  opacity: 0.78;
 }
 
 .project-story-viewport::before {
-  left: 0;
+  left: -64px;
   background:
-    linear-gradient(90deg, rgba(238, 238, 236, 0.72), rgba(238, 238, 236, 0.26) 48%, transparent),
-    radial-gradient(ellipse at left center, rgba(17, 17, 17, 0.16), transparent 62%);
-  box-shadow: inset 22px 0 42px rgba(17, 17, 17, 0.1);
+    linear-gradient(90deg, rgba(238, 238, 236, 0.68) 0%, rgba(238, 238, 236, 0.38) 38%, rgba(238, 238, 236, 0.12) 66%, transparent 100%),
+    radial-gradient(ellipse at 0% 50%, rgba(17, 17, 17, 0.1), transparent 58%);
 }
 
 .project-story-viewport::after {
-  right: 0;
+  right: -64px;
   background:
-    linear-gradient(270deg, rgba(238, 238, 236, 0.72), rgba(238, 238, 236, 0.26) 48%, transparent),
-    radial-gradient(ellipse at right center, rgba(17, 17, 17, 0.16), transparent 62%);
-  box-shadow: inset -22px 0 42px rgba(17, 17, 17, 0.1);
+    linear-gradient(270deg, rgba(238, 238, 236, 0.68) 0%, rgba(238, 238, 236, 0.38) 38%, rgba(238, 238, 236, 0.12) 66%, transparent 100%),
+    radial-gradient(ellipse at 100% 50%, rgba(17, 17, 17, 0.1), transparent 58%);
 }
 
 .project-story-track {
