@@ -47,15 +47,55 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
         mm.add("(min-width: 981px)", () => {
           const heroStage = document.querySelector(".hero-stage");
           const heroWorld = document.querySelector(".hero-world");
+          const portalFrame = document.querySelector(".portal-frame");
+          const portalWorld = document.querySelector(".portal-world");
 
-          if (heroStage && heroWorld) {
+          if (heroStage && heroWorld && portalFrame && portalWorld) {
+            const getPortalCoverScale = () => {
+              const scaleX = window.innerWidth / portalFrame.offsetWidth;
+              const scaleY = window.innerHeight / portalFrame.offsetHeight;
+              return Math.max(scaleX, scaleY) * 1.16;
+            };
+
+            const getPortalTranslate = () => {
+              const rect = portalFrame.getBoundingClientRect();
+              const focalX = rect.left + rect.width * 0.52;
+              const focalY = rect.top + rect.height * 0.46;
+
+              return {
+                x: window.innerWidth / 2 - focalX,
+                y: window.innerHeight / 2 - focalY,
+              };
+            };
+
+            const getWorldCounterScale = () => 1 / getPortalCoverScale();
+
+            gsap.set(portalFrame, {
+              transformOrigin: "52% 46%",
+              "--portal-border-alpha": 0.78,
+              "--portal-shadow-alpha": 1,
+              "--portal-glass-alpha": 0.055,
+              "--portal-radius": "34px",
+              "--portal-inner-radius": "24px",
+              "--portal-inset": "10px",
+            });
+            gsap.set(portalWorld, {
+              xPercent: -50,
+              yPercent: -50,
+              x: 0,
+              scale: 0.34,
+              transformOrigin: "52% 46%",
+            });
+            gsap.set([".world-content", ".world-profile"], { autoAlpha: 0.32 });
+            gsap.set(".bridge-label", { autoAlpha: 0.22 });
+
             const heroTimeline = gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: heroStage,
                 start: "top top",
-                end: "+=280%",
-                scrub: 1.15,
+                end: "+=580%",
+                scrub: 1.2,
                 pin: heroWorld,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
@@ -63,21 +103,50 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
             });
 
             heroTimeline
-              .fromTo(".distant-world", { scale: 0.72, y: 44, autoAlpha: 0.5 }, { scale: 1.85, y: -86, autoAlpha: 0.72, duration: 0.56 }, 0)
-              .to(".distant-world", { autoAlpha: 0, filter: "blur(8px)", duration: 0.24 }, 0.66)
-              .fromTo(".portal-frame", { scale: 0.72, y: 38 }, { scale: 1.82, y: -28, duration: 0.9 }, 0.05)
-              .to(".portal-frame", { borderRadius: 20, duration: 0.54 }, 0.42)
-              .to(".portal-image img", { scale: 1.13, duration: 0.9 }, 0.1)
-              .to(".hero-copy", { y: -126, autoAlpha: 0, filter: "blur(7px)", duration: 0.42 }, 0.08)
+              .fromTo(".distant-world", { scale: 0.72, y: 44, autoAlpha: 0.5 }, { scale: 1.7, y: -72, autoAlpha: 0.66, duration: 0.38 }, 0)
+              .to(".distant-world", { scale: 2.1, autoAlpha: 0, filter: "blur(8px)", duration: 0.24 }, 0.48)
+              .fromTo(portalFrame, { scale: 0.68, x: 0, y: 38 }, {
+                scale: () => getPortalCoverScale() * 0.45,
+                x: () => getPortalTranslate().x * 0.34,
+                y: () => getPortalTranslate().y * 0.34,
+                duration: 0.32,
+              }, 0.1)
+              .to(portalFrame, {
+                scale: getPortalCoverScale,
+                x: () => getPortalTranslate().x,
+                y: () => getPortalTranslate().y,
+                "--portal-radius": "0px",
+                "--portal-inner-radius": "0px",
+                "--portal-inset": "0px",
+                "--portal-border-alpha": 0,
+                "--portal-shadow-alpha": 0,
+                "--portal-glass-alpha": 0,
+                duration: 0.34,
+              }, 0.43)
+              .to(portalFrame, {
+                scale: () => getPortalCoverScale() * 1.08,
+                duration: 0.22,
+              }, 0.76)
+              .to(portalWorld, { scale: getWorldCounterScale, x: () => -window.innerWidth * 0.027, duration: 0.7 }, 0.1)
+              .to(portalWorld, { borderRadius: 0, duration: 0.26 }, 0.5)
+              .to(".world-far-background", { scale: 1.12, x: -24, y: 18, duration: 1 }, 0)
+              .to(".world-grid", { scale: 1.18, y: -42, duration: 1 }, 0)
+              .to(".world-object-left", { x: -96, y: -70, scale: 1.2, autoAlpha: 0.42, duration: 0.72 }, 0.18)
+              .to(".world-object-right", { x: 86, y: 56, scale: 1.16, autoAlpha: 0.44, duration: 0.72 }, 0.2)
+              .to([".world-content", ".world-profile"], { autoAlpha: 1, duration: 0.24 }, 0.48)
+              .to(".world-content", { x: -16, y: -18, scale: 1.025, duration: 0.28 }, 0.76)
+              .to(".world-profile", { x: 18, y: -16, scale: 1.035, duration: 0.28 }, 0.76)
+              .to(".hero-copy", { y: -90, autoAlpha: 0.18, filter: "blur(5px)", duration: 0.4 }, 0.1)
+              .to(".hero-copy", { autoAlpha: 0, duration: 0.18 }, 0.5)
               .to(".entry-hint", { y: -40, autoAlpha: 0, duration: 0.22 }, 0.08)
-              .to(".foreground-word.left", { xPercent: -55, y: -42, autoAlpha: 0.22, duration: 0.5 }, 0)
-              .to(".foreground-word.right", { xPercent: 56, y: 52, autoAlpha: 0.2, duration: 0.5 }, 0)
-              .to(".floating-card.frontend", { x: -150, y: -88, scale: 1.18, autoAlpha: 0.7, duration: 0.7 }, 0.06)
-              .to(".floating-card.webgis", { x: 128, y: -118, scale: 1.12, autoAlpha: 0.6, duration: 0.7 }, 0.08)
-              .to(".floating-card.systems", { x: -100, y: 120, scale: 1.1, autoAlpha: 0.52, duration: 0.72 }, 0.12)
-              .to(".floating-card.interaction", { x: 142, y: 102, scale: 1.16, autoAlpha: 0.56, duration: 0.72 }, 0.14)
-              .fromTo(".portal-intro", { y: 70, autoAlpha: 0, scale: 0.92 }, { y: 0, autoAlpha: 1, scale: 1, duration: 0.32 }, 0.7)
-              .to(".hero-world", { scale: 1.035, duration: 1 }, 0);
+              .to(".foreground-word.left", { xPercent: -62, y: -42, autoAlpha: 0.18, duration: 0.48 }, 0)
+              .to(".foreground-word.right", { xPercent: 62, y: 52, autoAlpha: 0.16, duration: 0.48 }, 0)
+              .to(".floating-card.frontend", { x: -170, y: -96, scale: 1.18, autoAlpha: 0.42, duration: 0.56 }, 0.08)
+              .to(".floating-card.webgis", { x: 72, y: -10, scale: 0.92, autoAlpha: 0, duration: 0.46 }, 0.14)
+              .to(".floating-card.systems", { x: -120, y: 120, scale: 1.1, autoAlpha: 0.34, duration: 0.58 }, 0.12)
+              .to(".floating-card.interaction", { x: 152, y: 102, scale: 1.16, autoAlpha: 0.32, duration: 0.58 }, 0.14)
+              .to(".bridge-label", { autoAlpha: 1, scale: 1.05, duration: 0.26 }, 0.48)
+              .to(".hero-world", { scale: 1.015, duration: 1 }, 0);
           }
 
           const aboutTimeline = gsap.timeline({

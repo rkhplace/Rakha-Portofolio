@@ -711,13 +711,29 @@ function App() {
           </motion.div>
 
             <aside className="portal-frame" aria-label="Rakha profile portal">
-              <div className="portal-image reveal-image">
-                <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
-              </div>
-              <div className="portal-intro">
-                <span>Bandung, Indonesia</span>
-                <strong>Muhammad Rakha Pratama</strong>
-                <p>Clean frontend interfaces, GitHub-backed projects, and practical product systems.</p>
+              <div className="portal-viewport">
+                <div className="portal-world">
+                  <div className="world-far-background" aria-hidden="true" />
+                  <div className="world-grid" aria-hidden="true" />
+                  <div className="world-object world-object-left" aria-hidden="true" />
+                  <div className="world-object world-object-right" aria-hidden="true" />
+                  <div className="world-content">
+                    <span className="eyebrow">Inside the world</span>
+                    <h2>I build interfaces that turn complex systems into clear digital experiences.</h2>
+                    <p>
+                      Informatics student from Bandung working across frontend interfaces,
+                      information systems, AI workflows, cloud deployment, and WebGIS exploration.
+                    </p>
+                    <div className="world-labels" aria-label="Focus areas">
+                      <span className="world-label bridge-label">WebGIS</span>
+                      <span className="world-label">Interactive UI</span>
+                      <span className="world-label">Information Systems</span>
+                    </div>
+                  </div>
+                  <div className="world-profile reveal-image">
+                    <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
+                  </div>
+                </div>
               </div>
             </aside>
             <span className="entry-hint" aria-hidden="true">Scroll to explore</span>
@@ -725,27 +741,28 @@ function App() {
           </div>
         </section>
 
-        <motion.section
-          className="ticker"
-          aria-label="Core skills"
-          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-        >
-          <div className="ticker-track">
-            {[0, 1, 2].map((group) => (
-              <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
-                {techStack.map((tech) => (
-                  <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
-                    <img src={tech.logo} alt="" aria-hidden="true" />
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </motion.section>
+        <div className="digital-world">
+          <motion.section
+            className="ticker"
+            aria-label="Core skills"
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          >
+            <div className="ticker-track">
+              {[0, 1, 2].map((group) => (
+                <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
+                  {techStack.map((tech) => (
+                    <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
+                      <img src={tech.logo} alt="" aria-hidden="true" />
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </motion.section>
 
-        <section id="about" className="section-shell about about-story">
+          <section id="about" className="section-shell about about-story">
           <div className="about-sticky">
             <span className="eyebrow">About</span>
             <h2>I turn complex ideas into interfaces that feel clear, responsive, and alive.</h2>
@@ -786,9 +803,9 @@ function App() {
               ))}
             </motion.div>
           </motion.div>
-        </section>
+          </section>
 
-        <AnimatedSection id="services" className="section-shell services">
+          <AnimatedSection id="services" className="section-shell services">
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Skills</span>
@@ -825,9 +842,9 @@ function App() {
               </motion.article>
             ))}
           </motion.div>
-        </AnimatedSection>
+          </AnimatedSection>
 
-        <section id="portfolio" className="portfolio">
+          <section id="portfolio" className="portfolio">
           <div className="section-heading split">
             <div>
               <span className="eyebrow">Selected work</span>
@@ -851,7 +868,8 @@ function App() {
           ) : (
             <ProjectStoryRail projects={featuredProjects} onSelect={setSelectedProject} />
           )}
-        </section>
+          </section>
+        </div>
 
         <AnimatedSection id="experience" className="section-shell timeline-section">
           <div className="section-heading split">
@@ -940,7 +958,10 @@ function ProjectStoryRail({ projects, onSelect }) {
       const viewportWidth = viewportRef.current.offsetWidth;
       const trackWidth = trackRef.current.scrollWidth;
       const nextTravel = Math.max(0, trackWidth - viewportWidth);
-      setScrollHeight(Math.max(window.innerHeight * 1.15, nextTravel + window.innerHeight + stickyOffset));
+      const releaseBuffer = Math.min(72, Math.max(42, window.innerHeight * 0.08));
+      setScrollHeight(
+        Math.max(window.innerHeight * 1.08, nextTravel + window.innerHeight - stickyOffset + releaseBuffer),
+      );
     };
 
     measure();
