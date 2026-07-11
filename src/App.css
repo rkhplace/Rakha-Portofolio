@@ -125,6 +125,21 @@ body::after {
   will-change: top, left;
 }
 
+.cursor-glow::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.72);
+  box-shadow:
+    0 0 0 5px rgba(255, 255, 255, 0.18),
+    0 4px 14px rgba(17, 17, 17, 0.16);
+  transform: translate(-50%, -50%);
+}
+
 .cursor-shadow-trail span {
   position: fixed;
   top: var(--trail-y, var(--cursor-y, 20vh));
@@ -254,17 +269,12 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  border: 1px solid var(--glass-border);
+  border: 1px solid transparent;
   border-radius: 999px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.2)),
-    rgba(255, 255, 255, 0.3);
+  background: transparent;
   padding: 6px 14px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.92),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.45),
-    0 20px 62px rgba(17, 17, 17, 0.13);
-  backdrop-filter: blur(34px) saturate(160%);
+  box-shadow: none;
+  backdrop-filter: blur(0);
   will-change: top, width, min-height, padding, border-radius, background, box-shadow;
   transition:
     top 260ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -280,10 +290,10 @@ textarea {
 
 .site-header.scrolled {
   top: 8px;
-  width: min(1120px, calc(100% - 28px));
+  width: min(1080px, calc(100% - 28px));
   min-height: 54px;
   border-color: rgba(255, 255, 255, 0.72);
-  border-radius: 30px;
+  border-radius: 999px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.28)),
     rgba(255, 255, 255, 0.42);
@@ -369,6 +379,297 @@ textarea {
   margin: 0 auto;
 }
 
+.hero-stage {
+  position: relative;
+  min-height: 100vh;
+  padding-top: 82px;
+  scroll-margin-top: 0;
+}
+
+.hero-world {
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  width: min(1220px, calc(100% - 48px));
+  min-height: min(600px, calc(100vh - 134px));
+  grid-template-columns: minmax(0, 0.96fr) minmax(360px, 0.74fr);
+  align-items: center;
+  gap: clamp(24px, 3.5vw, 48px);
+  padding: clamp(24px, 3.4vw, 48px) clamp(28px, 4.2vw, 58px);
+  border: 1px solid var(--glass-border);
+  border-radius: 44px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.055) 58%, rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at 64% 45%, rgba(17, 17, 17, 0.06), transparent 34%),
+    rgba(255, 255, 255, 0.045);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    inset 1px 0 0 rgba(255, 255, 255, 0.7),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.38),
+    0 34px 104px rgba(17, 17, 17, 0.16);
+  backdrop-filter: blur(42px) saturate(180%) contrast(1.04);
+  perspective: 1200px;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.hero-world::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  z-index: 0;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 36px;
+  pointer-events: none;
+}
+
+.hero-world::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background:
+    linear-gradient(118deg, transparent 0%, rgba(255, 255, 255, 0.13) 24%, transparent 38%, rgba(255, 255, 255, 0.19) 54%, transparent 70%),
+    radial-gradient(circle at 18% 14%, rgba(255, 255, 255, 0.22), transparent 24%);
+  opacity: 0.58;
+  pointer-events: none;
+}
+
+.hero-world > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-world .background-streaks,
+.distant-world,
+.foreground-word,
+.floating-card,
+.entry-hint,
+.scroll-indicator {
+  position: absolute;
+}
+
+.distant-world {
+  inset: 12% 23% 10% 33%;
+  z-index: 0;
+  opacity: 0.5;
+  transform-origin: center;
+  will-change: transform, opacity, filter;
+}
+
+.distant-world span {
+  position: absolute;
+  border: 1px solid rgba(17, 17, 17, 0.08);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 18px 46px rgba(17, 17, 17, 0.09);
+}
+
+.distant-world span:nth-child(1) {
+  inset: 8% 36% 42% 0;
+}
+
+.distant-world span:nth-child(2) {
+  inset: 0 0 50% 48%;
+}
+
+.distant-world span:nth-child(3) {
+  inset: 46% 22% 0 18%;
+}
+
+.distant-world span:nth-child(4) {
+  inset: 36% 0 12% 62%;
+}
+
+.foreground-word {
+  z-index: 1;
+  color: rgba(17, 17, 17, 0.05);
+  font-size: clamp(5rem, 12vw, 12rem);
+  font-weight: 820;
+  line-height: 0.8;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.foreground-word.left {
+  left: -2.5vw;
+  top: 7%;
+}
+
+.foreground-word.right {
+  right: -4vw;
+  bottom: 8%;
+}
+
+.floating-card {
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.66);
+  border-radius: 999px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.18)),
+    rgba(255, 255, 255, 0.2);
+  padding: 0 18px;
+  color: #404548;
+  font-size: 0.82rem;
+  font-weight: 720;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 12px 28px rgba(17, 17, 17, 0.1);
+  backdrop-filter: blur(22px) saturate(160%);
+  will-change: transform, opacity;
+}
+
+.floating-card.frontend {
+  top: 18%;
+  left: 48%;
+}
+
+.floating-card.webgis {
+  top: 42%;
+  left: 39%;
+}
+
+.floating-card.systems {
+  right: 7%;
+  top: 22%;
+}
+
+.floating-card.interaction {
+  right: 6%;
+  bottom: 18%;
+}
+
+.hero-stage .hero-copy {
+  grid-column: 1;
+  max-width: 690px;
+  will-change: transform, opacity, filter;
+}
+
+.hero-stage .hero-copy h1 {
+  max-width: 760px;
+  font-size: clamp(2.85rem, 4.55vw, 5.15rem);
+  font-weight: 690;
+  letter-spacing: -0.045em;
+}
+
+.hero-stage .hero-copy p {
+  max-width: 640px;
+  color: #525557;
+}
+
+.portal-frame {
+  position: relative;
+  grid-column: 2;
+  justify-self: end;
+  width: min(100%, 465px);
+  padding: 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 34px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.07)),
+    rgba(255, 255, 255, 0.055);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.96),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.36),
+    0 26px 82px rgba(17, 17, 17, 0.2);
+  backdrop-filter: blur(36px) saturate(170%);
+  transform-origin: center;
+  transform-style: preserve-3d;
+  will-change: transform, border-radius;
+}
+
+.portal-frame::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  z-index: 2;
+  border-radius: 26px;
+  background:
+    linear-gradient(118deg, rgba(255, 255, 255, 0.16), transparent 30%, rgba(255, 255, 255, 0.12) 52%, transparent 66%);
+  pointer-events: none;
+}
+
+.portal-image {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 24px;
+  background: #d8d2c8;
+}
+
+.portal-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 2.85;
+  object-fit: cover;
+  object-position: 63% center;
+  filter: saturate(0.92) contrast(1.04);
+  transform-origin: center;
+  will-change: transform;
+}
+
+.portal-intro {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  bottom: 24px;
+  z-index: 3;
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.76), rgba(238, 238, 236, 0.42)),
+    rgba(255, 255, 255, 0.46);
+  padding: 15px 16px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 18px 42px rgba(17, 17, 17, 0.14);
+  backdrop-filter: blur(22px) saturate(150%);
+  opacity: 0;
+}
+
+.portal-intro span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.portal-intro strong {
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.portal-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.entry-hint {
+  left: clamp(28px, 4vw, 64px);
+  bottom: 28px;
+  z-index: 2;
+  color: rgba(17, 17, 17, 0.5);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
 .hero {
   display: grid;
   position: relative;
@@ -390,6 +691,10 @@ textarea {
     inset 0 -1px 0 rgba(255, 255, 255, 0.36),
     0 28px 88px rgba(17, 17, 17, 0.15);
   backdrop-filter: blur(46px) saturate(190%) contrast(1.05);
+  transform-origin: center 42%;
+  transform-style: preserve-3d;
+  perspective: 1200px;
+  will-change: transform, border-radius;
 }
 
 .hero-orbit {
@@ -406,6 +711,8 @@ textarea {
   filter: blur(8px);
   opacity: 0.56;
   pointer-events: none;
+  transform-origin: center;
+  will-change: transform;
 }
 
 .background-streaks {
@@ -506,6 +813,8 @@ textarea {
 .hero .background-streaks {
   position: absolute;
   z-index: 0;
+  transform-origin: center;
+  will-change: transform;
 }
 
 .hero .hero-orbit,
@@ -517,11 +826,15 @@ textarea {
   grid-column: 1;
   position: relative;
   z-index: 2;
+  will-change: transform, opacity;
 }
 
 .hero-panel {
   grid-column: 2;
   z-index: 2;
+  transform-origin: center;
+  will-change: transform;
+  transform-style: preserve-3d;
 }
 
 .hero-copy h1,
@@ -700,6 +1013,8 @@ textarea {
   object-fit: cover;
   object-position: 63% center;
   filter: saturate(0.92) contrast(1.04);
+  transform-origin: center;
+  will-change: transform;
 }
 
 .scroll-indicator {
@@ -1164,12 +1479,15 @@ textarea {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
+  perspective: 1100px;
 }
 
 .service-card {
-  min-height: 230px;
+  min-height: 218px;
   border-radius: var(--radius-md);
   padding: 22px;
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
 }
 
 .service-card svg,
@@ -1227,8 +1545,8 @@ textarea {
   top: 86px;
   display: grid;
   min-height: calc(100vh - 106px);
-  align-items: center;
-  grid-template-rows: auto 1fr;
+  align-content: center;
+  grid-template-rows: auto auto;
   gap: 12px;
   overflow: hidden;
 }
@@ -1265,23 +1583,24 @@ textarea {
 
 .project-story-viewport {
   position: relative;
+  align-self: center;
   overflow: hidden;
   width: 100%;
   border-radius: 34px;
-  padding: 14px 12px 16px;
+  padding: 12px 12px 16px;
 }
 
 .project-story-viewport::before,
 .project-story-viewport::after {
   content: "";
   position: absolute;
-  top: -18px;
-  bottom: -18px;
+  top: -36px;
+  bottom: -36px;
   z-index: 3;
-  width: clamp(130px, 16vw, 230px);
+  width: clamp(150px, 18vw, 260px);
   pointer-events: none;
-  filter: blur(10px);
-  opacity: 0.78;
+  filter: blur(22px);
+  opacity: 0.74;
 }
 
 .project-story-viewport::before {
@@ -1305,6 +1624,7 @@ textarea {
   width: max-content;
   gap: 16px;
   align-items: stretch;
+  transform-origin: center;
   will-change: transform;
 }
 
@@ -1349,18 +1669,19 @@ textarea {
 .project-card {
   position: relative;
   display: flex;
-  min-height: clamp(430px, calc(100vh - 198px), 500px);
-  flex: 0 0 min(570px, calc(100vw - 112px));
+  min-height: clamp(380px, calc(100vh - 230px), 452px);
+  flex: 0 0 min(520px, calc(100vw - 132px));
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
   border-radius: 28px;
-  padding: 22px;
+  padding: 20px;
   background:
     radial-gradient(circle at 78% 6%, rgba(17, 17, 17, 0.08), transparent 26%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08) 46%, rgba(255, 255, 255, 0.035)),
     rgba(255, 255, 255, 0.055);
   transition: transform 180ms var(--ease-out), border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  will-change: transform;
 }
 
 .featured-grid .project-card {
@@ -1386,11 +1707,11 @@ textarea {
 
 .project-number {
   position: absolute;
-  top: -22px;
+  top: -18px;
   right: 16px;
   z-index: 0;
   color: rgba(17, 17, 17, 0.065);
-  font-size: clamp(5.8rem, 10vw, 8.8rem);
+  font-size: clamp(4.8rem, 8.6vw, 7.4rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: -0.08em;
@@ -1399,8 +1720,8 @@ textarea {
 
 .project-icon {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 14px;
@@ -1449,7 +1770,7 @@ textarea {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin: 16px 0 0;
+  margin: 14px 0 0;
 }
 
 .project-meta-grid div {
@@ -1782,30 +2103,42 @@ footer a {
 }
 
 @media (max-width: 980px) {
-  .hero,
+  .hero-world,
   .about-grid,
   .about-story,
   .contact {
     grid-template-columns: 1fr;
   }
 
-  .hero {
+  .hero-stage {
+    min-height: auto;
+    padding-top: 84px;
+  }
+
+  .hero-world {
+    min-height: auto;
     gap: 28px;
     padding: 34px 30px;
     grid-template-columns: 1fr;
   }
 
-  .hero-copy,
-  .hero-panel,
+  .hero-stage .hero-copy,
+  .portal-frame,
   .contact > div:not(.contact-card):not(.background-streaks),
   .contact-card {
     grid-column: 1;
   }
 
-  .hero-panel {
+  .portal-frame {
     width: 100%;
     max-width: 620px;
     justify-self: center;
+  }
+
+  .floating-card,
+  .foreground-word,
+  .distant-world {
+    display: none;
   }
 
   .about-sticky {
@@ -1938,29 +2271,42 @@ footer a {
     width: min(100% - 28px, 1180px);
   }
 
-  .hero {
+  .hero-stage {
+    padding-top: 76px;
+  }
+
+  .hero-world {
     min-height: auto;
-    margin-top: 82px;
     padding: 24px 18px;
     border-radius: 30px;
+    transform: none !important;
   }
 
-  .hero-orbit,
-  .scroll-indicator {
-    display: none;
-  }
-
-  .hero::before {
+  .hero-world::before {
     inset: 7px;
     border-radius: 24px;
   }
 
-  .hero-copy h1 {
+  .hero-stage .hero-copy,
+  .portal-frame,
+  .hero-world .background-streaks,
+  .ticker,
+  .portal-image img {
+    transform: none !important;
+  }
+
+  .hero-orbit,
+  .entry-hint,
+  .scroll-indicator {
+    display: none;
+  }
+
+  .hero-stage .hero-copy h1 {
     font-size: clamp(2.3rem, 11.5vw, 3.25rem);
     letter-spacing: -0.04em;
   }
 
-  .hero-copy p {
+  .hero-stage .hero-copy p {
     font-size: 0.96rem;
   }
 
@@ -1968,18 +2314,27 @@ footer a {
     letter-spacing: 0.2em;
   }
 
-  .hero-panel {
+  .portal-frame {
     padding: 8px;
     border-radius: 26px;
   }
 
-  .portrait-wrap {
+  .portal-image {
     border-radius: 20px;
   }
 
-  .portrait-wrap img {
+  .portal-image img {
     aspect-ratio: 4 / 3.35;
     object-position: 62% center;
+  }
+
+  .portal-intro {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    margin-top: 10px;
+    opacity: 1;
   }
 
   .hero-actions,
@@ -2119,9 +2474,19 @@ footer a {
   }
 }
 
+@media (pointer: coarse) {
+  .cursor-effect {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .cursor-effect {
+    display: none;
   }
 
   *,

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
+import { MotionConfig, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -46,6 +46,7 @@ import reactLogo from "../images/tech/react.svg";
 import typescriptLogo from "../images/tech/typescript.svg";
 import vercelLogo from "../images/tech/vercel.svg";
 import viteLogo from "../images/tech/vite.svg";
+import { useCinematicScroll } from "./hooks/useCinematicScroll";
 
 const navItems = [
   ["Home", "#home"],
@@ -423,20 +424,6 @@ const formatProjectDate = (dateValue) => {
 
 function App() {
   const reduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll();
-  const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 82,
-    damping: 28,
-    mass: 0.28,
-  });
-  const heroCopyY = useTransform(smoothScroll, [0, 0.34], [0, 42]);
-  const heroCopyOpacity = useTransform(smoothScroll, [0, 0.28], [1, 0.9]);
-  const heroPanelY = useTransform(smoothScroll, [0, 0.34], [0, -58]);
-  const heroPanelScale = useTransform(smoothScroll, [0, 0.34], [1, 0.97]);
-  const heroStreakY = useTransform(smoothScroll, [0, 0.34], [0, 74]);
-  const heroOrbitX = useTransform(smoothScroll, [0, 0.34], [0, -46]);
-  const heroOrbitY = useTransform(smoothScroll, [0, 0.34], [0, 34]);
-  const tickerY = useTransform(smoothScroll, [0, 0.3], [0, -18]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [activeSection, setActiveSection] = useState("Home");
@@ -447,6 +434,11 @@ function App() {
     () => (githubProjects.length > 0 ? githubProjects : fallbackProjects),
     [githubProjects],
   );
+
+  useCinematicScroll({
+    enabled: !reduceMotion,
+    refreshKey: `${projectsLoading}-${featuredProjects.length}`,
+  });
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -625,7 +617,7 @@ function App() {
   }, [selectedProject]);
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <header className={isScrolled ? "site-header scrolled" : "site-header"}>
         <a className="brand" href="#home" onClick={closeMenu}>
           <img className="brand-mark" src={logoImage} alt="Rakha logo" />
@@ -662,41 +654,44 @@ function App() {
       </div>
 
       <main>
-        <section id="home" className="hero section-shell">
-          <BackgroundStreaks
-            className="hero-streaks"
-            style={reduceMotion ? undefined : { y: heroStreakY }}
-          />
-          <motion.div
-            className="hero-orbit"
-            aria-hidden="true"
-            style={reduceMotion ? undefined : { x: heroOrbitX, y: heroOrbitY }}
-          />
+        <section id="home" className="hero-stage">
+          <div className="hero-world section-shell">
+            <BackgroundStreaks className="hero-streaks" />
+            <div className="distant-world" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="foreground-word left" aria-hidden="true">01</div>
+            <div className="foreground-word right" aria-hidden="true">World</div>
+            <span className="floating-card frontend">Frontend</span>
+            <span className="floating-card webgis">WebGIS</span>
+            <span className="floating-card systems">Information Systems</span>
+            <span className="floating-card interaction">Interactive UI</span>
           <motion.div
             className="hero-copy"
             initial={reduceMotion ? false : "hidden"}
             animate="visible"
             variants={staggerVariants}
-            style={reduceMotion ? undefined : { y: heroCopyY, opacity: heroCopyOpacity }}
           >
             <motion.span className="eyebrow" variants={fadeUpVariants}>
-              Frontend Engineer
+              Portfolio / 2026
             </motion.span>
             <motion.h1 className="masked-title" variants={fadeUpVariants}>
-              <span>Muhammad Rakha</span>
-              <span>Pratama</span>
+              <span>Building thoughtful</span>
+              <span>digital experiences.</span>
             </motion.h1>
             <motion.p variants={fadeUpVariants}>
-              Informatics student focused on clean frontend interfaces,
-              full-stack product building, AI workflows, and geospatial-ready
-              digital experiences.
+              Muhammad Rakha Pratama - Frontend Developer exploring
+              interactive web, information systems, and geospatial experiences.
             </motion.p>
             <motion.div className="hero-actions" variants={fadeUpVariants}>
-              <a className="button primary" href="#portfolio">
-                View projects <ArrowUpRight size={17} />
+              <a className="button primary magnetic-target" href="#about">
+                Enter my world <ArrowUpRight size={17} />
               </a>
-              <a className="button ghost" href="#about">
-                About me <ArrowUpRight size={17} />
+              <a className="button ghost magnetic-target" href="#portfolio">
+                View projects <ArrowUpRight size={17} />
               </a>
             </motion.div>
             <motion.div className="hero-proof" variants={fadeUpVariants} aria-label="Portfolio summary">
@@ -715,18 +710,19 @@ function App() {
             </motion.div>
           </motion.div>
 
-          <motion.aside
-            className="hero-panel"
-            initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.16 }}
-            style={reduceMotion ? undefined : { y: heroPanelY, scale: heroPanelScale }}
-          >
-            <div className="portrait-wrap reveal-image">
-              <img src={profileImage} alt="Muhammad Rakha Pratama" />
-            </div>
-          </motion.aside>
-          <span className="scroll-indicator" aria-hidden="true">Scroll</span>
+            <aside className="portal-frame" aria-label="Rakha profile portal">
+              <div className="portal-image reveal-image">
+                <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
+              </div>
+              <div className="portal-intro">
+                <span>Bandung, Indonesia</span>
+                <strong>Muhammad Rakha Pratama</strong>
+                <p>Clean frontend interfaces, GitHub-backed projects, and practical product systems.</p>
+              </div>
+            </aside>
+            <span className="entry-hint" aria-hidden="true">Scroll to explore</span>
+            <span className="scroll-indicator" aria-hidden="true">Scroll</span>
+          </div>
         </section>
 
         <motion.section
@@ -735,7 +731,6 @@ function App() {
           initial={reduceMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          style={reduceMotion ? undefined : { y: tickerY }}
         >
           <div className="ticker-track">
             {[0, 1, 2].map((group) => (
@@ -753,7 +748,7 @@ function App() {
         <section id="about" className="section-shell about about-story">
           <div className="about-sticky">
             <span className="eyebrow">About</span>
-            <h2>I build practical software projects and keep improving the details.</h2>
+            <h2>I turn complex ideas into interfaces that feel clear, responsive, and alive.</h2>
             <div className="about-progress" aria-hidden="true">
               <span className="about-progress-bar" />
             </div>
@@ -889,10 +884,10 @@ function App() {
           <BackgroundStreaks className="contact-streaks" />
           <div>
             <span className="eyebrow">Contact</span>
-            <h2>Have an idea worth building?</h2>
+            <h2>Let's build something meaningful.</h2>
             <p className="contact-lede">
-              I am open to collaboration, internship conversations, and practical
-              product work that benefits from clean interfaces and clear systems.
+              Have a project, an opportunity, or an idea worth exploring?
+              I am open to collaboration, internship conversations, and practical product work.
             </p>
           </div>
           <div className="contact-card">
@@ -901,6 +896,9 @@ function App() {
             </a>
             <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noreferrer">
               <Linkedin size={18} /> LinkedIn
+            </a>
+            <a href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
+              <Github size={18} /> GitHub
             </a>
             <a href="https://www.instagram.com/rkhap_/" target="_blank" rel="noreferrer">
               <Instagram size={18} /> Instagram
@@ -920,7 +918,7 @@ function App() {
       {selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
-    </>
+    </MotionConfig>
   );
 }
 
@@ -929,23 +927,10 @@ function ProjectStoryRail({ projects, onSelect }) {
   const sectionRef = useRef(null);
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
-  const [travelDistance, setTravelDistance] = useState(0);
   const [scrollHeight, setScrollHeight] = useState(1120);
-  const railProgress = useMotionValue(0);
-  const x = useTransform(railProgress, [0, 1], [0, -travelDistance]);
 
   useEffect(() => {
     const stickyOffset = 86;
-
-    const updateProgress = (distance = travelDistance) => {
-      if (!sectionRef.current) {
-        return;
-      }
-
-      const start = sectionRef.current.offsetTop - stickyOffset;
-      const nextProgress = distance > 0 ? (window.scrollY - start) / distance : 0;
-      railProgress.set(Math.min(1, Math.max(0, nextProgress)));
-    };
 
     const measure = () => {
       if (!viewportRef.current || !trackRef.current) {
@@ -955,9 +940,7 @@ function ProjectStoryRail({ projects, onSelect }) {
       const viewportWidth = viewportRef.current.offsetWidth;
       const trackWidth = trackRef.current.scrollWidth;
       const nextTravel = Math.max(0, trackWidth - viewportWidth);
-      setTravelDistance(nextTravel);
-      setScrollHeight(Math.max(window.innerHeight, nextTravel + window.innerHeight - stickyOffset));
-      updateProgress(nextTravel);
+      setScrollHeight(Math.max(window.innerHeight * 1.15, nextTravel + window.innerHeight + stickyOffset));
     };
 
     measure();
@@ -971,17 +954,13 @@ function ProjectStoryRail({ projects, onSelect }) {
       resizeObserver.observe(trackRef.current);
     }
 
-    const handleScroll = () => updateProgress();
-
     window.addEventListener("resize", measure, { passive: true });
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       resizeObserver.disconnect();
       window.removeEventListener("resize", measure);
-      window.removeEventListener("scroll", handleScroll);
     };
-  }, [projects.length, railProgress, travelDistance]);
+  }, [projects.length]);
 
   return (
     <section
@@ -994,14 +973,13 @@ function ProjectStoryRail({ projects, onSelect }) {
         <div className="project-story-status" aria-hidden="true">
           <span>Scroll case studies</span>
           <div>
-            <motion.i style={reduceMotion ? undefined : { scaleX: railProgress }} />
+            <i />
           </div>
         </div>
         <div className="project-story-viewport" ref={viewportRef}>
           <motion.div
             ref={trackRef}
             className="project-story-track"
-            style={reduceMotion ? undefined : { x }}
           >
             {projects.map((project, index) => (
               <ProjectCard
