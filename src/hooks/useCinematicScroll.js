@@ -88,14 +88,17 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
             });
             gsap.set([".world-content", ".world-profile"], { autoAlpha: 0.32 });
             gsap.set(".bridge-label", { autoAlpha: 0.22 });
+            gsap.set([".world-tech-corridor", ".world-identity-chamber", ".world-capability-corridor", ".world-project-entry"], { autoAlpha: 0 });
+            gsap.set(".world-tech-node", { autoAlpha: 0, y: 34, scale: 0.72, filter: "blur(2px)" });
+            gsap.set([".world-identity-card", ".world-capability-card"], { autoAlpha: 0, y: 44, scale: 0.88 });
 
             const heroTimeline = gsap.timeline({
               defaults: { ease: "none" },
               scrollTrigger: {
                 trigger: heroStage,
                 start: "top top",
-                end: "+=580%",
-                scrub: 1.2,
+                end: "+=760%",
+                scrub: 1.28,
                 pin: heroWorld,
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
@@ -103,6 +106,15 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
             });
 
             heroTimeline
+              .addLabel("heroIdle", 0)
+              .addLabel("portalApproach", 0.12)
+              .addLabel("portalExpansion", 0.35)
+              .addLabel("frameCrossing", 0.55)
+              .addLabel("worldArrival", 0.68)
+              .addLabel("introductionReveal", 0.8)
+              .addLabel("identityExploration", 1.05)
+              .addLabel("capabilityTransition", 1.34)
+              .addLabel("projectEntry", 1.68)
               .fromTo(".distant-world", { scale: 0.72, y: 44, autoAlpha: 0.5 }, { scale: 1.7, y: -72, autoAlpha: 0.66, duration: 0.38 }, 0)
               .to(".distant-world", { scale: 2.1, autoAlpha: 0, filter: "blur(8px)", duration: 0.24 }, 0.48)
               .fromTo(portalFrame, { scale: 0.68, x: 0, y: 38 }, {
@@ -130,12 +142,73 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
               .to(portalWorld, { scale: getWorldCounterScale, x: () => -window.innerWidth * 0.027, duration: 0.7 }, 0.1)
               .to(portalWorld, { borderRadius: 0, duration: 0.26 }, 0.5)
               .to(".world-far-background", { scale: 1.12, x: -24, y: 18, duration: 1 }, 0)
-              .to(".world-grid", { scale: 1.18, y: -42, duration: 1 }, 0)
+              .to(".world-grid", { scale: 1.18, y: -42, duration: 1.08 }, 0)
+              .to(".world-perspective-path", { scale: 1.22, y: -36, autoAlpha: 0.72, duration: 1.1 }, 0)
+              .to(".world-typography", { x: -70, y: -24, scale: 0.96, autoAlpha: 0.62, duration: 1.15 }, 0.18)
               .to(".world-object-left", { x: -96, y: -70, scale: 1.2, autoAlpha: 0.42, duration: 0.72 }, 0.18)
               .to(".world-object-right", { x: 86, y: 56, scale: 1.16, autoAlpha: 0.44, duration: 0.72 }, 0.2)
               .to([".world-content", ".world-profile"], { autoAlpha: 1, duration: 0.24 }, 0.48)
               .to(".world-content", { x: -16, y: -18, scale: 1.025, duration: 0.28 }, 0.76)
               .to(".world-profile", { x: 18, y: -16, scale: 1.035, duration: 0.28 }, 0.76)
+              .to(".world-tech-corridor", { autoAlpha: 1, duration: 0.18 }, "introductionReveal")
+              .to(".world-tech-node", {
+                autoAlpha: (index) => (index > 7 ? 0.58 : 0.92),
+                y: (index) => (index % 3 === 0 ? -16 : 0),
+                x: (index) => (index % 2 === 0 ? -18 : 22),
+                scale: (index) => (index < 4 ? 1 : 0.82),
+                filter: "blur(0px)",
+                stagger: 0.018,
+                duration: 0.28,
+              }, "introductionReveal+=0.02")
+              .to(".world-tech-corridor", { autoAlpha: 0.28, duration: 0.28 }, "identityExploration")
+              .to(".world-content", { x: -124, y: -82, scale: 0.66, autoAlpha: 0.22, duration: 0.34 }, "identityExploration")
+              .to(".world-profile", { x: 126, y: 72, scale: 0.72, autoAlpha: 0.34, duration: 0.34 }, "identityExploration")
+              .to(".world-label", { y: -26, scale: 0.92, autoAlpha: 0.72, stagger: 0.02, duration: 0.24 }, "identityExploration")
+              .to(".world-tech-node", {
+                y: (index) => -90 - index * 6,
+                x: (index) => (index % 2 === 0 ? -100 : 110),
+                scale: 0.6,
+                autoAlpha: 0.22,
+                filter: "blur(1px)",
+                stagger: 0.01,
+                duration: 0.34,
+              }, "identityExploration")
+              .to(".world-identity-chamber", { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.32 }, "identityExploration+=0.05")
+              .to(".world-identity-card", {
+                autoAlpha: 1,
+                y: (index) => (index % 2 === 0 ? -10 : 18),
+                scale: (index) => (index === 1 ? 1.04 : 0.94),
+                stagger: 0.045,
+                duration: 0.34,
+              }, "identityExploration+=0.12")
+              .to(".world-content", { autoAlpha: 0.08, y: -122, duration: 0.24 }, "capabilityTransition")
+              .to(".world-tech-corridor", { autoAlpha: 0.12, duration: 0.24 }, "capabilityTransition")
+              .to(".world-identity-chamber", { x: -170, y: -34, scale: 0.78, autoAlpha: 0.2, duration: 0.34 }, "capabilityTransition")
+              .to(".world-identity-card", { y: -34, scale: 0.82, autoAlpha: 0.42, stagger: 0.018, duration: 0.26 }, "capabilityTransition")
+              .to(".world-capability-corridor", { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.34 }, "capabilityTransition+=0.04")
+              .to(".world-capability-card", {
+                autoAlpha: 1,
+                y: (index) => (index % 2 === 0 ? -18 : 22),
+                scale: (index) => (index === 0 ? 1.06 : 0.92),
+                stagger: 0.055,
+                duration: 0.36,
+              }, "capabilityTransition+=0.1")
+              .to(".world-identity-chamber", { autoAlpha: 0.06, duration: 0.24 }, "projectEntry")
+              .to(".world-tech-corridor", { autoAlpha: 0, duration: 0.2 }, "projectEntry")
+              .to(".world-content", { autoAlpha: 0, duration: 0.2 }, "projectEntry")
+              .to(".world-capability-corridor > .eyebrow", { autoAlpha: 0.16, duration: 0.2 }, "projectEntry")
+              .to(".world-capability-card", {
+                x: (index) => -130 + index * 32,
+                y: (index) => -30 + index * 12,
+                scale: (index) => (index === 3 ? 1.08 : 0.76),
+                autoAlpha: (index) => (index === 3 ? 0.95 : 0.36),
+                stagger: 0.015,
+                duration: 0.32,
+              }, "projectEntry")
+              .to(".world-project-entry", { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.34 }, "projectEntry+=0.14")
+              .to(".world-project-entry article", { scale: 1.05, duration: 0.28 }, "projectEntry+=0.32")
+              .to(".world-far-background", { x: -86, y: 36, scale: 1.24, duration: 0.56 }, "projectEntry")
+              .to(".world-perspective-path", { y: -96, scale: 1.38, autoAlpha: 0.46, duration: 0.56 }, "projectEntry")
               .to(".hero-copy", { y: -90, autoAlpha: 0.18, filter: "blur(5px)", duration: 0.4 }, 0.1)
               .to(".hero-copy", { autoAlpha: 0, duration: 0.18 }, 0.5)
               .to(".entry-hint", { y: -40, autoAlpha: 0, duration: 0.22 }, 0.08)
@@ -146,39 +219,8 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
               .to(".floating-card.systems", { x: -120, y: 120, scale: 1.1, autoAlpha: 0.34, duration: 0.58 }, 0.12)
               .to(".floating-card.interaction", { x: 152, y: 102, scale: 1.16, autoAlpha: 0.32, duration: 0.58 }, 0.14)
               .to(".bridge-label", { autoAlpha: 1, scale: 1.05, duration: 0.26 }, 0.48)
-              .to(".hero-world", { scale: 1.015, duration: 1 }, 0);
+              .to(".hero-world", { scale: 1.015, duration: 2.05 }, 0);
           }
-
-          const aboutTimeline = gsap.timeline({
-            scrollTrigger: {
-              trigger: "#about",
-              start: "top 72%",
-              end: "bottom 42%",
-              scrub: 0.9,
-            },
-          });
-
-          aboutTimeline
-            .from(".about-copy", { x: -44, autoAlpha: 0, duration: 0.32 }, 0)
-            .from(".story-chapter", { y: 70, autoAlpha: 0, clipPath: "inset(18% 0 0 0 round 30px)", stagger: 0.1, duration: 0.5 }, 0.12);
-
-          const skillTimeline = gsap.timeline({
-            defaults: { ease: "none" },
-            scrollTrigger: {
-              trigger: "#services",
-              start: "top top+=92",
-              end: "+=125%",
-              scrub: 1,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          });
-
-          skillTimeline
-            .fromTo(".service-card", { y: (index) => 92 + index * 28, scale: 0.86, autoAlpha: 0.36, filter: "blur(2px)" }, { y: 0, scale: 1, autoAlpha: 1, filter: "blur(0px)", stagger: 0.08, duration: 0.52 }, 0)
-            .to(".service-card:nth-child(odd)", { y: -24, duration: 0.42 }, 0.5)
-            .to(".service-card:nth-child(even)", { y: 18, duration: 0.42 }, 0.5);
 
           const projectSection = document.querySelector(".project-story");
           const projectViewport = document.querySelector(".project-story-viewport");

@@ -137,6 +137,8 @@ const techStack = [
   { name: "GitHub", logo: githubLogo },
 ];
 
+const worldTechStack = techStack.slice(0, 12);
+
 const services = [
   {
     icon: Code2,
@@ -434,6 +436,7 @@ function App() {
     () => (githubProjects.length > 0 ? githubProjects : fallbackProjects),
     [githubProjects],
   );
+  const portalProject = featuredProjects[0] || fallbackProjects[0];
 
   useCinematicScroll({
     enabled: !reduceMotion,
@@ -441,6 +444,14 @@ function App() {
   });
 
   const closeMenu = () => setMenuOpen(false);
+  const enterWorld = (event) => {
+    event.preventDefault();
+    closeMenu();
+    window.scrollTo({
+      top: Math.max(window.innerHeight * 0.9, 680),
+      behavior: "smooth",
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -567,6 +578,30 @@ function App() {
 
       setIsScrolled((previous) => (previous === nextScrolled ? previous : nextScrolled));
 
+      const heroStage = document.querySelector(".hero-stage");
+      const isDesktopWorld = window.innerWidth > 980 && heroStage;
+
+      if (isDesktopWorld) {
+        const heroStart = heroStage.offsetTop;
+        const heroEnd = heroStart + window.innerHeight * 7.6;
+        const worldProgress = (window.scrollY - heroStart) / Math.max(heroEnd - heroStart, 1);
+
+        if (worldProgress >= 0 && worldProgress < 1) {
+          if (worldProgress < 0.46) {
+            current = navItems[0];
+          } else if (worldProgress < 0.68) {
+            current = navItems[1];
+          } else if (worldProgress < 0.88) {
+            current = navItems[2];
+          } else {
+            current = navItems[3];
+          }
+
+          setActiveSection((previous) => (previous === current[0] ? previous : current[0]));
+          return;
+        }
+      }
+
       navItems.forEach((item) => {
         const [, href] = item;
         const section = document.querySelector(href);
@@ -687,7 +722,7 @@ function App() {
               interactive web, information systems, and geospatial experiences.
             </motion.p>
             <motion.div className="hero-actions" variants={fadeUpVariants}>
-              <a className="button primary magnetic-target" href="#about">
+              <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
                 Enter my world <ArrowUpRight size={17} />
               </a>
               <a className="button ghost magnetic-target" href="#portfolio">
@@ -715,9 +750,11 @@ function App() {
                 <div className="portal-world">
                   <div className="world-far-background" aria-hidden="true" />
                   <div className="world-grid" aria-hidden="true" />
+                  <div className="world-perspective-path" aria-hidden="true" />
+                  <div className="world-typography" aria-hidden="true">WORLD</div>
                   <div className="world-object world-object-left" aria-hidden="true" />
                   <div className="world-object world-object-right" aria-hidden="true" />
-                  <div className="world-content">
+                  <div className="world-content world-introduction">
                     <span className="eyebrow">Inside the world</span>
                     <h2>I build interfaces that turn complex systems into clear digital experiences.</h2>
                     <p>
@@ -729,6 +766,57 @@ function App() {
                       <span className="world-label">Interactive UI</span>
                       <span className="world-label">Information Systems</span>
                     </div>
+                  </div>
+                  <div className="world-tech-corridor" aria-label="Technology corridor">
+                    {worldTechStack.map((tech, index) => (
+                      <span
+                        className="world-tech-node"
+                        key={tech.name}
+                        style={{ "--node-index": index }}
+                      >
+                        <img src={tech.logo} alt="" aria-hidden="true" />
+                        <span>{tech.name}</span>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="world-identity-chamber" aria-label="About Rakha">
+                    <span className="eyebrow">Identity chamber</span>
+                    <h3>Practical software work, shaped through public projects.</h3>
+                    <div className="world-identity-cards">
+                      {aboutChapters.map((chapter) => (
+                        <article className="world-identity-card" key={chapter.title}>
+                          <span>{chapter.kicker}</span>
+                          <h4>{chapter.title}</h4>
+                          <p>{chapter.text}</p>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="world-capability-corridor" aria-label="Capabilities">
+                    <span className="eyebrow">Capability corridor</span>
+                    <div className="world-capability-track">
+                      {services.map(({ icon: Icon, title, text, tags }) => (
+                        <article className="world-capability-card" key={title}>
+                          <Icon size={22} />
+                          <h4>{title}</h4>
+                          <p>{text}</p>
+                          <div>
+                            {tags.map((tag) => <span key={tag}>{tag}</span>)}
+                          </div>
+                        </article>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="world-project-entry" aria-label="Project entry">
+                    <span className="eyebrow">Project entry</span>
+                    <article>
+                      <span>{portalProject.type}</span>
+                      <h3>{portalProject.title}</h3>
+                      <p>{portalProject.description}</p>
+                      <div>
+                        {portalProject.stack.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                    </article>
                   </div>
                   <div className="world-profile reveal-image">
                     <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
