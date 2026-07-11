@@ -56,6 +56,15 @@ const navItems = [
   ["Contact", "#contact"],
 ];
 
+const journeyItems = [
+  ["01", "Identity", "Home"],
+  ["02", "Context", "About"],
+  ["03", "Tools", "Skills"],
+  ["04", "Proof", "Projects"],
+  ["05", "Timeline", "Experience"],
+  ["06", "Contact", "Contact"],
+];
+
 const stats = [
   ["16+", "Public projects"],
   ["5+", "Languages"],
@@ -571,18 +580,32 @@ function App() {
     const handleScroll = () => {
       let current = navItems[0];
       const nextScrolled = window.scrollY > 8;
+      const activationLine = Math.min(window.innerHeight * 0.42, 340);
 
       setIsScrolled((previous) => (previous === nextScrolled ? previous : nextScrolled));
 
       navItems.forEach((item) => {
         const [, href] = item;
         const section = document.querySelector(href);
-        if (section && window.scrollY >= section.offsetTop - 180) {
-          current = item;
+        if (section) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= activationLine && rect.bottom > activationLine) {
+            current = item;
+          }
         }
       });
 
-      setActiveSection(current[0]);
+      if (current === navItems[0]) {
+        navItems.forEach((item) => {
+          const [, href] = item;
+          const section = document.querySelector(href);
+          if (section && section.getBoundingClientRect().top <= activationLine) {
+            current = item;
+          }
+        });
+      }
+
+      setActiveSection((previous) => (previous === current[0] ? previous : current[0]));
     };
 
     handleScroll();
@@ -647,6 +670,19 @@ function App() {
         </div>
       </div>
 
+      <aside className="journey-nav" aria-label="Portfolio journey">
+        {journeyItems.map(([number, label, section]) => (
+          <a
+            key={section}
+            className={activeSection === section ? "active" : undefined}
+            href={navItems.find(([item]) => item === section)?.[1] || "#home"}
+          >
+            <span>{number}</span>
+            <strong>{label}</strong>
+          </a>
+        ))}
+      </aside>
+
       <main>
         <section id="home" className="hero section-shell">
           <BackgroundStreaks
@@ -684,6 +720,20 @@ function App() {
               <a className="button ghost" href="#about">
                 About me <ArrowUpRight size={17} />
               </a>
+            </motion.div>
+            <motion.div className="hero-proof" variants={fadeUpVariants} aria-label="Portfolio summary">
+              <span>
+                <strong>React</strong>
+                Interface focus
+              </span>
+              <span>
+                <strong>GitHub API</strong>
+                Live repositories
+              </span>
+              <span>
+                <strong>Netlify</strong>
+                Cloud deployment
+              </span>
             </motion.div>
           </motion.div>
 
@@ -963,6 +1013,12 @@ function ProjectStoryRail({ projects, onSelect }) {
       aria-label="Project case studies"
     >
       <div className="project-story-sticky">
+        <div className="project-story-status" aria-hidden="true">
+          <span>Scroll case studies</span>
+          <div>
+            <motion.i style={reduceMotion ? undefined : { scaleX: railProgress }} />
+          </div>
+        </div>
         <div className="project-story-viewport" ref={viewportRef}>
           <motion.div
             ref={trackRef}
