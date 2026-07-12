@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 
 import profileImage from "../images/RakhaApplePark.jpeg";
+import landscapeImage from "../images/background_1.jpg";
 import logoImage from "../images/Logo.png";
 import azureLogo from "../images/tech/azure.svg";
 import cppLogo from "../images/tech/cplusplus.svg";
@@ -64,6 +65,37 @@ const stats = [
 ];
 
 const cursorTrailDots = Array.from({ length: 8 }, (_, index) => index);
+
+const capabilities = [
+  {
+    id: "frontend",
+    icon: Code2,
+    title: "Frontend Development",
+    text: "Building responsive, accessible, and performant interfaces with modern web technologies.",
+    tags: ["React", "TypeScript", "UI Systems"],
+  },
+  {
+    id: "webgis",
+    icon: Globe2,
+    title: "WebGIS",
+    text: "Visualizing spatial data and building interactive maps for real-world decision making.",
+    tags: ["Maps", "Spatial Data", "Leaflet"],
+  },
+  {
+    id: "systems",
+    icon: Layers3,
+    title: "Information Systems",
+    text: "Designing and developing systems that streamline processes and improve clarity.",
+    tags: ["Database", "CRUD", "Architecture"],
+  },
+  {
+    id: "product",
+    icon: Brain,
+    title: "Product Building",
+    text: "From idea to MVP \u2014 turning complex problems into simple, impactful digital products.",
+    tags: ["AI", "Full-stack", "Deployment"],
+  },
+];
 
 const aboutChapters = [
   {
@@ -443,10 +475,19 @@ function App() {
   const enterWorld = (event) => {
     event.preventDefault();
     closeMenu();
-    window.scrollTo({
-      top: Math.max(window.innerHeight * 0.9, 680),
-      behavior: "smooth",
-    });
+    if (window.innerWidth >= 981) {
+      const stage = document.querySelector(".hero-stage");
+      const offset = stage ? stage.offsetTop : 0;
+      window.scrollTo({
+        top: offset + window.innerHeight * 2.5,
+        behavior: "smooth",
+      });
+    } else {
+      window.scrollTo({
+        top: Math.max(window.innerHeight * 0.9, 680),
+        behavior: "smooth",
+      });
+    }
   };
 
   useEffect(() => {
@@ -579,7 +620,7 @@ function App() {
 
       if (isDesktopWorld) {
         const heroStart = heroStage.offsetTop;
-        const heroEnd = heroStart + window.innerHeight * 2.6;
+        const heroEnd = heroStart + window.innerHeight * 4.5;
         const worldProgress = (window.scrollY - heroStart) / Math.max(heroEnd - heroStart, 1);
 
         if (worldProgress >= 0 && worldProgress < 1) {
@@ -677,101 +718,165 @@ function App() {
 
       <main>
         <section id="home" className="hero-stage">
-          <div className="hero-world section-shell">
-            <span className="floating-card frontend">Frontend</span>
-            <span className="floating-card webgis">WebGIS</span>
-            <span className="floating-card systems">Information Systems</span>
-            <span className="floating-card interaction">Interactive UI</span>
+          {/* ── Persistent World Canvas ── */}
+          <div className="world-canvas" aria-hidden="true">
+            <div className="wc-far" />
+            <div className="wc-mid">
+              <span className="mid-panel" />
+              <span className="mid-panel" />
+              <span className="mid-panel" />
+              <span className="mid-panel" />
+            </div>
+            <div className="wc-road">
+              <div className="road-horizon" />
+              <div className="road-surface" />
+              <div className="road-edges" />
+              <div className="road-centerline" />
+              <div className="road-contours" />
+            </div>
+            <div className="wc-grid" />
+            <div className="wc-fog" />
+          </div>
 
-            <motion.div
-              className="hero-copy"
-              initial={reduceMotion ? false : "hidden"}
-              animate="visible"
-              variants={staggerVariants}
-            >
-              <motion.span className="eyebrow" variants={fadeUpVariants}>
-                Portfolio / 2026
-              </motion.span>
-              <motion.h1 className="masked-title" variants={fadeUpVariants}>
-                <span>Building thoughtful</span>
-                <span>digital experiences.</span>
-              </motion.h1>
-              <motion.p variants={fadeUpVariants}>
-                Muhammad Rakha Pratama - Frontend Developer exploring
-                interactive web, information systems, and geospatial experiences.
-              </motion.p>
-              <motion.div className="hero-actions" variants={fadeUpVariants}>
-                <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
-                  Enter my world <ArrowUpRight size={17} />
-                </a>
-                <a className="button ghost magnetic-target" href="#portfolio">
-                  View projects <ArrowUpRight size={17} />
-                </a>
+          {/* ── Hero Content Layer ── */}
+          <div className="hero-content-layer">
+            <div className="hcl-inner">
+              <motion.div
+                className="hero-copy"
+                initial={reduceMotion ? false : "hidden"}
+                animate="visible"
+                variants={staggerVariants}
+              >
+                <motion.span className="eyebrow" variants={fadeUpVariants}>
+                  Portfolio / 2026
+                </motion.span>
+                <motion.h1 className="masked-title" variants={fadeUpVariants}>
+                  <span>Building thoughtful</span>
+                  <span>digital experiences.</span>
+                </motion.h1>
+                <motion.p variants={fadeUpVariants}>
+                  Muhammad Rakha Pratama \u2014 a Frontend Developer exploring
+                  interactive web, information systems, and geospatial experiences.
+                </motion.p>
+                <motion.div className="hero-actions" variants={fadeUpVariants}>
+                  <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
+                    Enter my world <ArrowUpRight size={17} />
+                  </a>
+                  <a className="button ghost magnetic-target" href="#portfolio">
+                    View projects <ArrowUpRight size={17} />
+                  </a>
+                </motion.div>
               </motion.div>
-            </motion.div>
+              <motion.div
+                className="hero-proof"
+                initial={reduceMotion ? false : "hidden"}
+                animate="visible"
+                variants={fadeUpVariants}
+                aria-label="Core focus"
+              >
+                <span>
+                  <Code2 size={19} />
+                  <strong>Frontend</strong>
+                  <em>React \u00b7 TypeScript</em>
+                </span>
+                <span>
+                  <Globe2 size={19} />
+                  <strong>WebGIS</strong>
+                  <em>Maps \u00b7 Spatial Data</em>
+                </span>
+                <span>
+                  <Layers3 size={19} />
+                  <strong>Cloud</strong>
+                  <em>Deploy \u00b7 Scalable</em>
+                </span>
+              </motion.div>
+            </div>
+          </div>
 
-            <motion.div
-              className="hero-proof"
-              initial={reduceMotion ? false : "hidden"}
-              animate="visible"
-              variants={fadeUpVariants}
-              aria-label="Core focus"
-            >
-              <span>
-                <Code2 size={19} />
-                <strong>Frontend</strong>
-                <em>React + TypeScript</em>
-              </span>
-              <span>
-                <Globe2 size={19} />
-                <strong>WebGIS</strong>
-                <em>Maps + Spatial Data</em>
-              </span>
-              <span>
-                <Layers3 size={19} />
-                <strong>Cloud</strong>
-                <em>Deploy + Scalable</em>
-              </span>
-            </motion.div>
+          {/* ── Floating Labels ── */}
+          <span className="floating-label fl-frontend">Frontend</span>
+          <span className="floating-label fl-webgis">WebGIS</span>
+          <span className="floating-label fl-systems">Information Systems</span>
 
-            <aside className="portal-frame" aria-label="Rakha profile portal">
-              <div className="portal-viewport">
-                <div className="portal-world">
-                  <div className="world-far-background" aria-hidden="true" />
-                  <div className="world-grid" aria-hidden="true" />
-                  <div className="world-tunnel" aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                  </div>
-                  <div className="world-floor" aria-hidden="true" />
-                  <div className="world-platform" aria-hidden="true" />
-                  <div className="world-word" aria-hidden="true">WORLD</div>
-                  <div className="world-content world-introduction">
-                    <span className="eyebrow">Welcome</span>
-                    <h2>I build interfaces that turn complex systems into clear digital experiences.</h2>
-                    <p>
-                      Informatics student from Bandung working across frontend interfaces,
-                      information systems, AI workflows, cloud deployment, and WebGIS exploration.
-                    </p>
-                  </div>
-                  <article className="world-case-card" aria-label="Featured portfolio preview">
-                    <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
-                    <div>
-                      <strong>Rakha Portfolio</strong>
-                      <span>React portfolio + GitHub API</span>
-                      <a href="#portfolio">
-                        View projects <ArrowUpRight size={13} />
-                      </a>
-                    </div>
-                  </article>
-                </div>
+          {/* ── About Content Layer (revealed by GSAP) ── */}
+          <div className="about-content-layer">
+            <div className="acl-inner">
+              <div className="acl-text">
+                <span className="eyebrow">About Me</span>
+                <h2>
+                  I build interfaces that turn complex systems into clear digital
+                  experiences<span style={{ color: "#6e8aa4" }}>.</span>
+                </h2>
+                <p>
+                  I\u2019m Muhammad Rakha Pratama, a Frontend Developer who loves
+                  crafting elegant interfaces and building geospatial solutions
+                  that make data easier to understand and act on.
+                </p>
+                <a className="button ghost" href="#experience">
+                  View my experience <ArrowUpRight size={17} />
+                </a>
               </div>
-            </aside>
-            <span className="entry-hint" aria-hidden="true">Scroll to explore</span>
-            <span className="scroll-indicator" aria-hidden="true">Scroll</span>
+              <div className="capability-grid">
+                {capabilities.map((cap) => {
+                  const Icon = cap.icon;
+                  return (
+                    <div className="cap-card" key={cap.id}>
+                      <div className="cap-card-head">
+                        <Icon size={22} />
+                        <ArrowUpRight size={15} />
+                      </div>
+                      <h4>{cap.title}</h4>
+                      <p>{cap.text}</p>
+                      <div className="cap-tags">
+                        {cap.tags.map((t) => (
+                          <span key={t}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Selected Project Layer (revealed last by GSAP) ── */}
+          <div className="project-hint-layer">
+            <div className="phl-inner">
+              <span className="eyebrow">Selected Project</span>
+              <article className="selected-project-card">
+                <img src={landscapeImage} alt="GeoVista Dashboard preview" />
+                <div>
+                  <strong>
+                    GeoVista Dashboard <ArrowUpRight size={16} />
+                  </strong>
+                  <p>
+                    An interactive geospatial dashboard for monitoring
+                    environmental data and spatial analytics.
+                  </p>
+                  <div className="sp-tags">
+                    <span>WebGIS</span>
+                    <span>Analytics</span>
+                    <span>Maps</span>
+                    <span>Data Visualization</span>
+                  </div>
+                  <a href="#portfolio">
+                    View case study <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          {/* ── Scroll Hint ── */}
+          <div className="scroll-to-enter" aria-hidden="true">
+            <div className="ste-mouse">
+              <div className="ste-wheel" />
+            </div>
+            <span>SCROLL TO ENTER</span>
           </div>
         </section>
+
+        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
 
         <div className="digital-world">
           <motion.section
@@ -837,6 +942,8 @@ function App() {
           </motion.div>
           </section>
 
+          <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
+
           <AnimatedSection id="services" className="section-shell services">
           <div className="section-heading split">
             <div>
@@ -875,6 +982,8 @@ function App() {
             ))}
           </motion.div>
           </AnimatedSection>
+
+          <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
 
           <section id="portfolio" className="portfolio">
           <div className="section-heading split">
@@ -918,6 +1027,8 @@ function App() {
           </section>
         </div>
 
+        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
+
         <AnimatedSection id="experience" className="section-shell timeline-section">
           <div className="section-heading split">
             <div>
@@ -944,6 +1055,8 @@ function App() {
             ))}
           </div>
         </AnimatedSection>
+
+        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
 
         <AnimatedSection id="contact" className="section-shell contact">
           <BackgroundStreaks className="contact-streaks" />
