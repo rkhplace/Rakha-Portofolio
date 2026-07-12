@@ -710,22 +710,61 @@ function App() {
               </motion.div>
             </motion.div>
 
+            <motion.div
+              className="hero-proof"
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              variants={fadeUpVariants}
+              aria-label="Core focus"
+            >
+              <span>
+                <Code2 size={19} />
+                <strong>Frontend</strong>
+                <em>React + TypeScript</em>
+              </span>
+              <span>
+                <Globe2 size={19} />
+                <strong>WebGIS</strong>
+                <em>Maps + Spatial Data</em>
+              </span>
+              <span>
+                <Layers3 size={19} />
+                <strong>Cloud</strong>
+                <em>Deploy + Scalable</em>
+              </span>
+            </motion.div>
+
             <aside className="portal-frame" aria-label="Rakha profile portal">
               <div className="portal-viewport">
                 <div className="portal-world">
                   <div className="world-far-background" aria-hidden="true" />
                   <div className="world-grid" aria-hidden="true" />
+                  <div className="world-tunnel" aria-hidden="true">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <div className="world-floor" aria-hidden="true" />
+                  <div className="world-platform" aria-hidden="true" />
+                  <div className="world-word" aria-hidden="true">WORLD</div>
                   <div className="world-content world-introduction">
-                    <span className="eyebrow">Inside the world</span>
+                    <span className="eyebrow">Welcome</span>
                     <h2>I build interfaces that turn complex systems into clear digital experiences.</h2>
                     <p>
                       Informatics student from Bandung working across frontend interfaces,
                       information systems, AI workflows, cloud deployment, and WebGIS exploration.
                     </p>
                   </div>
-                  <div className="world-profile reveal-image">
+                  <article className="world-case-card" aria-label="Featured portfolio preview">
                     <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
-                  </div>
+                    <div>
+                      <strong>Rakha Portfolio</strong>
+                      <span>React portfolio + GitHub API</span>
+                      <a href="#portfolio">
+                        View projects <ArrowUpRight size={13} />
+                      </a>
+                    </div>
+                  </article>
                 </div>
               </div>
             </aside>
