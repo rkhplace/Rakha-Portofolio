@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MotionConfig, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
@@ -136,8 +136,6 @@ const techStack = [
   { name: "Figma", logo: figmaLogo },
   { name: "GitHub", logo: githubLogo },
 ];
-
-const worldTechStack = techStack.slice(0, 12);
 
 const services = [
   {
@@ -436,8 +434,6 @@ function App() {
     () => (githubProjects.length > 0 ? githubProjects : fallbackProjects),
     [githubProjects],
   );
-  const portalProject = featuredProjects[0] || fallbackProjects[0];
-
   useCinematicScroll({
     enabled: !reduceMotion,
     refreshKey: `${projectsLoading}-${featuredProjects.length}`,
@@ -583,20 +579,11 @@ function App() {
 
       if (isDesktopWorld) {
         const heroStart = heroStage.offsetTop;
-        const heroEnd = heroStart + window.innerHeight * 7.6;
+        const heroEnd = heroStart + window.innerHeight * 2.6;
         const worldProgress = (window.scrollY - heroStart) / Math.max(heroEnd - heroStart, 1);
 
         if (worldProgress >= 0 && worldProgress < 1) {
-          if (worldProgress < 0.46) {
-            current = navItems[0];
-          } else if (worldProgress < 0.68) {
-            current = navItems[1];
-          } else if (worldProgress < 0.88) {
-            current = navItems[2];
-          } else {
-            current = navItems[3];
-          }
-
+          current = navItems[0];
           setActiveSection((previous) => (previous === current[0] ? previous : current[0]));
           return;
         }
@@ -691,69 +678,43 @@ function App() {
       <main>
         <section id="home" className="hero-stage">
           <div className="hero-world section-shell">
-            <BackgroundStreaks className="hero-streaks" />
-            <div className="distant-world" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="foreground-word left" aria-hidden="true">01</div>
-            <div className="foreground-word right" aria-hidden="true">World</div>
             <span className="floating-card frontend">Frontend</span>
             <span className="floating-card webgis">WebGIS</span>
             <span className="floating-card systems">Information Systems</span>
             <span className="floating-card interaction">Interactive UI</span>
-          <motion.div
-            className="hero-copy"
-            initial={reduceMotion ? false : "hidden"}
-            animate="visible"
-            variants={staggerVariants}
-          >
-            <motion.span className="eyebrow" variants={fadeUpVariants}>
-              Portfolio / 2026
-            </motion.span>
-            <motion.h1 className="masked-title" variants={fadeUpVariants}>
-              <span>Building thoughtful</span>
-              <span>digital experiences.</span>
-            </motion.h1>
-            <motion.p variants={fadeUpVariants}>
-              Muhammad Rakha Pratama - Frontend Developer exploring
-              interactive web, information systems, and geospatial experiences.
-            </motion.p>
-            <motion.div className="hero-actions" variants={fadeUpVariants}>
-              <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
-                Enter my world <ArrowUpRight size={17} />
-              </a>
-              <a className="button ghost magnetic-target" href="#portfolio">
-                View projects <ArrowUpRight size={17} />
-              </a>
+
+            <motion.div
+              className="hero-copy"
+              initial={reduceMotion ? false : "hidden"}
+              animate="visible"
+              variants={staggerVariants}
+            >
+              <motion.span className="eyebrow" variants={fadeUpVariants}>
+                Portfolio / 2026
+              </motion.span>
+              <motion.h1 className="masked-title" variants={fadeUpVariants}>
+                <span>Building thoughtful</span>
+                <span>digital experiences.</span>
+              </motion.h1>
+              <motion.p variants={fadeUpVariants}>
+                Muhammad Rakha Pratama - Frontend Developer exploring
+                interactive web, information systems, and geospatial experiences.
+              </motion.p>
+              <motion.div className="hero-actions" variants={fadeUpVariants}>
+                <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
+                  Enter my world <ArrowUpRight size={17} />
+                </a>
+                <a className="button ghost magnetic-target" href="#portfolio">
+                  View projects <ArrowUpRight size={17} />
+                </a>
+              </motion.div>
             </motion.div>
-            <motion.div className="hero-proof" variants={fadeUpVariants} aria-label="Portfolio summary">
-              <span>
-                <strong>React</strong>
-                Interface focus
-              </span>
-              <span>
-                <strong>GitHub API</strong>
-                Live repositories
-              </span>
-              <span>
-                <strong>Netlify</strong>
-                Cloud deployment
-              </span>
-            </motion.div>
-          </motion.div>
 
             <aside className="portal-frame" aria-label="Rakha profile portal">
               <div className="portal-viewport">
                 <div className="portal-world">
                   <div className="world-far-background" aria-hidden="true" />
                   <div className="world-grid" aria-hidden="true" />
-                  <div className="world-perspective-path" aria-hidden="true" />
-                  <div className="world-typography" aria-hidden="true">WORLD</div>
-                  <div className="world-object world-object-left" aria-hidden="true" />
-                  <div className="world-object world-object-right" aria-hidden="true" />
                   <div className="world-content world-introduction">
                     <span className="eyebrow">Inside the world</span>
                     <h2>I build interfaces that turn complex systems into clear digital experiences.</h2>
@@ -761,62 +722,6 @@ function App() {
                       Informatics student from Bandung working across frontend interfaces,
                       information systems, AI workflows, cloud deployment, and WebGIS exploration.
                     </p>
-                    <div className="world-labels" aria-label="Focus areas">
-                      <span className="world-label bridge-label">WebGIS</span>
-                      <span className="world-label">Interactive UI</span>
-                      <span className="world-label">Information Systems</span>
-                    </div>
-                  </div>
-                  <div className="world-tech-corridor" aria-label="Technology corridor">
-                    {worldTechStack.map((tech, index) => (
-                      <span
-                        className="world-tech-node"
-                        key={tech.name}
-                        style={{ "--node-index": index }}
-                      >
-                        <img src={tech.logo} alt="" aria-hidden="true" />
-                        <span>{tech.name}</span>
-                      </span>
-                    ))}
-                  </div>
-                  <div className="world-identity-chamber" aria-label="About Rakha">
-                    <span className="eyebrow">Identity chamber</span>
-                    <h3>Practical software work, shaped through public projects.</h3>
-                    <div className="world-identity-cards">
-                      {aboutChapters.map((chapter) => (
-                        <article className="world-identity-card" key={chapter.title}>
-                          <span>{chapter.kicker}</span>
-                          <h4>{chapter.title}</h4>
-                          <p>{chapter.text}</p>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="world-capability-corridor" aria-label="Capabilities">
-                    <span className="eyebrow">Capability corridor</span>
-                    <div className="world-capability-track">
-                      {services.map(({ icon: Icon, title, text, tags }) => (
-                        <article className="world-capability-card" key={title}>
-                          <Icon size={22} />
-                          <h4>{title}</h4>
-                          <p>{text}</p>
-                          <div>
-                            {tags.map((tag) => <span key={tag}>{tag}</span>)}
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="world-project-entry" aria-label="Project entry">
-                    <span className="eyebrow">Project entry</span>
-                    <article>
-                      <span>{portalProject.type}</span>
-                      <h3>{portalProject.title}</h3>
-                      <p>{portalProject.description}</p>
-                      <div>
-                        {portalProject.stack.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}
-                      </div>
-                    </article>
                   </div>
                   <div className="world-profile reveal-image">
                     <img src={profileImage} alt="Muhammad Rakha Pratama at Apple Park" />
@@ -954,7 +859,22 @@ function App() {
               {projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)}
             </motion.div>
           ) : (
-            <ProjectStoryRail projects={featuredProjects} onSelect={setSelectedProject} />
+            <motion.div
+              className="featured-grid section-shell"
+              initial={reduceMotion ? false : "hidden"}
+              whileInView="visible"
+              viewport={viewportOnce}
+              variants={staggerVariants}
+            >
+              {featuredProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  onSelect={() => setSelectedProject(project)}
+                />
+              ))}
+            </motion.div>
           )}
           </section>
         </div>
@@ -1025,83 +945,6 @@ function App() {
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </MotionConfig>
-  );
-}
-
-function ProjectStoryRail({ projects, onSelect }) {
-  const reduceMotion = useReducedMotion();
-  const sectionRef = useRef(null);
-  const viewportRef = useRef(null);
-  const trackRef = useRef(null);
-  const [scrollHeight, setScrollHeight] = useState(1120);
-
-  useEffect(() => {
-    const stickyOffset = 86;
-
-    const measure = () => {
-      if (!viewportRef.current || !trackRef.current) {
-        return;
-      }
-
-      const viewportWidth = viewportRef.current.offsetWidth;
-      const trackWidth = trackRef.current.scrollWidth;
-      const nextTravel = Math.max(0, trackWidth - viewportWidth);
-      const releaseBuffer = Math.min(72, Math.max(42, window.innerHeight * 0.08));
-      setScrollHeight(
-        Math.max(window.innerHeight * 1.08, nextTravel + window.innerHeight - stickyOffset + releaseBuffer),
-      );
-    };
-
-    measure();
-    const resizeObserver = new ResizeObserver(measure);
-
-    if (viewportRef.current) {
-      resizeObserver.observe(viewportRef.current);
-    }
-
-    if (trackRef.current) {
-      resizeObserver.observe(trackRef.current);
-    }
-
-    window.addEventListener("resize", measure, { passive: true });
-
-    return () => {
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [projects.length]);
-
-  return (
-    <section
-      ref={sectionRef}
-      className={`project-story section-shell ${reduceMotion ? "project-story-static" : ""}`}
-      style={{ "--project-count": projects.length, "--project-scroll-height": `${scrollHeight}px` }}
-      aria-label="Project case studies"
-    >
-      <div className="project-story-sticky">
-        <div className="project-story-status" aria-hidden="true">
-          <span>Scroll case studies</span>
-          <div>
-            <i />
-          </div>
-        </div>
-        <div className="project-story-viewport" ref={viewportRef}>
-          <motion.div
-            ref={trackRef}
-            className="project-story-track"
-          >
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                index={index}
-                onSelect={() => onSelect(project)}
-              />
-            ))}
-          </motion.div>
-        </div>
-      </div>
-    </section>
   );
 }
 
