@@ -219,8 +219,8 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
           const approach = easeInOut(raw); // 0 → 1 globally across all pages
 
           gsap.set(wcFar,  { y: approach * -60, scale: 1 + approach * 0.2, opacity: 0.5 + approach * 0.3 });
-          // Keep the background vertical glass panels (wcMid) visible at the far left/right edges as framing elements
-          const midOpacity = 0.5 + (1 - approach) * 0.3; // ranges from 0.8 to 0.5 continuously
+          // Fade out the background vertical glass panels (wcMid) as we scroll away from Home to prevent outlines/shadows from bleeding into other scenes
+          const midOpacity = clamp(1 - approach * 2.2, 0, 1) * 0.8;
           gsap.set(wcMid,  { y: approach * -100, scale: 1 + approach * 0.4, opacity: midOpacity });
           gsap.set(wcRoad, { y: approach * -130, scale: 1 + approach * 0.7, opacity: 0.15 + approach * 0.65 });
           if (wcGrid) gsap.set(wcGrid, { opacity: 0.2 + approach * 0.3 });

@@ -4997,7 +4997,7 @@ footer {
   display: grid;
   grid-template-columns: 1fr 1.22fr; /* right column is wider for card columns */
   gap: clamp(28px, 4vw, 56px);
-  align-items: center; /* center vertically to look balanced */
+  align-items: end; /* align bottoms of left and right columns to match mockup */
   padding-top: clamp(72px, 8vh, 96px);
 }
 
