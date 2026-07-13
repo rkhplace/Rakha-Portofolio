@@ -794,7 +794,7 @@ function App() {
                 </div>
                 <div className="cs-list timeline-list">
                   {timelineItems.map((item) => (
-                    <article className="cs-card timeline-item" key={item.title}>
+                    <article className="timeline-item" key={item.title}>
                       <span className="timeline-year">{item.year}</span>
                       <div>
                         <h3>{item.title}</h3>
