@@ -5145,7 +5145,7 @@ footer {
 
 /* ─────────────────────────────────────────
    SCENE 6: CONTACT
-   FIX 5: better vertical centering
+   FIX 5: perfect vertical centering with symmetric padding
    ───────────────────────────────────────── */
 .scene-contact {
   align-items: center;
@@ -5154,9 +5154,10 @@ footer {
 .contact-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(20px, 3.5vw, 56px);
+  gap: clamp(24px, 4.5vw, 64px);
   align-items: center;
-  padding-top: 0;
+  padding-top: clamp(100px, 11vh, 140px);
+  padding-bottom: clamp(100px, 11vh, 140px);
   grid-template-rows: auto auto;
 }
 
