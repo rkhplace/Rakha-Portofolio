@@ -5185,15 +5185,86 @@ footer {
    SCENE 5: SKILLS
    ───────────────────────────────────────── */
 .skills-inner {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-top: clamp(80px, 9vh, 110px);
+  position: relative;
+  min-height: calc(100vh - 48px);
+  min-height: calc(100dvh - 48px);
+  padding-top: 80px;
 }
 
 .skills-ticker {
   overflow: hidden;
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+@media (min-width: 981px) {
+  .skills-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1.9fr; /* text on left, cards on right */
+    gap: 48px;
+    align-items: center;
+    padding-top: clamp(90px, 10vh, 120px);
+    padding-bottom: 40px;
+  }
+
+  .skills-inner .cs-section-head {
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .skills-inner .cs-h2 {
+    font-size: clamp(2.4rem, 3.8vw, 4.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    max-width: 440px;
+  }
+
+  .skills-inner .cs-para {
+    font-size: clamp(1.08rem, 1.2vw, 1.25rem);
+    line-height: 1.5;
+    max-width: 420px;
+    color: #4a5157;
+  }
+
+  .skills-inner .service-grid {
+    grid-column: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2x2 cards */
+    gap: 20px;
+  }
+
+  .skills-inner .service-card {
+    padding: 24px;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 20px;
+  }
+
+  .skills-inner .service-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 8px 0;
+  }
+
+  .skills-inner .service-card p {
+    font-size: 0.95rem; /* larger explaining text */
+    line-height: 1.48;
+    color: #555c61;
+    margin-bottom: 12px;
+  }
+
+  .skills-inner .service-card .tag-row span {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
+
+  .skills-inner .skills-ticker {
+    grid-column: 1 / -1;
+    margin-top: 24px;
+  }
 }
 
 /* ─────────────────────────────────────────
@@ -5381,6 +5452,11 @@ footer {
     gap: 20px;
   }
 
+  .skills-inner .service-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
   .contact-inner {
     display: flex;
     flex-direction: column;
@@ -5445,5 +5521,10 @@ footer {
 
   .about-inner {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .skills-inner {
+    grid-template-columns: 1fr 1.5fr;
+    gap: 32px;
   }
 }
