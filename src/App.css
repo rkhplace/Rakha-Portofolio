@@ -4799,9 +4799,15 @@ footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  /* GPU compositing layer — transform drives crossfade */
   will-change: opacity, transform, filter;
-  transition: none; /* JS controls everything */
+  transition: none;
+}
+
+/* FIX 1: Home scene visible immediately before JS hydrates */
+.scene-home {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* ── Scene inner container ── */
@@ -4810,8 +4816,15 @@ footer {
   z-index: 2;
   width: min(100% - 48px, 1280px);
   margin: 0 auto;
-  padding: clamp(80px, 9vh, 120px) 0 clamp(40px, 5vh, 70px);
+  padding: clamp(80px, 9vh, 110px) 0 clamp(28px, 3vh, 48px);
+  /* FIX 3: scenes with a lot of content scroll within the stage */
+  max-height: 100vh;
+  max-height: 100dvh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
 }
+.cs-scene-inner::-webkit-scrollbar { display: none; }
 
 /* ─────────────────────────────────────────
    SCENE 1: HOME
@@ -4819,9 +4832,11 @@ footer {
 .home-inner {
   display: grid;
   grid-template-rows: 1fr auto;
-  gap: 32px;
-  height: 100%;
+  gap: 28px;
+  min-height: calc(100vh - 48px);
+  min-height: calc(100dvh - 48px);
   padding-top: 80px;
+  overflow: hidden; /* home doesn't need internal scroll */
 }
 
 .cs-copy {
@@ -4923,19 +4938,51 @@ footer {
 
 /* ─────────────────────────────────────────
    SCENE 2: ABOUT
+   FIX 2: capability-grid cards visible
    ───────────────────────────────────────── */
 .about-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(24px, 3.5vw, 60px);
+  gap: clamp(20px, 3vw, 48px);
   align-items: start;
-  padding-top: clamp(90px, 10vh, 130px);
+  padding-top: clamp(72px, 8vh, 96px);
 }
 
 .cs-about-left {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+}
+
+.cs-about-right {
+  /* ensure right column renders and has space */
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* About capability-grid override for cinematic scene */
+.cs-about-right .capability-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.cs-about-right .cap-card {
+  padding: 14px;
+  border-radius: 16px;
+  font-size: 0.82rem;
+}
+
+.cs-about-right .cap-card h4 {
+  font-size: 0.85rem;
+  margin: 8px 0 4px;
+}
+
+.cs-about-right .cap-card p {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  margin: 0 0 8px;
+  color: var(--muted);
 }
 
 .cs-h2 {
@@ -4953,53 +5000,94 @@ footer {
 
 /* ─────────────────────────────────────────
    SCENE 3: EXPERIENCE
+   FIX 3: content fits inside 100dvh sticky stage
    ───────────────────────────────────────── */
 .experience-inner {
   display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: clamp(24px, 4vw, 72px);
+  grid-template-columns: 280px 1fr;
+  gap: clamp(20px, 3vw, 48px);
   align-items: start;
-  padding-top: clamp(90px, 10vh, 130px);
+  padding-top: clamp(72px, 8vh, 96px);
 }
 
 .cs-section-head {
-  position: sticky;
-  top: clamp(100px, 12vh, 130px);
+  /* not sticky inside already-sticky stage */
+  position: relative;
+  top: unset;
 }
 
-.cs-section-head .cs-eyebrow { margin-bottom: 12px; }
+.cs-section-head .cs-eyebrow { margin-bottom: 10px; }
+
+.cs-section-head .cs-h2 {
+  font-size: clamp(1.6rem, 2.5vw, 2.6rem);
+}
 
 .cs-list {
   display: flex;
   flex-direction: column;
+  gap: 0;
+}
+
+/* Compact timeline items for cinematic stage */
+.cs-list .timeline-item {
+  padding: 14px 0;
+  gap: 20px;
+}
+
+.cs-list .timeline-item h3 {
+  font-size: 0.92rem;
+  margin: 0 0 4px;
+}
+
+.cs-list .timeline-item p {
+  font-size: 0.8rem;
+  margin: 0 0 6px;
 }
 
 /* ─────────────────────────────────────────
    SCENE 4: PROJECTS
+   FIX 4: compact cards, title on one line
    ───────────────────────────────────────── */
 .projects-inner {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-top: clamp(80px, 9vh, 110px);
-  overflow: hidden;
+  gap: 16px;
+  padding-top: clamp(72px, 8vh, 96px);
 }
 
 .cs-projects-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 10px;
 }
 
 .cs-project-card {
-  padding: 16px !important;
+  padding: 13px !important;
+}
+
+.cs-project-card h3 {
+  font-size: 0.84rem;
+  margin: 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cs-project-card p {
+  font-size: 0.76rem;
+  line-height: 1.35;
+  margin: 0 0 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cs-project-meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
 }
 
 .cs-project-links {
@@ -5043,13 +5131,19 @@ footer {
 
 /* ─────────────────────────────────────────
    SCENE 6: CONTACT
+   FIX 5: better vertical centering
    ───────────────────────────────────────── */
+.scene-contact {
+  align-items: center;
+}
+
 .contact-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(24px, 4vw, 72px);
-  align-items: start;
-  padding-top: clamp(90px, 10vh, 130px);
+  gap: clamp(20px, 3.5vw, 56px);
+  align-items: center;
+  padding-top: 0;
+  grid-template-rows: auto auto;
 }
 
 .cs-contact-card {

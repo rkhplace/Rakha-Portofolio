@@ -103,6 +103,16 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
          ───────────────────────────────────────────────────── */
       let lastProgress = -1;
 
+      // Immediately show home scene (overrides CSS .scene-home pre-show)
+      const homeEl = sceneEls[0];
+      if (homeEl) {
+        homeEl.style.opacity = "1";
+        homeEl.style.visibility = "visible";
+        homeEl.style.pointerEvents = "auto";
+        homeEl.style.transform = "translateY(0px) scale(1)";
+        homeEl.style.filter = "none";
+      }
+
       const tick = () => {
         const trackHeight = track.scrollHeight - window.innerHeight;
         if (trackHeight <= 0) return;
