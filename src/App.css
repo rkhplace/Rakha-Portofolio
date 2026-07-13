@@ -5200,10 +5200,10 @@ footer {
   .skills-inner {
     display: grid;
     grid-template-columns: 1.1fr 1.9fr; /* text on left, cards on right */
-    gap: 48px;
+    gap: 36px;
     align-items: center;
-    padding-top: clamp(90px, 10vh, 120px);
-    padding-bottom: 40px;
+    padding-top: clamp(72px, 8vh, 100px);
+    padding-bottom: 32px;
   }
 
   .skills-inner .cs-section-head {
@@ -5263,7 +5263,8 @@ footer {
 
   .skills-inner .skills-ticker {
     grid-column: 1 / -1;
-    margin-top: 24px;
+    margin-top: 10px;
+    transform: translateY(-12px); /* pull upward */
   }
 }
 
