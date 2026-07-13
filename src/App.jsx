@@ -684,6 +684,8 @@ function App() {
 
             {/* ── Persistent World Background (always mounted) ── */}
             <div className="world-canvas" aria-hidden="true">
+              <div className="wc-glow-orb wc-glow-left" />
+              <div className="wc-glow-orb wc-glow-right" />
               <div className="wc-far" />
               <div className="wc-mid">
                 <span className="mid-panel" />
@@ -756,12 +758,27 @@ function App() {
                     that make data easier to understand.
                   </p>
                   <div className="cs-stats stats-grid">
-                    {stats.map(([value, label]) => (
-                      <div className="stat-card" key={label}>
-                        <strong>{value}</strong>
-                        <span>{label}</span>
+                    <div className="cs-card stat-card">
+                      <div className="stat-icon-wrapper">
+                        <Code2 size={20} />
                       </div>
-                    ))}
+                      <strong>16+</strong>
+                      <span>Public projects</span>
+                    </div>
+                    <div className="cs-card stat-card">
+                      <div className="stat-icon-wrapper">
+                        <TerminalSquare size={20} />
+                      </div>
+                      <strong>5+</strong>
+                      <span>Languages</span>
+                    </div>
+                    <div className="cs-card stat-card">
+                      <div className="stat-icon-wrapper">
+                        <BookOpen size={20} />
+                      </div>
+                      <strong>2+</strong>
+                      <span>Years learning</span>
+                    </div>
                   </div>
                 </div>
                 <div className="cs-about-right">
