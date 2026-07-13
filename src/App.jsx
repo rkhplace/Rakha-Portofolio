@@ -759,6 +759,10 @@ function App() {
                   </p>
                   <div className="cs-stats stats-grid">
                     <div className="cs-card stat-card">
+                      <div className="stat-card-dots">
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                      </div>
                       <div className="stat-icon-wrapper">
                         <Code2 size={20} />
                       </div>
@@ -766,6 +770,10 @@ function App() {
                       <span>Public projects</span>
                     </div>
                     <div className="cs-card stat-card">
+                      <div className="stat-card-dots">
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                      </div>
                       <div className="stat-icon-wrapper">
                         <TerminalSquare size={20} />
                       </div>
@@ -773,6 +781,10 @@ function App() {
                       <span>Languages</span>
                     </div>
                     <div className="cs-card stat-card">
+                      <div className="stat-card-dots">
+                        <span></span><span></span><span></span>
+                        <span></span><span></span><span></span>
+                      </div>
                       <div className="stat-icon-wrapper">
                         <BookOpen size={20} />
                       </div>

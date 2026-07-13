@@ -3938,31 +3938,31 @@ footer a {
 }
 
 .mid-panel:nth-child(1) {
-  top: 14%;
-  right: 22%;
-  width: 140px;
-  height: 200px;
+  top: 15%;
+  left: 2%;
+  width: 120px;
+  height: 240px;
 }
 
 .mid-panel:nth-child(2) {
   top: 8%;
-  right: 6%;
-  width: 100px;
+  right: 2%;
+  width: 110px;
   height: 280px;
 }
 
 .mid-panel:nth-child(3) {
-  bottom: 20%;
-  right: 15%;
-  width: 180px;
-  height: 140px;
+  bottom: 18%;
+  right: 2%;
+  width: 140px;
+  height: 190px;
 }
 
 .mid-panel:nth-child(4) {
-  top: 30%;
-  right: 42%;
-  width: 90px;
-  height: 160px;
+  bottom: 15%;
+  left: 2%;
+  width: 100px;
+  height: 200px;
 }
 
 /* ── Road: multi-layer perspective path ── */
@@ -5588,9 +5588,27 @@ footer {
   gap: 8px;
   padding: 20px 24px !important;
   border-radius: 20px;
-  border-left: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
   text-align: left;
+  position: relative;
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.stat-card-dots {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  gap: 3px;
+  opacity: 0.15;
+}
+
+.stat-card-dots span {
+  width: 4px;
+  height: 4px;
+  background: var(--ink);
+  border-radius: 50%;
 }
 
 .cs-stats .stat-card:hover {
