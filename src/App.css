@@ -4840,25 +4840,32 @@ footer {
 @media (min-width: 981px) {
   .home-inner {
     display: grid;
-    grid-template-columns: 1.25fr 0.75fr;
-    gap: 48px;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 60px;
     align-items: center;
-    padding-bottom: 120px; /* Space for absolute cs-proof at the bottom */
+    padding-bottom: 40px;
   }
 
   .cs-copy {
     grid-column: 1;
   }
 
-  .home-photo-container {
+  .home-right-col {
     grid-column: 2;
     display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 20px;
+  }
+
+  .home-photo-container {
+    width: 100%;
+    display: flex;
     justify-content: flex-end;
-    align-items: center;
   }
 
   .home-photo {
-    width: 28rem; /* larger size */
+    width: 32rem; /* enlarged size */
     aspect-ratio: 16 / 9; /* 16:9 aspect ratio */
     object-fit: cover;
     border-radius: 28px;
@@ -4873,15 +4880,15 @@ footer {
   }
 
   .home-photo:hover {
-    transform: scale(1.03) translateY(-4px);
+    transform: scale(1.025) translateY(-3px);
   }
 
   .cs-proof {
-    position: absolute;
-    bottom: clamp(24px, 3vh, 40px);
-    left: 0;
-    width: 100%;
-    max-width: 620px;
+    position: relative;
+    bottom: unset;
+    left: unset;
+    width: 32rem; /* match photo width exactly */
+    max-width: 100%;
   }
 }
 
@@ -5360,15 +5367,24 @@ footer {
     text-align: center;
   }
 
+  .home-right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    order: -1;
+    margin-bottom: 20px;
+    width: 100%;
+    align-items: center;
+  }
+
   .home-photo-container {
+    width: 100%;
     display: flex;
     justify-content: center;
-    order: -1;
-    margin-bottom: 12px;
   }
 
   .home-photo {
-    width: min(100%, 20rem);
+    width: min(100%, 22rem);
     aspect-ratio: 16 / 9;
     object-fit: cover;
     border-radius: 24px;
@@ -5376,6 +5392,13 @@ footer {
     padding: 8px;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 10px 30px rgba(17, 17, 17, 0.08);
+  }
+
+  .cs-proof {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: min(100%, 22rem);
   }
 }
 
