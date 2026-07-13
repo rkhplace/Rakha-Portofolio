@@ -724,6 +724,9 @@ function App() {
                     </a>
                   </div>
                 </div>
+                <div className="home-photo-container">
+                  <img className="home-photo" src={profileImage} alt="Muhammad Rakha Pratama" />
+                </div>
                 <div className="cs-proof hero-proof">
                   <span><Code2 size={19} /><strong>Frontend</strong><em>React · TypeScript</em></span>
                   <span><Globe2 size={19} /><strong>WebGIS</strong><em>Maps · Spatial</em></span>
