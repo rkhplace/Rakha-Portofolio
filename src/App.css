@@ -5214,6 +5214,31 @@ footer {
   grid-template-rows: auto auto;
 }
 
+@media (min-width: 981px) {
+  .contact-inner {
+    grid-template-columns: 1.25fr 0.75fr; /* text wider, card narrower */
+  }
+
+  .contact-inner .cs-h2 {
+    font-size: clamp(2.4rem, 4vw, 4.5rem);
+    max-width: 660px;
+  }
+
+  .contact-inner .contact-lede {
+    font-size: clamp(1.08rem, 1.15vw, 1.22rem);
+    max-width: 580px;
+    line-height: 1.5;
+    color: #4a5157;
+  }
+
+  .contact-inner .cs-contact-card {
+    padding: 20px 24px !important;
+    max-width: 360px;
+    width: 100%;
+    justify-self: end;
+  }
+}
+
 .cs-contact-card {
   display: flex;
   flex-direction: column;
