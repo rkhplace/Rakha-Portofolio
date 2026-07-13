@@ -214,19 +214,15 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
 
         window.dispatchEvent(new CustomEvent("cinematic-scene", { detail: { index: currentActiveIdx, id: activeSceneId } }));
 
-        /* ── World canvas parallax: only during home scene ── */
+        /* ── World canvas parallax: runs continuously across all scene transitions ── */
         if (wcFar && wcMid && wcRoad) {
-          const homeP = clamp(p / 1, 0, 1); // 0 → 1 during home scene slot
+          const approach = easeInOut(raw); // 0 → 1 globally across all pages
 
-          if (homeP < 1) {
-            const approach = easeInOut(clamp((homeP - 0.1) / 0.7, 0, 1));
-
-            gsap.set(wcFar,  { y: approach * -40, scale: 1 + approach * 0.14, opacity: 0.5 + approach * 0.25 });
-            gsap.set(wcMid,  { y: approach * -70, scale: 1 + approach * 0.28, opacity: 0.45 + approach * 0.45 });
-            gsap.set(wcRoad, { y: approach * -90, scale: 1 + approach * 0.5,  opacity: 0.15 + approach * 0.55 });
-            if (wcGrid) gsap.set(wcGrid, { opacity: 0.2 + approach * 0.2 });
-            if (wcFog)  gsap.set(wcFog,  { opacity: 0.55 - approach * 0.47 });
-          }
+          gsap.set(wcFar,  { y: approach * -60, scale: 1 + approach * 0.2, opacity: 0.5 + approach * 0.3 });
+          gsap.set(wcMid,  { y: approach * -100, scale: 1 + approach * 0.4, opacity: 0.45 + approach * 0.45 });
+          gsap.set(wcRoad, { y: approach * -130, scale: 1 + approach * 0.7, opacity: 0.15 + approach * 0.65 });
+          if (wcGrid) gsap.set(wcGrid, { opacity: 0.2 + approach * 0.3 });
+          if (wcFog)  gsap.set(wcFog,  { opacity: 0.55 - approach * 0.45 });
         }
       };
 
