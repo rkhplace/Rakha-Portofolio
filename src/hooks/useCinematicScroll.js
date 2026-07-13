@@ -2,6 +2,40 @@ import { useLayoutEffect } from "react";
 
 const REDUCE_MOTION = "(prefers-reduced-motion: reduce)";
 
+/*
+  SCENE CONFIG
+  ─────────────────────────────────────────────────────────────
+  Each scene occupies:
+    • stable: proportion of total scroll held at full visibility
+    • offset: which viewport-height multiple this scene starts at
+
+  Total scroll height = SCENES.length × SCENE_DURATION (in vh units)
+  Each scene gets SCENE_DURATION × 100vh of scroll space.
+  Breakdown per scene:
+    0.15 → entrance  (fade/lift in)
+    0.60 → stable    (fully visible, readable)
+    0.25 → exit      (fade/scale out, overlaps next entrance)
+*/
+const SCENES = ["home", "about", "experience", "projects", "skills", "contact"];
+const SCENE_DURATION = 1.5; // multiplier of 100vh per scene
+const TOTAL_SCROLL_MULTIPLIER = SCENES.length * SCENE_DURATION;
+
+// per-scene entrance and exit timing within its own [0..1] progress
+const ENTRANCE_END = 0.22;   // fully visible by this point
+const EXIT_START = 0.72;     // starts fading out here
+
+function clamp(v, lo, hi) {
+  return Math.min(Math.max(v, lo), hi);
+}
+
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function easeInOut(t) {
+  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+}
+
 export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
   useLayoutEffect(() => {
     if (
@@ -14,8 +48,11 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
 
     let isMounted = true;
     let cleanup = () => {};
+    let rafId = null;
 
     const setup = async () => {
+      if (!isMounted) return;
+
       const gsapModule = await import("gsap");
       const { ScrollTrigger } = await import("gsap/ScrollTrigger");
       const { default: Lenis } = await import("lenis");
@@ -27,8 +64,8 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
 
       /* ── Lenis smooth scroll ── */
       const lenis = new Lenis({
-        lerp: 0.08,
-        wheelMultiplier: 0.86,
+        lerp: 0.09,
+        wheelMultiplier: 0.88,
         smoothWheel: true,
         syncTouch: false,
       });
@@ -38,448 +75,182 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
       gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);
 
-      const root = document.querySelector("#root") || document.body;
-      let mediaContext;
+      /* ── Build DOM references ── */
+      const track = document.querySelector(".cinematic-track");
+      const stage = document.querySelector(".cinematic-stage");
+      if (!track || !stage) return;
 
-      const context = gsap.context(() => {
-        const mm = gsap.matchMedia();
-        mediaContext = mm;
+      const sceneEls = SCENES.map((id) => document.querySelector(`.scene-${id}`));
 
-        mm.add("(min-width: 981px)", () => {
-          const stage = document.querySelector(".hero-stage");
-          if (!stage) return undefined;
+      /* ── World canvas parallax (home scene background layers) ── */
+      const wcFar  = document.querySelector(".wc-far");
+      const wcMid  = document.querySelector(".wc-mid");
+      const wcRoad = document.querySelector(".wc-road");
+      const wcGrid = document.querySelector(".wc-grid");
+      const wcFog  = document.querySelector(".wc-fog");
 
-          /* ══════════════════════════════════════════
-             MASTER TIMELINE — single source of truth
-             ══════════════════════════════════════════ */
-          const master = gsap.timeline({
-            defaults: { ease: "power2.inOut" },
-            scrollTrigger: {
-              trigger: stage,
-              start: "top top",
-              end: "+=400%",
-              scrub: 1.2,
-              pin: true,
-              anticipatePin: 1,
-              invalidateOnRefresh: true,
-            },
-          });
+      /* ── Stagger children refs per scene ── */
+      const staggerMap = {};
+      sceneEls.forEach((el, i) => {
+        if (!el) return;
+        staggerMap[SCENES[i]] = Array.from(
+          el.querySelectorAll(".cs-eyebrow, .cs-h1, .cs-h2, .cs-para, .cs-actions, .cs-proof, .cs-grid, .cs-list, .cs-card, .cs-contact-card")
+        );
+      });
 
-          /* ── heroIdle ── 0.00 — 0.05
-             Landing is static and readable */
-          master.addLabel("heroIdle", 0);
+      /* ─────────────────────────────────────────────────────
+         SCROLL DRIVER — runs on every frame, reads raw scrollY
+         ───────────────────────────────────────────────────── */
+      let lastProgress = -1;
 
-          /* ── departure ── 0.05 — 0.22
-             Hero copy fades left + blurs, labels drift up */
-          master.addLabel("departure", 0.05);
+      const tick = () => {
+        const trackHeight = track.scrollHeight - window.innerHeight;
+        if (trackHeight <= 0) return;
 
-          master.to(
-            ".hero-content-layer",
-            {
-              autoAlpha: 0,
-              x: -90,
-              filter: "blur(5px)",
-              duration: 0.17,
-              ease: "power2.in",
-            },
-            "departure",
-          );
+        const raw = clamp(window.scrollY / trackHeight, 0, 1);
+        if (Math.abs(raw - lastProgress) < 0.0001) return;
+        lastProgress = raw;
 
-          master.to(
-            ".floating-label",
-            {
-              autoAlpha: 0,
-              y: -30,
-              scale: 0.9,
-              stagger: 0.012,
-              duration: 0.13,
-              ease: "power2.in",
-            },
-            "departure+=0.02",
-          );
+        // which scene index + local progress [0..1] within that scene
+        const totalSlots = SCENES.length;
+        const scaledProgress = raw * totalSlots;
+        const sceneIndex = clamp(Math.floor(scaledProgress), 0, totalSlots - 1);
+        const localP = scaledProgress - sceneIndex; // 0..1 within current scene
 
-          master.to(
-            ".scroll-to-enter",
-            { autoAlpha: 0, y: -16, duration: 0.08 },
-            "departure",
-          );
+        sceneEls.forEach((el, i) => {
+          if (!el) return;
 
-          /* ── worldApproach ── 0.14 — 0.56
-             Overlaps departure end so mid-panels act as visual anchor.
-             Far, mid, road scale up with parallax, fog lifts. */
-          master.addLabel("worldApproach", 0.14);
+          let opacity = 0;
+          let yShift = 0;
+          let scale = 1;
+          let blur = 0;
+          let pointerEvents = "none";
 
-          master.to(
-            ".wc-far",
-            { scale: 1.2, y: -50, opacity: 0.75, duration: 0.42, ease: "none" },
-            "worldApproach",
-          );
+          if (i === sceneIndex) {
+            // active scene
+            if (localP < ENTRANCE_END) {
+              const t = easeInOut(localP / ENTRANCE_END);
+              opacity = t;
+              yShift = lerp(18, 0, t);
+              scale = lerp(0.97, 1, t);
+              blur = lerp(4, 0, t);
+            } else if (localP < EXIT_START) {
+              opacity = 1;
+              yShift = 0;
+              scale = 1;
+              blur = 0;
+              pointerEvents = "auto";
+            } else {
+              const t = easeInOut((localP - EXIT_START) / (1 - EXIT_START));
+              opacity = 1 - t;
+              yShift = lerp(0, -14, t);
+              scale = lerp(1, 0.98, t);
+              blur = lerp(0, 3, t);
+            }
+          } else if (i === sceneIndex + 1) {
+            // next scene — entrance overlap crossfade
+            const overlapStart = EXIT_START;
+            if (localP >= overlapStart) {
+              const t = easeInOut((localP - overlapStart) / (1 - overlapStart));
+              opacity = t * 0.6; // pre-fade the next scene slightly
+              yShift = lerp(22, 6, t);
+              scale = lerp(0.96, 0.99, t);
+              blur = lerp(5, 1, t);
+            }
+          } else if (i === sceneIndex - 1 && i >= 0) {
+            // previous scene — fully gone
+            opacity = 0;
+          }
 
-          master.to(
-            ".wc-mid",
-            { scale: 1.4, y: -90, opacity: 0.9, duration: 0.42, ease: "none" },
-            "worldApproach",
-          );
-
-          master.to(
-            ".wc-road",
-            { opacity: 0.65, scale: 1.6, y: -100, duration: 0.42, ease: "none" },
-            "worldApproach",
-          );
-
-          master.to(
-            ".wc-grid",
-            { opacity: 0.4, duration: 0.35, ease: "none" },
-            "worldApproach",
-          );
-
-          master.to(
-            ".wc-fog",
-            { opacity: 0.08, duration: 0.35, ease: "none" },
-            "worldApproach",
-          );
-
-          /* ── immersion ── 0.48 — 0.68
-             Road becomes dominant, world deepens */
-          master.addLabel("immersion", 0.48);
-
-          master.to(
-            ".wc-road",
-            { scale: 2.4, y: -200, opacity: 0.72, duration: 0.2, ease: "none" },
-            "immersion",
-          );
-
-          master.to(
-            ".wc-far",
-            { scale: 1.35, y: -80, duration: 0.2, ease: "none" },
-            "immersion",
-          );
-
-          master.to(
-            ".wc-mid",
-            { scale: 1.65, y: -150, duration: 0.2, ease: "none" },
-            "immersion",
-          );
-
-          /* ── aboutReveal ── 0.58 — 0.74
-             About text emerges from depth: scale + x + opacity */
-          master.addLabel("aboutReveal", 0.58);
-
-          master.fromTo(
-            ".about-content-layer",
-            { autoAlpha: 0, scale: 0.82, x: -50 },
-            { autoAlpha: 1, scale: 1, x: 0, duration: 0.16, ease: "power2.out" },
-            "aboutReveal",
-          );
-
-          /* ── capabilityReveal ── 0.72 — 0.88
-             Cards start at different depths, stagger to settled grid */
-          master.addLabel("capabilityReveal", 0.72);
-
-          const cards = gsap.utils.toArray(".cap-card");
-          cards.forEach((card, i) => {
-            const depthScale = 0.62 + i * 0.06;
-            const xOff = 35 + i * 12;
-            master.fromTo(
-              card,
-              { autoAlpha: 0, scale: depthScale, x: xOff },
-              { autoAlpha: 1, scale: 1, x: 0, duration: 0.09, ease: "power2.out" },
-              `capabilityReveal+=${i * 0.028}`,
-            );
-          });
-
-          /* ── projectHint ── 0.89 — 1.00
-             Selected project fades up AFTER about + capabilities */
-          master.addLabel("projectHint", 0.89);
-
-          master.fromTo(
-            ".project-hint-layer",
-            { autoAlpha: 0, scale: 0.84, y: 40 },
-            { autoAlpha: 1, scale: 1, y: 0, duration: 0.11, ease: "power2.out" },
-            "projectHint",
-          );
-
-          return () => master.kill();
+          el.style.opacity = opacity;
+          el.style.transform = `translateY(${yShift.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+          el.style.filter = blur > 0.1 ? `blur(${blur.toFixed(2)}px)` : "none";
+          el.style.pointerEvents = pointerEvents;
+          el.style.visibility = opacity < 0.005 ? "hidden" : "visible";
         });
 
-        /* ═══════════════════════════════════════════════
-           SECTION SCROLL ANIMATIONS — all breakpoints
-           Depth-based reveals matching hero-to-about quality
-           ═══════════════════════════════════════════════ */
+        /* ── World canvas parallax: only during home scene ── */
+        if (wcFar && wcMid && wcRoad) {
+          const homeP = clamp(scaledProgress / 1, 0, 1); // 0 → 1 during home scene slot
 
-        /* ── Ticker ── */
-        const ticker = document.querySelector(".ticker");
-        if (ticker) {
-          gsap.fromTo(
-            ticker,
-            { y: 24, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: ticker,
-                start: "top 94%",
-                end: "top 72%",
-                scrub: 0.5,
-              },
-            },
-          );
+          if (homeP < 1) {
+            const approach = easeInOut(clamp((homeP - 0.1) / 0.7, 0, 1));
+
+            gsap.set(wcFar,  { y: approach * -40, scale: 1 + approach * 0.14, opacity: 0.5 + approach * 0.25 });
+            gsap.set(wcMid,  { y: approach * -70, scale: 1 + approach * 0.28, opacity: 0.45 + approach * 0.45 });
+            gsap.set(wcRoad, { y: approach * -90, scale: 1 + approach * 0.5,  opacity: 0.15 + approach * 0.55 });
+            if (wcGrid) gsap.set(wcGrid, { opacity: 0.2 + approach * 0.2 });
+            if (wcFog)  gsap.set(wcFog,  { opacity: 0.55 - approach * 0.47 });
+          }
         }
 
-        /* ── Section headings ── */
-        gsap.utils.toArray(".section-heading").forEach((heading) => {
-          gsap.fromTo(
-            heading,
-            { y: 32, opacity: 0, scale: 0.97 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: heading,
-                start: "top 90%",
-                end: "top 60%",
-                scrub: 0.7,
-              },
-            },
-          );
+        /* ── Navbar active scene sync ── */
+        const activeSceneId = SCENES[sceneIndex];
+        document.querySelectorAll(".nav a").forEach((link) => {
+          const href = link.getAttribute("href");
+          const isActive = href === `#${activeSceneId}` ||
+            (activeSceneId === "home" && href === "#home");
+          link.classList.toggle("active", isActive);
         });
 
-        /* ── About sticky header ── */
-        const aboutSticky = document.querySelector(".about-sticky");
-        if (aboutSticky) {
-          gsap.fromTo(
-            aboutSticky,
-            { y: 28, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: aboutSticky,
-                start: "top 90%",
-                end: "top 62%",
-                scrub: 0.6,
-              },
-            },
-          );
-        }
+        /* ── Dispatch custom event for React state sync ── */
+        window.dispatchEvent(new CustomEvent("cinematic-scene", { detail: { index: sceneIndex, id: activeSceneId } }));
+      };
 
-        /* ── About copy + stats ── */
-        const aboutCopy = document.querySelector(".about-copy");
-        if (aboutCopy) {
-          gsap.fromTo(
-            aboutCopy,
-            { y: 36, opacity: 0, scale: 0.96 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: aboutCopy,
-                start: "top 92%",
-                end: "top 64%",
-                scrub: 0.6,
-              },
-            },
-          );
-        }
+      const onScroll = () => {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
+      };
 
-        /* ── Story chapters: stagger from depth ── */
-        gsap.utils.toArray(".story-chapter").forEach((ch, i) => {
-          gsap.fromTo(
-            ch,
-            { y: 44, opacity: 0, scale: 0.92 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: ch,
-                start: "top 93%",
-                end: "top 66%",
-                scrub: 0.5,
-              },
-            },
-          );
-        });
+      window.addEventListener("scroll", onScroll, { passive: true });
+      tick(); // initial
 
-        /* ── Service cards: enter from different depths ── */
-        gsap.utils.toArray(".service-card").forEach((card, i) => {
-          const xOffset = i % 2 === 0 ? -18 : 18;
-          gsap.fromTo(
-            card,
-            { y: 48, opacity: 0, scale: 0.9, x: xOffset },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              x: 0,
-              duration: 1,
-              scrollTrigger: {
-                trigger: card,
-                start: "top 94%",
-                end: "top 64%",
-                scrub: 0.6,
-              },
-            },
-          );
-        });
+      /* ── Navbar click → scroll to scene ── */
+      const navClickHandler = (e) => {
+        const link = e.target.closest("a[href^='#']");
+        if (!link) return;
+        const href = link.getAttribute("href");
+        const targetId = href.replace("#", "");
+        const sceneIdx = SCENES.indexOf(targetId);
+        if (sceneIdx < 0) return;
 
-        /* ── Project cards: rise from depth with slight rotation ── */
-        gsap.utils.toArray(".project-card").forEach((card, i) => {
-          gsap.fromTo(
-            card,
-            { y: 55, opacity: 0, scale: 0.88, rotateX: 4 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              rotateX: 0,
-              duration: 1,
-              scrollTrigger: {
-                trigger: card,
-                start: "top 95%",
-                end: "top 64%",
-                scrub: 0.6,
-              },
-            },
-          );
-        });
+        e.preventDefault();
+        const trackH = track.scrollHeight - window.innerHeight;
+        // scroll to the stable zone of that scene
+        const targetProgress = (sceneIdx + ENTRANCE_END + 0.1) / SCENES.length;
+        const targetScroll = targetProgress * trackH;
+        lenis.scrollTo(targetScroll, { duration: 1.2, easing: easeInOut });
+      };
 
-        /* ── Timeline items: slide from left ── */
-        gsap.utils.toArray(".timeline-item").forEach((item, i) => {
-          gsap.fromTo(
-            item,
-            { x: -28, opacity: 0, scale: 0.95 },
-            {
-              x: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: item,
-                start: "top 92%",
-                end: "top 68%",
-                scrub: 0.5,
-              },
-            },
-          );
-        });
+      document.querySelector(".nav")?.addEventListener("click", navClickHandler);
 
-        /* ── Contact card ── */
-        const contactCard = document.querySelector(".contact-card");
-        if (contactCard) {
-          gsap.fromTo(
-            contactCard,
-            { y: 36, opacity: 0, scale: 0.94 },
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: contactCard,
-                start: "top 90%",
-                end: "top 62%",
-                scrub: 0.6,
-              },
-            },
-          );
-        }
+      /* ── Enter world button ── */
+      const enterBtnHandler = (e) => {
+        const btn = e.target.closest(".enter-world-btn");
+        if (!btn) return;
+        e.preventDefault();
+        const trackH = track.scrollHeight - window.innerHeight;
+        const targetProgress = (1 + ENTRANCE_END + 0.1) / SCENES.length; // about scene
+        lenis.scrollTo(targetProgress * trackH, { duration: 1.4, easing: easeInOut });
+      };
+      document.querySelector(".cinematic-stage")?.addEventListener("click", enterBtnHandler);
 
-        /* ── Contact lede text ── */
-        const contactLede = document.querySelector(".contact-lede");
-        if (contactLede) {
-          gsap.fromTo(
-            contactLede,
-            { y: 22, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: contactLede,
-                start: "top 92%",
-                end: "top 72%",
-                scrub: 0.5,
-              },
-            },
-          );
-        }
-
-        /* ── Stat cards ── */
-        gsap.utils.toArray(".stat-card").forEach((stat) => {
-          gsap.fromTo(
-            stat,
-            { y: 16, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: stat,
-                start: "top 94%",
-                end: "top 76%",
-                scrub: 0.4,
-              },
-            },
-          );
-        });
-
-        /* ── Footer ── */
-        const footer = document.querySelector("footer");
-        if (footer) {
-          gsap.fromTo(
-            footer,
-            { y: 16, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: footer,
-                start: "top 96%",
-                end: "top 82%",
-                scrub: 0.4,
-              },
-            },
-          );
-        }
-
-        /* ── Section bridges: subtle fade-in ── */
-        gsap.utils.toArray(".section-bridge").forEach((bridge) => {
-          gsap.fromTo(
-            bridge,
-            { scaleX: 0 },
-            {
-              scaleX: 1,
-              duration: 1,
-              scrollTrigger: {
-                trigger: bridge,
-                start: "top 92%",
-                end: "top 72%",
-                scrub: 0.4,
-              },
-            },
-          );
-        });
-      }, root);
-
-      const refresh = () => ScrollTrigger.refresh();
+      const refresh = () => {
+        ScrollTrigger.refresh();
+        tick();
+      };
       window.addEventListener("load", refresh);
       requestAnimationFrame(refresh);
 
       cleanup = () => {
+        window.removeEventListener("scroll", onScroll);
         window.removeEventListener("load", refresh);
-        mediaContext?.revert();
-        context.revert();
+        document.querySelector(".nav")?.removeEventListener("click", navClickHandler);
+        document.querySelector(".cinematic-stage")?.removeEventListener("click", enterBtnHandler);
+        if (rafId) cancelAnimationFrame(rafId);
         lenis.destroy();
         gsap.ticker.remove(raf);
+        ScrollTrigger.getAll().forEach((t) => t.kill());
       };
     };
 

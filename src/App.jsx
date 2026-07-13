@@ -52,9 +52,9 @@ import { useCinematicScroll } from "./hooks/useCinematicScroll";
 const navItems = [
   ["Home", "#home"],
   ["About", "#about"],
-  ["Skills", "#services"],
-  ["Projects", "#portfolio"],
   ["Experience", "#experience"],
+  ["Projects", "#projects"],
+  ["Skills", "#skills"],
   ["Contact", "#contact"],
 ];
 
@@ -458,7 +458,7 @@ function App() {
   const reduceMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [activeSection, setActiveSection] = useState("Home");
+  const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
   const [githubProjects, setGithubProjects] = useState([]);
   const [projectsLoading, setProjectsLoading] = useState(true);
@@ -475,19 +475,9 @@ function App() {
   const enterWorld = (event) => {
     event.preventDefault();
     closeMenu();
-    if (window.innerWidth >= 981) {
-      const stage = document.querySelector(".hero-stage");
-      const offset = stage ? stage.offsetTop : 0;
-      window.scrollTo({
-        top: offset + window.innerHeight * 2.5,
-        behavior: "smooth",
-      });
-    } else {
-      window.scrollTo({
-        top: Math.max(window.innerHeight * 0.9, 680),
-        behavior: "smooth",
-      });
-    }
+    // The hook's navClickHandler intercepts #about — just do a native click
+    const aboutLink = document.querySelector(".nav a[href='#about']");
+    if (aboutLink) aboutLink.click();
   };
 
   useEffect(() => {
@@ -609,54 +599,18 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      let current = navItems[0];
-      const nextScrolled = window.scrollY > 8;
-      const activationLine = Math.min(window.innerHeight * 0.42, 340);
-
-      setIsScrolled((previous) => (previous === nextScrolled ? previous : nextScrolled));
-
-      const heroStage = document.querySelector(".hero-stage");
-      const isDesktopWorld = window.innerWidth > 980 && heroStage;
-
-      if (isDesktopWorld) {
-        const heroStart = heroStage.offsetTop;
-        const heroEnd = heroStart + window.innerHeight * 4.5;
-        const worldProgress = (window.scrollY - heroStart) / Math.max(heroEnd - heroStart, 1);
-
-        if (worldProgress >= 0 && worldProgress < 1) {
-          current = navItems[0];
-          setActiveSection((previous) => (previous === current[0] ? previous : current[0]));
-          return;
-        }
-      }
-
-      navItems.forEach((item) => {
-        const [, href] = item;
-        const section = document.querySelector(href);
-        if (section) {
-          const rect = section.getBoundingClientRect();
-          if (rect.top <= activationLine && rect.bottom > activationLine) {
-            current = item;
-          }
-        }
-      });
-
-      if (current === navItems[0]) {
-        navItems.forEach((item) => {
-          const [, href] = item;
-          const section = document.querySelector(href);
-          if (section && section.getBoundingClientRect().top <= activationLine) {
-            current = item;
-          }
-        });
-      }
-
-      setActiveSection((previous) => (previous === current[0] ? previous : current[0]));
+      setIsScrolled(window.scrollY > 8);
     };
-
-    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const onScene = (e) => {
+      setActiveSection(e.detail.id);
+    };
+    window.addEventListener("cinematic-scene", onScene);
+    return () => window.removeEventListener("cinematic-scene", onScene);
   }, []);
 
   useEffect(() => {
@@ -686,16 +640,19 @@ function App() {
           <img className="brand-mark" src={logoImage} alt="Rakha logo" />
         </a>
         <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
-          {navItems.map(([label, href]) => (
-            <a
-              key={href}
-              href={href}
-              className={activeSection === label ? "active" : undefined}
-              onClick={closeMenu}
-            >
-              {label}
-            </a>
-          ))}
+          {navItems.map(([label, href]) => {
+            const sceneId = href.replace("#", "");
+            return (
+              <a
+                key={href}
+                href={href}
+                className={activeSection === sceneId ? "active" : undefined}
+                onClick={closeMenu}
+              >
+                {label}
+              </a>
+            );
+          })}
         </nav>
         <button
           className="menu-button"
@@ -717,381 +674,263 @@ function App() {
       </div>
 
       <main>
-        <section id="home" className="hero-stage">
-          {/* ── Persistent World Canvas ── */}
-          <div className="world-canvas" aria-hidden="true">
-            <div className="wc-far" />
-            <div className="wc-mid">
-              <span className="mid-panel" />
-              <span className="mid-panel" />
-              <span className="mid-panel" />
-              <span className="mid-panel" />
-            </div>
-            <div className="wc-road">
-              <div className="road-horizon" />
-              <div className="road-surface" />
-              <div className="road-edges" />
-              <div className="road-centerline" />
-              <div className="road-contours" />
-            </div>
-            <div className="wc-grid" />
-            <div className="wc-fog" />
-          </div>
+        {/* ═══════════════════════════════════════════════════
+            CINEMATIC SCROLL TRACK
+            Height = 6 scenes × 150vh each = 900vh
+            sticky stage locks to viewport; scenes swap via opacity
+            ═══════════════════════════════════════════════════ */}
+        <div className="cinematic-track">
+          <div className="cinematic-stage">
 
-          {/* ── Hero Content Layer ── */}
-          <div className="hero-content-layer">
-            <div className="hcl-inner">
-              <motion.div
-                className="hero-copy"
-                initial={reduceMotion ? false : "hidden"}
-                animate="visible"
-                variants={staggerVariants}
-              >
-                <motion.span className="eyebrow" variants={fadeUpVariants}>
-                  Portfolio / 2026
-                </motion.span>
-                <motion.h1 className="masked-title" variants={fadeUpVariants}>
-                  <span>Building thoughtful</span>
-                  <span>digital experiences.</span>
-                </motion.h1>
-                <motion.p variants={fadeUpVariants}>
-                  Muhammad Rakha Pratama \u2014 a Frontend Developer exploring
-                  interactive web, information systems, and geospatial experiences.
-                </motion.p>
-                <motion.div className="hero-actions" variants={fadeUpVariants}>
-                  <a className="button primary magnetic-target" href="#home" onClick={enterWorld}>
-                    Enter my world <ArrowUpRight size={17} />
-                  </a>
-                  <a className="button ghost magnetic-target" href="#portfolio">
-                    View projects <ArrowUpRight size={17} />
-                  </a>
-                </motion.div>
-              </motion.div>
-              <motion.div
-                className="hero-proof"
-                initial={reduceMotion ? false : "hidden"}
-                animate="visible"
-                variants={fadeUpVariants}
-                aria-label="Core focus"
-              >
-                <span>
-                  <Code2 size={19} />
-                  <strong>Frontend</strong>
-                  <em>React \u00b7 TypeScript</em>
-                </span>
-                <span>
-                  <Globe2 size={19} />
-                  <strong>WebGIS</strong>
-                  <em>Maps \u00b7 Spatial Data</em>
-                </span>
-                <span>
-                  <Layers3 size={19} />
-                  <strong>Cloud</strong>
-                  <em>Deploy \u00b7 Scalable</em>
-                </span>
-              </motion.div>
-            </div>
-          </div>
-
-          {/* ── Floating Labels ── */}
-          <span className="floating-label fl-frontend">Frontend</span>
-          <span className="floating-label fl-webgis">WebGIS</span>
-          <span className="floating-label fl-systems">Information Systems</span>
-
-          {/* ── About Content Layer (revealed by GSAP) ── */}
-          <div className="about-content-layer">
-            <div className="acl-inner">
-              <div className="acl-text">
-                <span className="eyebrow">About Me</span>
-                <h2>
-                  I build interfaces that turn complex systems into clear digital
-                  experiences<span style={{ color: "#6e8aa4" }}>.</span>
-                </h2>
-                <p>
-                  I\u2019m Muhammad Rakha Pratama, a Frontend Developer who loves
-                  crafting elegant interfaces and building geospatial solutions
-                  that make data easier to understand and act on.
-                </p>
-                <a className="button ghost" href="#experience">
-                  View my experience <ArrowUpRight size={17} />
-                </a>
+            {/* ── Persistent World Background (always mounted) ── */}
+            <div className="world-canvas" aria-hidden="true">
+              <div className="wc-far" />
+              <div className="wc-mid">
+                <span className="mid-panel" />
+                <span className="mid-panel" />
+                <span className="mid-panel" />
+                <span className="mid-panel" />
               </div>
-              <div className="capability-grid">
-                {capabilities.map((cap) => {
-                  const Icon = cap.icon;
-                  return (
-                    <div className="cap-card" key={cap.id}>
-                      <div className="cap-card-head">
-                        <Icon size={22} />
-                        <ArrowUpRight size={15} />
+              <div className="wc-road">
+                <div className="road-horizon" />
+                <div className="road-surface" />
+                <div className="road-edges" />
+                <div className="road-centerline" />
+                <div className="road-contours" />
+              </div>
+              <div className="wc-grid" />
+              <div className="wc-fog" />
+            </div>
+
+            {/* ══════════ SCENE 1 — HOME ══════════ */}
+            <section id="home" className="cs-scene scene-home" aria-label="Home">
+              <div className="cs-scene-inner home-inner">
+                <div className="cs-copy">
+                  <span className="cs-eyebrow eyebrow">Portfolio / 2026</span>
+                  <h1 className="cs-h1 masked-title">
+                    <span>Building thoughtful</span>
+                    <span>digital experiences.</span>
+                  </h1>
+                  <p className="cs-para">
+                    Muhammad Rakha Pratama — a Frontend Developer exploring
+                    interactive web, information systems, and geospatial experiences.
+                  </p>
+                  <div className="cs-actions hero-actions">
+                    <a className="button primary enter-world-btn" href="#about">
+                      Enter my world <ArrowUpRight size={17} />
+                    </a>
+                    <a className="button ghost" href="#projects">
+                      View projects <ArrowUpRight size={17} />
+                    </a>
+                  </div>
+                </div>
+                <div className="cs-proof hero-proof">
+                  <span><Code2 size={19} /><strong>Frontend</strong><em>React · TypeScript</em></span>
+                  <span><Globe2 size={19} /><strong>WebGIS</strong><em>Maps · Spatial</em></span>
+                  <span><Layers3 size={19} /><strong>Cloud</strong><em>Deploy · Scale</em></span>
+                </div>
+              </div>
+              <div className="cs-scene-scroll-hint" aria-hidden="true">
+                <div className="ste-mouse"><div className="ste-wheel" /></div>
+                <span>SCROLL TO ENTER</span>
+              </div>
+            </section>
+
+            {/* ══════════ SCENE 2 — ABOUT ══════════ */}
+            <section id="about" className="cs-scene scene-about" aria-label="About">
+              <div className="cs-scene-inner about-inner">
+                <div className="cs-about-left">
+                  <span className="cs-eyebrow eyebrow">About Me</span>
+                  <h2 className="cs-h2">
+                    I build interfaces that turn complex systems into clear digital
+                    experiences<span style={{ color: "#6e8aa4" }}>.</span>
+                  </h2>
+                  <p className="cs-para">
+                    I'm Muhammad Rakha Pratama, a Frontend Developer who loves
+                    crafting elegant interfaces and building geospatial solutions
+                    that make data easier to understand.
+                  </p>
+                  <div className="cs-stats stats-grid">
+                    {stats.map(([value, label]) => (
+                      <div className="stat-card" key={label}>
+                        <strong>{value}</strong>
+                        <span>{label}</span>
                       </div>
-                      <h4>{cap.title}</h4>
-                      <p>{cap.text}</p>
-                      <div className="cap-tags">
-                        {cap.tags.map((t) => (
-                          <span key={t}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="cs-about-right">
+                  <div className="cs-grid capability-grid">
+                    {capabilities.map((cap) => {
+                      const Icon = cap.icon;
+                      return (
+                        <div className="cap-card" key={cap.id}>
+                          <div className="cap-card-head">
+                            <Icon size={22} />
+                            <ArrowUpRight size={15} />
+                          </div>
+                          <h4>{cap.title}</h4>
+                          <p>{cap.text}</p>
+                          <div className="cap-tags">
+                            {cap.tags.map((t) => <span key={t}>{t}</span>)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* ══════════ SCENE 3 — EXPERIENCE ══════════ */}
+            <section id="experience" className="cs-scene scene-experience" aria-label="Experience">
+              <div className="cs-scene-inner experience-inner">
+                <div className="cs-section-head">
+                  <span className="cs-eyebrow eyebrow">Experience</span>
+                  <h2 className="cs-h2">Learning timeline through shipped work.</h2>
+                  <p className="cs-para">
+                    Milestones from coursework, deployment practice, and product experiments.
+                  </p>
+                </div>
+                <div className="cs-list timeline-list">
+                  {timelineItems.map((item) => (
+                    <article className="cs-card timeline-item" key={item.title}>
+                      <span className="timeline-year">{item.year}</span>
+                      <div>
+                        <h3>{item.title}</h3>
+                        <p>{item.text}</p>
+                        <div className="tag-row">
+                          {item.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {/* ══════════ SCENE 4 — PROJECTS ══════════ */}
+            <section id="projects" className="cs-scene scene-projects" aria-label="Projects">
+              <div className="cs-scene-inner projects-inner">
+                <div className="cs-section-head">
+                  <span className="cs-eyebrow eyebrow">Selected Work</span>
+                  <h2 className="cs-h2">Public projects, presented with depth.</h2>
+                </div>
+                <div className="cs-projects-grid">
+                  {(projectsLoading ? fallbackProjects : featuredProjects).slice(0, 6).map((project, index) => (
+                    <article className="cs-card cs-project-card" key={project.id}>
+                      <div className="cs-project-meta">
+                        <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
+                        <span className="project-type">{project.type}</span>
+                      </div>
+                      <h3>{project.title}</h3>
+                      <p>{project.description}</p>
+                      <div className="tag-row">
+                        {project.stack.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                      <div className="cs-project-links">
+                        <a href={project.href} target="_blank" rel="noopener noreferrer">
+                          Code <ArrowUpRight size={13} />
+                        </a>
+                        {project.demo && (
+                          <a href={project.demo} target="_blank" rel="noopener noreferrer">
+                            Demo <ArrowUpRight size={13} />
+                          </a>
+                        )}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <div className="cs-projects-cta">
+                  <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
+                    All repositories <ArrowUpRight size={16} />
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            {/* ══════════ SCENE 5 — SKILLS ══════════ */}
+            <section id="skills" className="cs-scene scene-skills" aria-label="Skills">
+              <div className="cs-scene-inner skills-inner">
+                <div className="cs-section-head">
+                  <span className="cs-eyebrow eyebrow">Skills</span>
+                  <h2 className="cs-h2">Skills I use across my projects.</h2>
+                  <p className="cs-para">
+                    Developed through coursework, public repositories, and deployment practice.
+                  </p>
+                </div>
+                <div className="cs-grid service-grid">
+                  {services.map(({ icon: Icon, title, text, tags }) => (
+                    <article className="cs-card service-card" key={title}>
+                      <Icon size={24} />
+                      <h3>{title}</h3>
+                      <p>{text}</p>
+                      <div className="tag-row">
+                        {tags.map((tag) => <span key={tag}>{tag}</span>)}
+                      </div>
+                    </article>
+                  ))}
+                </div>
+                <div className="skills-ticker">
+                  <div className="ticker-track">
+                    {[0, 1, 2].map((group) => (
+                      <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
+                        {techStack.map((tech) => (
+                          <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
+                            <img src={tech.logo} alt="" aria-hidden="true" />
+                          </span>
                         ))}
                       </div>
-                    </div>
-                  );
-                })}
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          {/* ── Selected Project Layer (revealed last by GSAP) ── */}
-          <div className="project-hint-layer">
-            <div className="phl-inner">
-              <span className="eyebrow">Selected Project</span>
-              <article className="selected-project-card">
-                <img src={landscapeImage} alt="GeoVista Dashboard preview" />
-                <div>
-                  <strong>
-                    GeoVista Dashboard <ArrowUpRight size={16} />
-                  </strong>
-                  <p>
-                    An interactive geospatial dashboard for monitoring
-                    environmental data and spatial analytics.
+            {/* ══════════ SCENE 6 — CONTACT ══════════ */}
+            <section id="contact" className="cs-scene scene-contact" aria-label="Contact">
+              <div className="cs-scene-inner contact-inner">
+                <div className="cs-section-head">
+                  <span className="cs-eyebrow eyebrow">Contact</span>
+                  <h2 className="cs-h2">Let's build something meaningful.</h2>
+                  <p className="cs-para contact-lede">
+                    Open to collaboration, internship conversations, and practical product work.
                   </p>
-                  <div className="sp-tags">
-                    <span>WebGIS</span>
-                    <span>Analytics</span>
-                    <span>Maps</span>
-                    <span>Data Visualization</span>
-                  </div>
-                  <a href="#portfolio">
-                    View case study <ArrowUpRight size={14} />
+                </div>
+                <div className="cs-contact-card contact-card">
+                  <a href="mailto:mrakhaptatama135@gmail.com">
+                    <Mail size={18} /> mrakhaptatama135@gmail.com
                   </a>
+                  <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noreferrer">
+                    <Linkedin size={18} /> LinkedIn
+                  </a>
+                  <a href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
+                    <Github size={18} /> GitHub
+                  </a>
+                  <a href="https://www.instagram.com/rkhap_/" target="_blank" rel="noreferrer">
+                    <Instagram size={18} /> Instagram
+                  </a>
+                  <span><MapPin size={18} /> Bandung, Indonesia</span>
                 </div>
-              </article>
-            </div>
-          </div>
+                <footer className="cinematic-footer">
+                  <span>© 2026 Muhammad Rakha Pratama</span>
+                  <button
+                    type="button"
+                    className="back-to-top"
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                  >
+                    Back to top
+                  </button>
+                </footer>
+              </div>
+            </section>
 
-          {/* ── Scroll Hint ── */}
-          <div className="scroll-to-enter" aria-hidden="true">
-            <div className="ste-mouse">
-              <div className="ste-wheel" />
-            </div>
-            <span>SCROLL TO ENTER</span>
-          </div>
-        </section>
 
-        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
-
-        <div className="digital-world">
-          <motion.section
-            className="ticker"
-            aria-label="Core skills"
-            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          >
-            <div className="ticker-track">
-              {[0, 1, 2].map((group) => (
-                <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
-                  {techStack.map((tech) => (
-                    <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
-                      <img src={tech.logo} alt="" aria-hidden="true" />
-                    </span>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </motion.section>
-
-          <section id="about" className="section-shell about about-story">
-          <div className="about-sticky">
-            <span className="eyebrow">About</span>
-            <h2>I turn complex ideas into interfaces that feel clear, responsive, and alive.</h2>
-            <div className="about-progress" aria-hidden="true">
-              <span className="about-progress-bar" />
-            </div>
-          </div>
-          <motion.div
-            className="about-grid story-grid"
-            initial={reduceMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={viewportOnce}
-            variants={staggerVariants}
-          >
-            <motion.div className="about-copy" variants={fadeUpVariants}>
-              <p>
-                My projects cover marketplaces, itinerary planning, cyber
-                security coursework, cloud deployment, data structures, database
-                security, and product design. I focus on work that can be tested,
-                reviewed, and improved.
-              </p>
-              <motion.div className="stats-grid" variants={staggerVariants}>
-                {stats.map(([value, label]) => (
-                  <motion.div className="stat-card" key={label} variants={fadeUpVariants}>
-                    <strong>{value}</strong>
-                    <span>{label}</span>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-            <motion.div className="story-chapters" variants={staggerVariants}>
-              {aboutChapters.map((chapter) => (
-                <article className="story-chapter" key={chapter.title}>
-                  <span>{chapter.kicker}</span>
-                  <h3>{chapter.title}</h3>
-                  <p>{chapter.text}</p>
-                </article>
-              ))}
-            </motion.div>
-          </motion.div>
-          </section>
-
-          <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
-
-          <AnimatedSection id="services" className="section-shell services">
-          <div className="section-heading split">
-            <div>
-              <span className="eyebrow">Skills</span>
-              <h2>Skills I use across my projects.</h2>
-            </div>
-            <p>
-              A compact set of skills developed through coursework, public
-              repositories, and deployment practice.
-            </p>
-          </div>
-          <motion.div
-            className="service-grid"
-            initial={reduceMotion ? false : "hidden"}
-            whileInView="visible"
-            viewport={viewportOnce}
-            variants={staggerVariants}
-          >
-            {services.map(({ icon: Icon, title, text, tags }) => (
-              <motion.article
-                className="service-card"
-                key={title}
-                variants={fadeUpVariants}
-                whileHover={reduceMotion ? undefined : { y: -5 }}
-                transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <Icon size={24} />
-                <h3>{title}</h3>
-                <p>{text}</p>
-                <div className="tag-row">
-                  {tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
-                </div>
-              </motion.article>
-            ))}
-          </motion.div>
-          </AnimatedSection>
-
-          <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
-
-          <section id="portfolio" className="portfolio">
-          <div className="section-heading split">
-            <div>
-              <span className="eyebrow">Selected work</span>
-              <h2>Public projects, presented with more depth.</h2>
-            </div>
-            <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
-              See all repositories <ArrowUpRight size={17} />
-            </a>
-          </div>
-
-          {projectsLoading ? (
-            <motion.div
-              className="featured-grid section-shell"
-              initial={reduceMotion ? false : "hidden"}
-              whileInView="visible"
-              viewport={viewportOnce}
-              variants={staggerVariants}
-            >
-              {projectSkeletons.map((item) => <ProjectSkeletonCard key={item} />)}
-            </motion.div>
-          ) : (
-            <motion.div
-              className="featured-grid section-shell"
-              initial={reduceMotion ? false : "hidden"}
-              whileInView="visible"
-              viewport={viewportOnce}
-              variants={staggerVariants}
-            >
-              {featuredProjects.map((project, index) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  index={index}
-                  onSelect={() => setSelectedProject(project)}
-                />
-              ))}
-            </motion.div>
-          )}
-          </section>
-        </div>
-
-        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
-
-        <AnimatedSection id="experience" className="section-shell timeline-section">
-          <div className="section-heading split">
-            <div>
-              <span className="eyebrow">Experience</span>
-              <h2>Learning timeline through shipped work.</h2>
-            </div>
-            <p>
-              A compact view of milestones from coursework, deployment practice,
-              product experiments, and portfolio improvements.
-            </p>
-          </div>
-          <div className="timeline-list">
-            {timelineItems.map((item) => (
-              <article className="timeline-item" key={item.title}>
-                <span className="timeline-year">{item.year}</span>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.text}</p>
-                  <div className="tag-row">
-                    {item.tags.map((tag) => <span key={tag}>{tag}</span>)}
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-        </AnimatedSection>
-
-        <div className="section-bridge" aria-hidden="true"><div className="bridge-line" /></div>
-
-        <AnimatedSection id="contact" className="section-shell contact">
-          <BackgroundStreaks className="contact-streaks" />
-          <div>
-            <span className="eyebrow">Contact</span>
-            <h2>Let's build something meaningful.</h2>
-            <p className="contact-lede">
-              Have a project, an opportunity, or an idea worth exploring?
-              I am open to collaboration, internship conversations, and practical product work.
-            </p>
-          </div>
-          <div className="contact-card">
-            <a href="mailto:mrakhaptatama135@gmail.com">
-              <Mail size={18} /> mrakhaptatama135@gmail.com
-            </a>
-            <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noreferrer">
-              <Linkedin size={18} /> LinkedIn
-            </a>
-            <a href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
-              <Github size={18} /> GitHub
-            </a>
-            <a href="https://www.instagram.com/rkhap_/" target="_blank" rel="noreferrer">
-              <Instagram size={18} /> Instagram
-            </a>
-            <span>
-              <MapPin size={18} /> Bandung, Indonesia
-            </span>
-          </div>
-        </AnimatedSection>
+          </div>{/* /cinematic-stage */}
+        </div>{/* /cinematic-track */}
       </main>
 
-      <footer>
-        <span>{"\u00a9"} 2026 Muhammad Rakha Pratama</span>
-        <a href="#home">Back to top</a>
-      </footer>
+
 
       {selectedProject && (
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />

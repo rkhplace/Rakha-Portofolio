@@ -4760,3 +4760,469 @@ footer {
 .contact {
   scroll-margin-top: 80px;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   CINEMATIC SCROLL SYSTEM
+   track → sticky stage → 6 absolute scenes (crossfade)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Track: sets total scroll height ── */
+.cinematic-track {
+  position: relative;
+  /* 6 scenes × 1.5 = 9 screen heights */
+  height: calc(6 * 150vh);
+}
+
+@supports (height: 100dvh) {
+  .cinematic-track {
+    height: calc(6 * 150dvh);
+  }
+}
+
+/* ── Stage: locked to viewport ── */
+.cinematic-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* ── All scenes: stacked absolute, inset 0 ── */
+.cs-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  /* GPU compositing layer — transform drives crossfade */
+  will-change: opacity, transform, filter;
+  transition: none; /* JS controls everything */
+}
+
+/* ── Scene inner container ── */
+.cs-scene-inner {
+  position: relative;
+  z-index: 2;
+  width: min(100% - 48px, 1280px);
+  margin: 0 auto;
+  padding: clamp(80px, 9vh, 120px) 0 clamp(40px, 5vh, 70px);
+}
+
+/* ─────────────────────────────────────────
+   SCENE 1: HOME
+   ───────────────────────────────────────── */
+.home-inner {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 32px;
+  height: 100%;
+  padding-top: 80px;
+}
+
+.cs-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-self: center;
+}
+
+.cs-eyebrow {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.cs-h1 {
+  font-size: clamp(3.4rem, 5vw, 6.4rem);
+  font-weight: 780;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+  max-width: 720px;
+}
+
+.cs-h1::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: #6e8aa4;
+  border-radius: 999px;
+  margin-top: 22px;
+}
+
+.cs-para {
+  color: #626b73;
+  font-size: clamp(0.96rem, 1vw, 1.08rem);
+  line-height: 1.52;
+  max-width: 560px;
+  margin: 0 0 28px;
+}
+
+.cs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 0;
+}
+
+.cs-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  align-self: end;
+  max-width: 560px;
+}
+
+.cs-proof span {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 12px;
+  align-items: start;
+  border-left: 1px solid var(--line-strong);
+  padding: 2px 20px;
+  font-size: 0.78rem;
+  color: #687179;
+  line-height: 1.35;
+}
+
+.cs-proof span:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.cs-proof svg { grid-row: span 2; margin-top: 2px; color: var(--ink); }
+.cs-proof strong { color: var(--ink); font-size: 0.8rem; line-height: 1.2; }
+.cs-proof em { font-style: normal; }
+
+/* ── Scroll hint ── */
+.cs-scene-scroll-hint {
+  position: absolute;
+  bottom: clamp(16px, 2.5vh, 32px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(17, 17, 17, 0.38);
+}
+
+.cs-scene-scroll-hint span {
+  font-size: 0.64rem;
+  font-weight: 720;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────
+   SCENE 2: ABOUT
+   ───────────────────────────────────────── */
+.about-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 3.5vw, 60px);
+  align-items: start;
+  padding-top: clamp(90px, 10vh, 130px);
+}
+
+.cs-about-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cs-h2 {
+  font-size: clamp(2rem, 3.5vw, 4rem);
+  font-weight: 690;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  margin: 12px 0 0;
+  max-width: 520px;
+}
+
+.cs-stats {
+  margin-top: 8px;
+}
+
+/* ─────────────────────────────────────────
+   SCENE 3: EXPERIENCE
+   ───────────────────────────────────────── */
+.experience-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: start;
+  padding-top: clamp(90px, 10vh, 130px);
+}
+
+.cs-section-head {
+  position: sticky;
+  top: clamp(100px, 12vh, 130px);
+}
+
+.cs-section-head .cs-eyebrow { margin-bottom: 12px; }
+
+.cs-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─────────────────────────────────────────
+   SCENE 4: PROJECTS
+   ───────────────────────────────────────── */
+.projects-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: clamp(80px, 9vh, 110px);
+  overflow: hidden;
+}
+
+.cs-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.cs-project-card {
+  padding: 16px !important;
+}
+
+.cs-project-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.cs-project-links {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.cs-project-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-weight: 640;
+  color: #6e8aa4;
+  text-decoration: none;
+}
+
+.cs-project-links a:hover { text-decoration: underline; }
+
+.cs-projects-cta {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 4px;
+}
+
+/* ─────────────────────────────────────────
+   SCENE 5: SKILLS
+   ───────────────────────────────────────── */
+.skills-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-top: clamp(80px, 9vh, 110px);
+}
+
+.skills-ticker {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ─────────────────────────────────────────
+   SCENE 6: CONTACT
+   ───────────────────────────────────────── */
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(24px, 4vw, 72px);
+  align-items: start;
+  padding-top: clamp(90px, 10vh, 130px);
+}
+
+.cs-contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px !important;
+}
+
+.cinematic-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-top: 12px;
+}
+
+.back-to-top {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+
+.back-to-top:hover { color: var(--ink); }
+
+/* ─────────────────────────────────────────
+   SCENE generic card
+   ───────────────────────────────────────── */
+.cs-card {
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.08)),
+    rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.75),
+    0 16px 48px rgba(17, 17, 17, 0.09);
+  backdrop-filter: blur(20px) saturate(150%);
+  padding: 20px;
+}
+
+/* ─────────────────────────────────────────
+   SCENE world canvas: always behind all scenes
+   ───────────────────────────────────────── */
+.cinematic-stage .world-canvas {
+  z-index: 0;
+}
+
+.cinematic-stage .cs-scene {
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────
+   MOBILE — simplified layout, no sticky stage
+   ───────────────────────────────────────── */
+@media (max-width: 980px) {
+  .cinematic-track {
+    height: auto !important;
+  }
+
+  .cinematic-stage {
+    position: relative;
+    height: auto;
+    overflow: visible;
+  }
+
+  .world-canvas,
+  .cs-scene-scroll-hint {
+    display: none !important;
+  }
+
+  .cs-scene {
+    position: relative;
+    inset: auto;
+    display: flex;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    transform: none !important;
+    filter: none !important;
+    border-bottom: 1px solid var(--line);
+    padding: 64px 0;
+  }
+
+  .cs-scene:first-child {
+    padding-top: 100px;
+  }
+
+  .cs-scene-inner {
+    padding: 0;
+    width: min(100% - 32px, 720px);
+  }
+
+  .home-inner,
+  .about-inner,
+  .experience-inner,
+  .contact-inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-top: 0;
+  }
+
+  .cs-h1 {
+    font-size: clamp(2.2rem, 8vw, 3rem);
+  }
+
+  .cs-h2 {
+    font-size: clamp(1.7rem, 6vw, 2.4rem);
+  }
+
+  .cs-proof {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cs-proof span {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 12px;
+  }
+
+  .cs-proof span:first-child {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .cs-projects-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .skills-inner {
+    gap: 20px;
+  }
+
+  .contact-inner {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cinematic-footer {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+}
+
+/* ─────────────────────────────────────────
+   TABLET 981px–1280px adjustments
+   ───────────────────────────────────────── */
+@media (min-width: 981px) and (max-width: 1280px) {
+  .cs-scene-inner {
+    width: min(100% - 64px, 1100px);
+  }
+
+  .cs-projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .experience-inner {
+    grid-template-columns: 1fr 1.4fr;
+  }
+
+  .about-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+}
