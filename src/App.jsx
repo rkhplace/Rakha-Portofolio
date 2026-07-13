@@ -800,6 +800,24 @@ function App() {
                       );
                     })}
                   </div>
+                  <div className="cs-card about-radar-widget">
+                    <div className="radar-header">
+                      <Globe2 size={15} className="radar-globe-icon" />
+                      <span className="radar-status-dot"></span>
+                      <span className="radar-status-text">Geospatial Nodes Active</span>
+                    </div>
+                    <div className="radar-visual">
+                      <div className="radar-circle circle-1"></div>
+                      <div className="radar-circle circle-2"></div>
+                      <div className="radar-circle circle-3"></div>
+                      <div className="radar-sweep"></div>
+                      <div className="radar-dot" />
+                    </div>
+                    <div className="radar-footer">
+                      <span className="radar-coord">6.9175° S, 107.6191° E</span>
+                      <span className="radar-label">Bandung, West Java</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </section>
