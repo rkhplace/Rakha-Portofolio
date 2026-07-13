@@ -20,10 +20,6 @@ const SCENES = ["home", "about", "experience", "projects", "skills", "contact"];
 const SCENE_DURATION = 1.5; // multiplier of 100vh per scene
 const TOTAL_SCROLL_MULTIPLIER = SCENES.length * SCENE_DURATION;
 
-// per-scene entrance and exit timing within its own [0..1] progress
-const ENTRANCE_END = 0.22;   // fully visible by this point
-const EXIT_START = 0.72;     // starts fading out here
-
 function clamp(v, lo, hi) {
   return Math.min(Math.max(v, lo), hi);
 }
@@ -121,13 +117,38 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
         if (Math.abs(raw - lastProgress) < 0.0001) return;
         lastProgress = raw;
 
-        // which scene index + local progress [0..1] within that scene
-        const totalSlots = SCENES.length;
-        const scaledProgress = raw * totalSlots;
-        const sceneIndex = clamp(Math.floor(scaledProgress), 0, totalSlots - 1);
-        const localP = scaledProgress - sceneIndex; // 0..1 within current scene
+        const N = SCENES.length;
+        const p = raw * N; // scaled progress from 0 to N
 
-        sceneEls.forEach((el, i) => {
+        // Determine which transition or stable zone we are in
+        let activeTransitionIdx = -1; // if in transition zone [i + 0.7, i + 1.15], this is i
+        let activeStableIdx = -1;      // if in stable zone, this is the scene index
+
+        for (let i = 0; i < N - 1; i++) {
+          if (p >= i + 0.7 && p < i + 1.15) {
+            activeTransitionIdx = i;
+            break;
+          }
+        }
+
+        if (activeTransitionIdx === -1) {
+          // We are in a stable zone. Find which one.
+          if (p < 0.7) {
+            activeStableIdx = 0;
+          } else if (p >= N - 0.85) { // 5.15
+            activeStableIdx = N - 1;
+          } else {
+            for (let i = 1; i < N - 1; i++) {
+              if (p >= i + 0.15 && p < i + 0.7) {
+                activeStableIdx = i;
+                break;
+              }
+            }
+          }
+        }
+
+        // Apply styles to all scenes with mathematically continuous interpolation
+        sceneEls.forEach((el, idx) => {
           if (!el) return;
 
           let opacity = 0;
@@ -136,40 +157,35 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
           let blur = 0;
           let pointerEvents = "none";
 
-          if (i === sceneIndex) {
-            // active scene
-            if (localP < ENTRANCE_END) {
-              const t = easeInOut(localP / ENTRANCE_END);
-              opacity = t;
-              yShift = lerp(18, 0, t);
-              scale = lerp(0.97, 1, t);
-              blur = lerp(4, 0, t);
-            } else if (localP < EXIT_START) {
+          if (activeStableIdx !== -1) {
+            if (idx === activeStableIdx) {
               opacity = 1;
               yShift = 0;
               scale = 1;
               blur = 0;
               pointerEvents = "auto";
-            } else {
-              const t = easeInOut((localP - EXIT_START) / (1 - EXIT_START));
-              opacity = 1 - t;
-              yShift = lerp(0, -14, t);
-              scale = lerp(1, 0.98, t);
-              blur = lerp(0, 3, t);
             }
-          } else if (i === sceneIndex + 1) {
-            // next scene — entrance overlap crossfade
-            const overlapStart = EXIT_START;
-            if (localP >= overlapStart) {
-              const t = easeInOut((localP - overlapStart) / (1 - overlapStart));
-              opacity = t * 0.6; // pre-fade the next scene slightly
-              yShift = lerp(22, 6, t);
-              scale = lerp(0.96, 0.99, t);
-              blur = lerp(5, 1, t);
+          } else if (activeTransitionIdx !== -1) {
+            if (idx === activeTransitionIdx) {
+              // Fading out
+              const t = (p - (activeTransitionIdx + 0.7)) / 0.45;
+              const ease = easeInOut(t);
+              opacity = 1 - ease;
+              yShift = lerp(0, -20, ease);
+              scale = lerp(1, 0.97, ease);
+              blur = lerp(0, 3, ease);
+            } else if (idx === activeTransitionIdx + 1) {
+              // Fading in
+              const t = (p - (activeTransitionIdx + 0.7)) / 0.45;
+              const ease = easeInOut(t);
+              opacity = ease;
+              yShift = lerp(20, 0, ease);
+              scale = lerp(0.97, 1, ease);
+              blur = lerp(3, 0, ease);
+              if (ease > 0.5) {
+                pointerEvents = "auto";
+              }
             }
-          } else if (i === sceneIndex - 1 && i >= 0) {
-            // previous scene — fully gone
-            opacity = 0;
           }
 
           el.style.opacity = opacity;
@@ -179,9 +195,28 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
           el.style.visibility = opacity < 0.005 ? "hidden" : "visible";
         });
 
+        // Determine current active section for navbar
+        let currentActiveIdx = 0;
+        if (activeTransitionIdx !== -1) {
+          const t = (p - (activeTransitionIdx + 0.7)) / 0.45;
+          currentActiveIdx = t > 0.5 ? activeTransitionIdx + 1 : activeTransitionIdx;
+        } else if (activeStableIdx !== -1) {
+          currentActiveIdx = activeStableIdx;
+        }
+
+        const activeSceneId = SCENES[currentActiveIdx];
+        document.querySelectorAll(".nav a").forEach((link) => {
+          const href = link.getAttribute("href");
+          const isActive = href === `#${activeSceneId}` ||
+            (activeSceneId === "home" && href === "#home");
+          link.classList.toggle("active", isActive);
+        });
+
+        window.dispatchEvent(new CustomEvent("cinematic-scene", { detail: { index: currentActiveIdx, id: activeSceneId } }));
+
         /* ── World canvas parallax: only during home scene ── */
         if (wcFar && wcMid && wcRoad) {
-          const homeP = clamp(scaledProgress / 1, 0, 1); // 0 → 1 during home scene slot
+          const homeP = clamp(p / 1, 0, 1); // 0 → 1 during home scene slot
 
           if (homeP < 1) {
             const approach = easeInOut(clamp((homeP - 0.1) / 0.7, 0, 1));
@@ -193,18 +228,6 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
             if (wcFog)  gsap.set(wcFog,  { opacity: 0.55 - approach * 0.47 });
           }
         }
-
-        /* ── Navbar active scene sync ── */
-        const activeSceneId = SCENES[sceneIndex];
-        document.querySelectorAll(".nav a").forEach((link) => {
-          const href = link.getAttribute("href");
-          const isActive = href === `#${activeSceneId}` ||
-            (activeSceneId === "home" && href === "#home");
-          link.classList.toggle("active", isActive);
-        });
-
-        /* ── Dispatch custom event for React state sync ── */
-        window.dispatchEvent(new CustomEvent("cinematic-scene", { detail: { index: sceneIndex, id: activeSceneId } }));
       };
 
       const onScroll = () => {
@@ -226,8 +249,15 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
 
         e.preventDefault();
         const trackH = track.scrollHeight - window.innerHeight;
-        // scroll to the stable zone of that scene
-        const targetProgress = (sceneIdx + ENTRANCE_END + 0.1) / SCENES.length;
+        // scroll to the middle of the stable zone of that scene
+        let targetProgress = 0;
+        if (sceneIdx === 0) {
+          targetProgress = 0.35 / SCENES.length;
+        } else if (sceneIdx === SCENES.length - 1) {
+          targetProgress = (SCENES.length - 0.42) / SCENES.length;
+        } else {
+          targetProgress = (sceneIdx + 0.425) / SCENES.length;
+        }
         const targetScroll = targetProgress * trackH;
         lenis.scrollTo(targetScroll, { duration: 1.2, easing: easeInOut });
       };
@@ -240,7 +270,7 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
         if (!btn) return;
         e.preventDefault();
         const trackH = track.scrollHeight - window.innerHeight;
-        const targetProgress = (1 + ENTRANCE_END + 0.1) / SCENES.length; // about scene
+        const targetProgress = (1 + 0.425) / SCENES.length; // about scene
         lenis.scrollTo(targetProgress * trackH, { duration: 1.4, easing: easeInOut });
       };
       document.querySelector(".cinematic-stage")?.addEventListener("click", enterBtnHandler);
