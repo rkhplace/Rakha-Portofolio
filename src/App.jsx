@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MotionConfig, motion, useReducedMotion } from "framer-motion";
+import { MotionConfig, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 
 import profileImage from "../images/RakhaApplePark.jpeg";
-import landscapeImage from "../images/background_1.jpg";
 import logoImage from "../images/Logo.png";
 import azureLogo from "../images/tech/azure.svg";
 import cppLogo from "../images/tech/cplusplus.svg";
@@ -48,6 +47,8 @@ import typescriptLogo from "../images/tech/typescript.svg";
 import vercelLogo from "../images/tech/vercel.svg";
 import viteLogo from "../images/tech/vite.svg";
 import { useCinematicScroll } from "./hooks/useCinematicScroll";
+import JourneySections from "./components/JourneySections";
+import "./styles/journey.css";
 
 const navItems = [
   ["Home", "#home"],
@@ -63,8 +64,6 @@ const stats = [
   ["5+", "Languages"],
   ["2+", "Years learning"],
 ];
-
-const cursorTrailDots = Array.from({ length: 8 }, (_, index) => index);
 
 const capabilities = [
   {
@@ -396,29 +395,6 @@ const languageIcons = {
 const projectDescriptionFallback =
   "Public GitHub repository by Rakha, kept available for code review and project reference.";
 
-const projectSkeletons = Array.from({ length: 6 }, (_, index) => index);
-
-const fadeUpVariants = {
-  hidden: { opacity: 0, y: 28 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.86, ease: [0.16, 1, 0.3, 1] },
-  },
-};
-
-const staggerVariants = {
-  hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.13,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const viewportOnce = { once: true, amount: 0.12, margin: "0px 0px -110px 0px" };
-
 const normalizeClientRepo = (repo) => {
   const language = repo.type || repo.language || "GitHub Repository";
   const stack = Array.isArray(repo.stack) && repo.stack.length > 0 ? repo.stack : [language];
@@ -467,19 +443,11 @@ function App() {
     [githubProjects],
   );
   useCinematicScroll({
-    enabled: !reduceMotion,
+    enabled: true,
     refreshKey: `${projectsLoading}-${featuredProjects.length}`,
   });
 
   const closeMenu = () => setMenuOpen(false);
-  const enterWorld = (event) => {
-    event.preventDefault();
-    closeMenu();
-    // The hook's navClickHandler intercepts #about — just do a native click
-    const aboutLink = document.querySelector(".nav a[href='#about']");
-    if (aboutLink) aboutLink.click();
-  };
-
   useEffect(() => {
     let isMounted = true;
 
@@ -512,44 +480,6 @@ function App() {
 
     return () => {
       isMounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let frameId;
-    let targetX = window.innerWidth / 2;
-    let targetY = window.innerHeight * 0.2;
-    const trail = cursorTrailDots.map(() => ({ x: targetX, y: targetY }));
-
-    document.documentElement.style.setProperty("--cursor-x", `${targetX.toFixed(1)}px`);
-    document.documentElement.style.setProperty("--cursor-y", `${targetY.toFixed(1)}px`);
-
-    const setMouseTarget = (event) => {
-      targetX = event.clientX;
-      targetY = event.clientY;
-      document.documentElement.style.setProperty("--cursor-x", `${targetX.toFixed(1)}px`);
-      document.documentElement.style.setProperty("--cursor-y", `${targetY.toFixed(1)}px`);
-    };
-
-    const animateSpotlight = () => {
-      trail.forEach((dot, index) => {
-        const leader = index === 0 ? { x: targetX, y: targetY } : trail[index - 1];
-        const friction = index === 0 ? 0.68 : 0.46;
-        dot.x += (leader.x - dot.x) * friction;
-        dot.y += (leader.y - dot.y) * friction;
-        document.documentElement.style.setProperty(`--trail-${index}-x`, `${dot.x.toFixed(1)}px`);
-        document.documentElement.style.setProperty(`--trail-${index}-y`, `${dot.y.toFixed(1)}px`);
-      });
-
-      frameId = requestAnimationFrame(animateSpotlight);
-    };
-
-    window.addEventListener("mousemove", setMouseTarget, { passive: true });
-    frameId = requestAnimationFrame(animateSpotlight);
-
-    return () => {
-      window.removeEventListener("mousemove", setMouseTarget);
-      cancelAnimationFrame(frameId);
     };
   }, []);
 
@@ -664,323 +594,20 @@ function App() {
         </button>
       </header>
 
-      <div className="cursor-effect" aria-hidden="true">
-        <div className="cursor-glow" />
-        <div className="cursor-shadow-trail">
-          {cursorTrailDots.map((dot) => (
-            <span key={dot} />
-          ))}
-        </div>
-      </div>
+      <div className="journey-cursor" aria-hidden="true"><i /></div>
 
-      <main>
-        {/* ═══════════════════════════════════════════════════
-            CINEMATIC SCROLL TRACK
-            Height = 6 scenes × 150vh each = 900vh
-            sticky stage locks to viewport; scenes swap via opacity
-            ═══════════════════════════════════════════════════ */}
-        <div className="cinematic-track">
-          <div className="cinematic-stage">
+      <JourneySections
+        profileImage={profileImage}
+        stats={stats}
+        capabilities={capabilities}
+        chapters={aboutChapters}
+        timelineItems={timelineItems}
+        projects={projectsLoading ? fallbackProjects : featuredProjects}
+        services={services}
+        techStack={techStack}
+        onSelectProject={setSelectedProject}
+      />
 
-            {/* ── Persistent World Background (always mounted) ── */}
-            <div className="world-canvas" aria-hidden="true">
-              <div className="wc-glow-orb wc-glow-left" />
-              <div className="wc-glow-orb wc-glow-right" />
-              <div className="wc-far" />
-              <div className="wc-mid">
-                <span className="mid-panel" />
-                <span className="mid-panel" />
-                <span className="mid-panel" />
-                <span className="mid-panel" />
-              </div>
-              <div className="wc-road">
-                <div className="road-horizon" />
-                <div className="road-surface" />
-                <div className="road-edges" />
-                <div className="road-centerline" />
-                <div className="road-contours" />
-              </div>
-              <div className="wc-grid" />
-              <div className="wc-fog" />
-            </div>
-
-            {/* ══════════ SCENE 1 — HOME ══════════ */}
-            <section id="home" className="cs-scene scene-home" aria-label="Home">
-              <div className="cs-scene-inner home-inner">
-                <div className="cs-copy">
-                  <span className="cs-eyebrow eyebrow">Portfolio / 2026</span>
-                  <h1 className="cs-h1 masked-title">
-                    <span>Building thoughtful</span>
-                    <span>digital experiences.</span>
-                  </h1>
-                  <p className="cs-para">
-                    Muhammad Rakha Pratama — a Frontend Developer exploring
-                    interactive web, information systems, and geospatial experiences.
-                  </p>
-                  <div className="cs-actions hero-actions">
-                    <a className="button primary enter-world-btn" href="#about">
-                      Enter my world <ArrowUpRight size={17} />
-                    </a>
-                    <a className="button ghost" href="#projects">
-                      View projects <ArrowUpRight size={17} />
-                    </a>
-                  </div>
-                </div>
-                <div className="home-right-col">
-                  <div className="home-photo-container">
-                    <img className="home-photo" src={profileImage} alt="Muhammad Rakha Pratama" />
-                  </div>
-                  <div className="cs-proof hero-proof">
-                    <span><Code2 size={19} /><strong>Frontend</strong><em>React · TypeScript</em></span>
-                    <span><Globe2 size={19} /><strong>WebGIS</strong><em>Maps · Spatial</em></span>
-                    <span><Layers3 size={19} /><strong>Cloud</strong><em>Deploy · Scale</em></span>
-                  </div>
-                </div>
-              </div>
-              <div className="cs-scene-scroll-hint" aria-hidden="true">
-                <div className="ste-mouse"><div className="ste-wheel" /></div>
-                <span>SCROLL TO ENTER</span>
-              </div>
-            </section>
-
-            {/* ══════════ SCENE 2 — ABOUT ══════════ */}
-            <section id="about" className="cs-scene scene-about" aria-label="About">
-              <div className="cs-scene-inner about-inner">
-                <div className="cs-about-left">
-                  <span className="cs-eyebrow eyebrow">About Me</span>
-                  <h2 className="cs-h2">
-                    I build interfaces that turn complex systems into clear digital
-                    experiences<span style={{ color: "#6e8aa4" }}>.</span>
-                  </h2>
-                  <p className="cs-para">
-                    I'm Muhammad Rakha Pratama, a Frontend Developer who loves
-                    crafting elegant interfaces and building geospatial solutions
-                    that make data easier to understand.
-                  </p>
-                  <div className="cs-stats stats-grid">
-                    <div className="cs-card stat-card">
-                      <div className="stat-card-dots">
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                      </div>
-                      <div className="stat-icon-wrapper">
-                        <Code2 size={20} />
-                      </div>
-                      <strong>16+</strong>
-                      <span>Public projects</span>
-                    </div>
-                    <div className="cs-card stat-card">
-                      <div className="stat-card-dots">
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                      </div>
-                      <div className="stat-icon-wrapper">
-                        <TerminalSquare size={20} />
-                      </div>
-                      <strong>5+</strong>
-                      <span>Languages</span>
-                    </div>
-                    <div className="cs-card stat-card">
-                      <div className="stat-card-dots">
-                        <span></span><span></span><span></span>
-                        <span></span><span></span><span></span>
-                      </div>
-                      <div className="stat-icon-wrapper">
-                        <BookOpen size={20} />
-                      </div>
-                      <strong>2+</strong>
-                      <span>Years learning</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="cs-about-right">
-                  <div className="cs-grid capability-grid">
-                    {capabilities.map((cap) => {
-                      const Icon = cap.icon;
-                      return (
-                        <div className="cap-card" key={cap.id}>
-                          <div className="cap-card-head">
-                            <Icon size={22} />
-                            <ArrowUpRight size={15} />
-                          </div>
-                          <h4>{cap.title}</h4>
-                          <p>{cap.text}</p>
-                          <div className="cap-tags">
-                            {cap.tags.map((t) => <span key={t}>{t}</span>)}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div className="cs-card about-radar-widget">
-                    <div className="radar-header">
-                      <Globe2 size={15} className="radar-globe-icon" />
-                      <span className="radar-status-dot"></span>
-                      <span className="radar-status-text">Geospatial Nodes Active</span>
-                    </div>
-                    <div className="radar-visual">
-                      <div className="radar-circle circle-1"></div>
-                      <div className="radar-circle circle-2"></div>
-                      <div className="radar-circle circle-3"></div>
-                      <div className="radar-sweep"></div>
-                      <div className="radar-dot" />
-                    </div>
-                    <div className="radar-footer">
-                      <span className="radar-coord">6.9175° S, 107.6191° E</span>
-                      <span className="radar-label">Bandung, West Java</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ══════════ SCENE 3 — EXPERIENCE ══════════ */}
-            <section id="experience" className="cs-scene scene-experience" aria-label="Experience">
-              <div className="cs-scene-inner experience-inner">
-                <div className="cs-section-head">
-                  <span className="cs-eyebrow eyebrow">Experience</span>
-                  <h2 className="cs-h2">Learning timeline through shipped work.</h2>
-                  <p className="cs-para">
-                    Milestones from coursework, deployment practice, and product experiments.
-                  </p>
-                </div>
-                <div className="cs-list timeline-list">
-                  {timelineItems.map((item) => (
-                    <article className="timeline-item" key={item.title}>
-                      <span className="timeline-year">{item.year}</span>
-                      <div>
-                        <h3>{item.title}</h3>
-                        <p>{item.text}</p>
-                        <div className="tag-row">
-                          {item.tags.map((tag) => <span key={tag}>{tag}</span>)}
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </section>
-
-            {/* ══════════ SCENE 4 — PROJECTS ══════════ */}
-            <section id="projects" className="cs-scene scene-projects" aria-label="Projects">
-              <div className="cs-scene-inner projects-inner">
-                <div className="cs-section-head">
-                  <span className="cs-eyebrow eyebrow">Selected Work</span>
-                  <h2 className="cs-h2">Public projects, presented with depth.</h2>
-                </div>
-                <div className="cs-projects-grid">
-                  {(projectsLoading ? fallbackProjects : featuredProjects).slice(0, 6).map((project, index) => (
-                    <article className="cs-card cs-project-card" key={project.id}>
-                      <div className="cs-project-meta">
-                        <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
-                        <span className="project-type">{project.type}</span>
-                      </div>
-                      <h3>{project.title}</h3>
-                      <p>{project.description}</p>
-                      <div className="tag-row">
-                        {project.stack.slice(0, 3).map((tag) => <span key={tag}>{tag}</span>)}
-                      </div>
-                      <div className="cs-project-links">
-                        <a href={project.href} target="_blank" rel="noopener noreferrer">
-                          Code <ArrowUpRight size={13} />
-                        </a>
-                        {project.demo && (
-                          <a href={project.demo} target="_blank" rel="noopener noreferrer">
-                            Demo <ArrowUpRight size={13} />
-                          </a>
-                        )}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-                <div className="cs-projects-cta">
-                  <a className="button ghost dark" href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
-                    All repositories <ArrowUpRight size={16} />
-                  </a>
-                </div>
-              </div>
-            </section>
-
-            {/* ══════════ SCENE 5 — SKILLS ══════════ */}
-            <section id="skills" className="cs-scene scene-skills" aria-label="Skills">
-              <div className="cs-scene-inner skills-inner">
-                <div className="cs-section-head">
-                  <span className="cs-eyebrow eyebrow">Skills</span>
-                  <h2 className="cs-h2">Skills I use across my projects.</h2>
-                  <p className="cs-para">
-                    Developed through coursework, public repositories, and deployment practice.
-                  </p>
-                </div>
-                <div className="cs-grid service-grid">
-                  {services.map(({ icon: Icon, title, text, tags }) => (
-                    <article className="cs-card service-card" key={title}>
-                      <Icon size={24} />
-                      <h3>{title}</h3>
-                      <p>{text}</p>
-                      <div className="tag-row">
-                        {tags.map((tag) => <span key={tag}>{tag}</span>)}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-                <div className="skills-ticker">
-                  <div className="ticker-track">
-                    {[0, 1, 2].map((group) => (
-                      <div className="ticker-group" key={group} aria-hidden={group > 0 ? "true" : undefined}>
-                        {techStack.map((tech) => (
-                          <span className="tech-logo" key={`${tech.name}-${group}`} aria-label={tech.name}>
-                            <img src={tech.logo} alt="" aria-hidden="true" />
-                          </span>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* ══════════ SCENE 6 — CONTACT ══════════ */}
-            <section id="contact" className="cs-scene scene-contact" aria-label="Contact">
-              <div className="cs-scene-inner contact-inner">
-                <div className="cs-section-head">
-                  <span className="cs-eyebrow eyebrow">Contact</span>
-                  <h2 className="cs-h2">Let's build something meaningful.</h2>
-                  <p className="cs-para contact-lede">
-                    Open to collaboration, internship conversations, and practical product work.
-                  </p>
-                </div>
-                <div className="cs-contact-card contact-card">
-                  <a href="mailto:mrakhaptatama135@gmail.com">
-                    <Mail size={18} /> mrakhaptatama135@gmail.com
-                  </a>
-                  <a href="https://www.linkedin.com/in/rkhap/" target="_blank" rel="noreferrer">
-                    <Linkedin size={18} /> LinkedIn
-                  </a>
-                  <a href="https://github.com/rkhplace" target="_blank" rel="noreferrer">
-                    <Github size={18} /> GitHub
-                  </a>
-                  <a href="https://www.instagram.com/rkhap_/" target="_blank" rel="noreferrer">
-                    <Instagram size={18} /> Instagram
-                  </a>
-                  <span><MapPin size={18} /> Bandung, Indonesia</span>
-                </div>
-                <footer className="cinematic-footer">
-                  <span>© 2026 Muhammad Rakha Pratama</span>
-                  <button
-                    type="button"
-                    className="back-to-top"
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                  >
-                    Back to top
-                  </button>
-                </footer>
-              </div>
-            </section>
-
-
-          </div>{/* /cinematic-stage */}
-        </div>{/* /cinematic-track */}
-      </main>
 
 
 
@@ -988,84 +615,6 @@ function App() {
         <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
       )}
     </MotionConfig>
-  );
-}
-
-function ProjectCard({ project, index, onSelect }) {
-  const reduceMotion = useReducedMotion();
-  const Icon = project.icon;
-  return (
-    <motion.article
-      className={`project-card card-${index + 1}`}
-      variants={fadeUpVariants}
-      whileHover={reduceMotion ? undefined : { y: -5 }}
-      transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <span className="project-number">{String(index + 1).padStart(2, "0")}</span>
-      <div className="project-icon">
-        <Icon size={24} />
-      </div>
-      <div>
-        <span className="project-type">{project.type}</span>
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
-      </div>
-      <dl className="project-meta-grid">
-        <div>
-          <dt>Problem</dt>
-          <dd>Turn an idea into a testable public project.</dd>
-        </div>
-        <div>
-          <dt>Solution</dt>
-          <dd>Build a focused app surface with clear repository structure.</dd>
-        </div>
-        <div>
-          <dt>Role</dt>
-          <dd>Interface, logic, deployment, and documentation.</dd>
-        </div>
-      </dl>
-      <div className="tag-row">
-        {project.stack.map((tag) => (
-          <span key={tag}>{tag}</span>
-        ))}
-      </div>
-      <div className="project-actions">
-        {project.demo ? (
-          <a className="project-details-link" href={project.demo} target="_blank" rel="noopener noreferrer">
-            Live preview <ArrowUpRight size={15} />
-          </a>
-        ) : (
-          <button type="button" onClick={onSelect}>
-            Details
-          </button>
-        )}
-        <a href={project.href} target="_blank" rel="noopener noreferrer">
-          Repository <ArrowUpRight size={15} />
-        </a>
-      </div>
-    </motion.article>
-  );
-}
-
-function ProjectSkeletonCard() {
-  return (
-    <article className="project-card project-card-skeleton" aria-hidden="true">
-      <span className="skeleton-icon" />
-      <div className="skeleton-content">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="skeleton-tags">
-        <span />
-        <span />
-        <span />
-      </div>
-      <div className="skeleton-actions">
-        <span />
-        <span />
-      </div>
-    </article>
   );
 }
 
@@ -1126,26 +675,6 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-function AnimatedSection({ id, className, children }) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <motion.section
-      id={id}
-      className={className}
-      initial={reduceMotion ? false : "hidden"}
-      whileInView="visible"
-      viewport={viewportOnce}
-      variants={fadeUpVariants}
-    >
-      {children}
-    </motion.section>
-  );
-}
-
-function BackgroundStreaks({ className = "", style }) {
-  return <motion.div className={`background-streaks ${className}`} style={style} aria-hidden="true" />;
-}
 
 export default App;
 
