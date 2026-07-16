@@ -70,9 +70,10 @@ export function useCinematicScroll({ enabled = true, refreshKey = "" } = {}) {
           buildAboutTimeline(gsap, ScrollTrigger);
           buildExperienceTimeline(gsap, ScrollTrigger);
           buildProjectTimelines(gsap, ScrollTrigger);
-          buildProjectSkillBridge(gsap, ScrollTrigger);
+          const removeProjectConstellation = buildProjectSkillBridge(gsap, ScrollTrigger);
           buildSkillsTimeline(gsap, ScrollTrigger);
           buildContactTimeline(gsap, ScrollTrigger);
+          return () => removeProjectConstellation?.();
         });
 
         media.add("(max-width: 1100px)", () => {
@@ -186,6 +187,7 @@ function buildAboutTimeline(gsap, ScrollTrigger) {
   const chapters = gsap.utils.toArray("[data-about-chapter]");
   gsap.set(chapters, { opacity: 0, y: 40, visibility: "hidden" });
   gsap.set("[data-about-stat]", { opacity: 0, y: 22 });
+  gsap.set(".about-manifesto", { opacity: 0, y: 46, visibility: "hidden" });
 
   const timeline = gsap.timeline({
     scrollTrigger: {
@@ -199,7 +201,8 @@ function buildAboutTimeline(gsap, ScrollTrigger) {
   timeline
     .fromTo(".about-statement", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18, ease: "power2.out" })
     .fromTo(".about-photo-echo", { clipPath: "inset(48% 9% 48% 9%)", scale: 1.25 }, { clipPath: "inset(8% 9% 8% 9%)", scale: 1, duration: 0.26 }, 0)
-    .to(".about-statement", { y: -70, autoAlpha: 0, duration: 0.22 }, 0.22);
+    .to(".about-statement", { y: -70, autoAlpha: 0, duration: 0.22 }, 0.22)
+    .to(".about-manifesto", { y: 0, autoAlpha: 1, duration: 0.2, ease: "power2.out" }, 0.31);
 
   chapters.forEach((chapter, index) => {
     const start = 0.22 + index * 0.16;
@@ -290,28 +293,157 @@ function buildProjectTimelines(gsap, ScrollTrigger) {
 }
 
 function buildProjectSkillBridge(gsap, ScrollTrigger) {
+  const section = document.querySelector(".project-skill-bridge");
+  const sticky = section?.querySelector(".bridge-sticky");
+  const frame = section?.querySelector(".bridge-browser-frame");
+  const coreIcon = section?.querySelector(".bridge-core-icon");
+  const coreCopy = section?.querySelector(".bridge-core-copy");
+  const coreStatus = coreCopy?.querySelector("span");
+  const nodes = gsap.utils.toArray(".bridge-tech-nodes span", section);
+  if (!section || !sticky || !frame || !coreIcon || !coreCopy || !nodes.length) return () => {};
+
+  const profiles = [
+    { angle: -Math.PI / 2, radius: 0.54, orbit: -0.64, phase: 0.2 },
+    { angle: Math.PI / 6, radius: 0.56, orbit: -0.68, phase: 2.3 },
+    { angle: Math.PI * 5 / 6, radius: 0.52, orbit: -0.61, phase: 4.4 },
+    { angle: -1.92, radius: 0.78, orbit: 0.98, phase: 0.9 },
+    { angle: -0.68, radius: 0.8, orbit: 1.02, phase: 2.1 },
+    { angle: 0.58, radius: 0.76, orbit: 0.96, phase: 3.5 },
+    { angle: 1.84, radius: 0.81, orbit: 1.04, phase: 4.8 },
+    { angle: 3.08, radius: 0.77, orbit: 1, phase: 5.7 },
+    { angle: -2.42, radius: 1.02, orbit: 0.76, phase: 1.4 },
+    { angle: -0.82, radius: 1, orbit: 0.72, phase: 2.9 },
+    { angle: 0.78, radius: 1.04, orbit: 0.78, phase: 4.2 },
+    { angle: 2.36, radius: 0.99, orbit: 0.74, phase: 5.4 },
+  ];
+  const baseScale = [1.02, 0.96, 0.9];
+  const baseOpacity = [1, 0.92, 0.82];
+  const layout = { radiusX: 270, radiusY: 195 };
+  const state = {
+    progress: 0,
+    active: false,
+    time: 0,
+    hovered: -1,
+  };
+  const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+  const smoothstep = (from, to, value) => {
+    const t = clamp((value - from) / (to - from));
+    return t * t * (3 - 2 * t);
+  };
+  const measure = () => {
+    const laptopScale = window.innerHeight < 800 ? 0.92 : window.innerWidth < 1366 ? 0.95 : 1;
+    layout.radiusX = Math.max(235, Math.min(window.innerWidth * 0.24, 350) * laptopScale);
+    layout.radiusY = Math.max(175, Math.min(window.innerHeight * 0.31, 245) * laptopScale);
+  };
+  measure();
+
+  gsap.set(nodes, { opacity: 0, scale: 0.35, x: 0, y: 0 });
+  gsap.set(coreIcon, { opacity: 0, scale: 0.55 });
+  gsap.set(coreCopy, { opacity: 0, y: 8, scale: 1 });
+
   const timeline = gsap.timeline({
     scrollTrigger: {
-      trigger: ".project-skill-bridge",
+      trigger: section,
       start: "top top",
       end: "bottom bottom",
-      scrub: 0.8,
+      scrub: 1.05,
       invalidateOnRefresh: true,
+      onRefresh: measure,
+      onEnter: () => { state.active = true; },
+      onEnterBack: () => { state.active = true; },
+      onLeave: () => { state.progress = 1; state.active = false; },
+      onLeaveBack: () => { state.progress = 0; state.active = false; },
+      onUpdate: (self) => {
+        state.progress = self.progress;
+        state.active = true;
+      },
     },
   });
   timeline
-    .fromTo(".bridge-browser-frame", { scale: 0.92, borderRadius: 8 }, { scale: 0.28, borderRadius: 999, duration: 0.7 })
-    .to(".bridge-browser-frame strong, .bridge-browser-bar", { opacity: 0, duration: 0.2 }, 0.32)
-    .fromTo(".bridge-core-icon", { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, duration: 0.28 }, 0.38)
-    .fromTo(".bridge-tech-nodes span", { x: 0, y: 0, opacity: 0, scale: 0.4 }, {
-      x: (index) => Math.cos((index / 6) * Math.PI * 2) * Math.min(window.innerWidth * 0.18, 250),
-      y: (index) => Math.sin((index / 6) * Math.PI * 2) * Math.min(window.innerHeight * 0.25, 190),
-      opacity: 1,
-      scale: 1,
-      stagger: 0.025,
-      duration: 0.62,
-    }, 0.28)
-    .to(".bridge-sticky > p", { opacity: 0, y: -20, duration: 0.22 }, 0.45);
+    .fromTo(frame, { scale: 0.92, borderRadius: 8 }, {
+      scale: 0.38,
+      borderRadius: 999,
+      duration: 0.32,
+      ease: "power2.inOut",
+    })
+    .to(".bridge-browser-frame strong, .bridge-browser-bar", { opacity: 0, duration: 0.14, ease: "power2.out" }, 0.12)
+    .to(coreIcon, { opacity: 1, scale: 2.05, duration: 0.15, ease: "power2.out" }, 0.24)
+    .to(coreCopy, { opacity: 1, y: 0, scale: 2.35, duration: 0.16, ease: "power2.out" }, 0.25)
+    .to(".bridge-sticky > p", { opacity: 0, y: -18, duration: 0.16, ease: "power2.out" }, 0.2)
+    .to(frame, { scale: 0.32, opacity: 0.82, duration: 0.16, ease: "power2.inOut" }, 0.86)
+    .to({}, { duration: 0.01 }, 0.99);
+
+  const update = (_time, deltaTime) => {
+    if (!state.active || document.hidden) return;
+    state.time += Math.min(deltaTime / 1000, 0.05) * (state.hovered >= 0 ? 0.25 : 1);
+
+    const progress = state.progress;
+    const revealAll = smoothstep(0.17, 0.31, progress);
+    const orbitProgress = smoothstep(0.22, 0.84, progress);
+    const exit = smoothstep(0.86, 1, progress);
+    const nodeExit = smoothstep(0.84, 0.94, progress);
+    const time = state.time;
+    const frameX = exit * 34;
+    const frameY = Math.sin(time * 0.45) * 1.5 + exit * 18;
+    frame.style.translate = `${frameX.toFixed(2)}px ${frameY.toFixed(2)}px`;
+
+    nodes.forEach((node, index) => {
+      const profile = profiles[index];
+      const layer = index < 3 ? 0 : index < 8 ? 1 : 2;
+      const reveal = revealAll * smoothstep(0, 1, (progress - 0.16 - index * 0.003) / 0.1);
+      const spread = reveal;
+      const scrollAngle = orbitProgress * Math.PI * 2 * profile.orbit;
+      const idleAngle = Math.sin(time * 0.42 + profile.phase) * 0.025;
+      const angle = profile.angle + scrollAngle + idleAngle;
+      const radial = 1 + Math.sin(time * 0.55 + profile.phase) * 0.012;
+      const depth = 0.5 + Math.sin(angle) * 0.5;
+      let x = Math.cos(angle) * layout.radiusX * profile.radius * radial * spread;
+      let y = Math.sin(angle) * layout.radiusY * profile.radius * radial * spread;
+      y += Math.sin(time * 0.62 + profile.phase) * (2.5 + layer) * reveal;
+
+      const isActive = state.hovered === index;
+      const isDimmed = state.hovered >= 0 && !isActive;
+      const scale = baseScale[layer] * (0.96 + depth * 0.07) * reveal + (isActive ? 0.12 : 0);
+      const opacity = baseOpacity[layer] * (0.88 + depth * 0.12) * reveal * (1 - nodeExit) * (isDimmed ? 0.62 : 1);
+
+      node.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) scale(${(scale || 0.35).toFixed(4)})`;
+      node.style.opacity = String(opacity);
+      node.style.zIndex = String(3 + Math.round(depth * 8) + (isActive ? 20 : 0));
+      node.style.filter = "none";
+    });
+  };
+  gsap.ticker.add(update);
+
+  const nodeHandlers = nodes.map((node, index) => {
+    const activate = () => {
+      state.hovered = index;
+      nodes.forEach((item, itemIndex) => item.classList.toggle("is-active", itemIndex === index));
+      if (coreStatus) coreStatus.textContent = node.dataset.tech || "Connected tool";
+    };
+    const deactivate = () => {
+      state.hovered = -1;
+      node.classList.remove("is-active");
+      if (coreStatus) coreStatus.textContent = `${nodes.length} technologies`;
+    };
+    node.addEventListener("pointerenter", activate);
+    node.addEventListener("pointerleave", deactivate);
+    node.addEventListener("focus", activate);
+    node.addEventListener("blur", deactivate);
+    return [node, activate, deactivate];
+  });
+  const resize = () => measure();
+  window.addEventListener("resize", resize, { passive: true });
+
+  return () => {
+    gsap.ticker.remove(update);
+    window.removeEventListener("resize", resize);
+    nodeHandlers.forEach(([node, activate, deactivate]) => {
+      node.removeEventListener("pointerenter", activate);
+      node.removeEventListener("pointerleave", deactivate);
+      node.removeEventListener("focus", activate);
+      node.removeEventListener("blur", deactivate);
+    });
+  };
 }
 
 function buildSkillsTimeline(gsap, ScrollTrigger) {

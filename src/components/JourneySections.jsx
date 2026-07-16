@@ -97,6 +97,15 @@ function AboutSection({ profileImage, stats, capabilities, chapters }) {
             </p>
           </div>
 
+          <div className="about-manifesto">
+            <p className="journey-kicker">How I build</p>
+            <h2>Curious by default.<br />Intentional by<br />design.</h2>
+            <p>
+              Every project is a chance to learn deeply, simplify thoughtfully,
+              and ship something people can actually use.
+            </p>
+          </div>
+
           <div className="about-chapter-stack">
             {chapters.map((chapter, index) => (
               <article className="about-chapter" key={chapter.kicker} data-about-chapter>
@@ -204,6 +213,11 @@ function ProjectMockup({ project, index }) {
 
 function ProjectsSection({ projects, techStack, onSelect }) {
   const featured = projects.slice(0, 3);
+  const bridgePositions = [
+    [42, -150], [135, -92], [88, 78],
+    [-92, -118], [180, 18], [118, 138], [-58, 142], [-172, 52],
+    [-205, -58], [218, -142], [8, 188], [-142, 182],
+  ];
   return (
     <section id="projects" className="journey-section journey-projects" data-journey-section="projects">
       <JourneyMarker index="03" label="Selected work" />
@@ -258,18 +272,35 @@ function ProjectsSection({ projects, techStack, onSelect }) {
         </a>
       </div>
 
-      <div className="project-skill-bridge" aria-hidden="true">
+      <div className="project-skill-bridge" aria-label="Project technology constellation">
         <div className="bridge-sticky journey-sticky">
           <p>From product layers to the tools behind them</p>
           <div className="bridge-browser-frame">
             <div className="bridge-browser-bar"><i /><i /><i /></div>
             <Layers3 className="bridge-core-icon" size={34} />
             <strong>PROJECT SYSTEM</strong>
+            <div className="bridge-core-copy">
+              <small>Tech stack</small>
+              <span>{Math.min(techStack.length, 12)} technologies</span>
+            </div>
           </div>
           <div className="bridge-tech-nodes">
-            {techStack.slice(0, 6).map((tech, index) => (
-              <span style={{ "--bridge-index": index }} key={tech.name}>
-                <img src={tech.logo} alt="" />
+            {techStack.slice(0, 12).map((tech, index) => (
+              <span
+                data-layer={index < 3 ? "inner" : index < 8 ? "middle" : "outer"}
+                data-tech={tech.name}
+                style={{
+                  "--bridge-index": index,
+                  "--bridge-static-x": `${bridgePositions[index][0]}px`,
+                  "--bridge-static-y": `${bridgePositions[index][1]}px`,
+                }}
+                key={tech.name}
+                role="img"
+                aria-label={tech.name}
+                tabIndex={0}
+              >
+                <img src={tech.logo} alt={tech.name} />
+                <small className="bridge-tech-label">{tech.name}</small>
               </span>
             ))}
           </div>
