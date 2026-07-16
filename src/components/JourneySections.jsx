@@ -279,10 +279,6 @@ function ProjectsSection({ projects, techStack, onSelect }) {
             <div className="bridge-browser-bar"><i /><i /><i /></div>
             <Layers3 className="bridge-core-icon" size={34} />
             <strong>PROJECT SYSTEM</strong>
-            <div className="bridge-core-copy">
-              <small>Tech stack</small>
-              <span>{Math.min(techStack.length, 12)} technologies</span>
-            </div>
           </div>
           <div className="bridge-tech-nodes">
             {techStack.slice(0, 12).map((tech, index) => (

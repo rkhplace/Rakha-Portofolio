@@ -961,20 +961,6 @@ body {
 .bridge-browser-frame strong { position: relative; z-index: 2; font-size: clamp(2rem, 5vw, 5.6rem); letter-spacing: 0; }
 .bridge-core-icon { position: absolute; z-index: 3; color: var(--journey-blue); opacity: 0; }
 
-.bridge-core-copy {
-  position: absolute;
-  z-index: 4;
-  display: grid;
-  gap: 3px;
-  margin-top: 72px;
-  color: #66747d;
-  opacity: 0;
-  text-align: center;
-  transform: translateY(8px);
-}
-.bridge-core-copy small { font-size: 0.66rem; font-weight: 780; letter-spacing: 0.16em; text-transform: uppercase; }
-.bridge-core-copy span { color: #303b42; font-size: 0.78rem; font-weight: 730; }
-
 .bridge-tech-nodes {
   position: absolute;
   top: 50%;
@@ -1572,8 +1558,7 @@ html[data-journey-scene="contact"] .journey-line-cursor { background: var(--jour
   .bridge-browser-frame strong,
   .bridge-browser-bar,
   .bridge-sticky > p { opacity: 0; }
-  .bridge-core-icon,
-  .bridge-core-copy { opacity: 1; transform: none; }
+  .bridge-core-icon { opacity: 1; transform: none; }
   .bridge-tech-nodes span {
     opacity: 1;
     transform: translate3d(var(--bridge-static-x), var(--bridge-static-y), 0) scale(1);

@@ -297,10 +297,8 @@ function buildProjectSkillBridge(gsap, ScrollTrigger) {
   const sticky = section?.querySelector(".bridge-sticky");
   const frame = section?.querySelector(".bridge-browser-frame");
   const coreIcon = section?.querySelector(".bridge-core-icon");
-  const coreCopy = section?.querySelector(".bridge-core-copy");
-  const coreStatus = coreCopy?.querySelector("span");
   const nodes = gsap.utils.toArray(".bridge-tech-nodes span", section);
-  if (!section || !sticky || !frame || !coreIcon || !coreCopy || !nodes.length) return () => {};
+  if (!section || !sticky || !frame || !coreIcon || !nodes.length) return () => {};
 
   const profiles = [
     { angle: -Math.PI / 2, radius: 0.54, orbit: -0.64, phase: 0.2 },
@@ -339,7 +337,6 @@ function buildProjectSkillBridge(gsap, ScrollTrigger) {
 
   gsap.set(nodes, { opacity: 0, scale: 0.35, x: 0, y: 0 });
   gsap.set(coreIcon, { opacity: 0, scale: 0.55 });
-  gsap.set(coreCopy, { opacity: 0, y: 8, scale: 1 });
 
   const timeline = gsap.timeline({
     scrollTrigger: {
@@ -368,7 +365,6 @@ function buildProjectSkillBridge(gsap, ScrollTrigger) {
     })
     .to(".bridge-browser-frame strong, .bridge-browser-bar", { opacity: 0, duration: 0.14, ease: "power2.out" }, 0.12)
     .to(coreIcon, { opacity: 1, scale: 2.05, duration: 0.15, ease: "power2.out" }, 0.24)
-    .to(coreCopy, { opacity: 1, y: 0, scale: 2.35, duration: 0.16, ease: "power2.out" }, 0.25)
     .to(".bridge-sticky > p", { opacity: 0, y: -18, duration: 0.16, ease: "power2.out" }, 0.2)
     .to(frame, { scale: 0.32, opacity: 0.82, duration: 0.16, ease: "power2.inOut" }, 0.86)
     .to({}, { duration: 0.01 }, 0.99);
@@ -418,12 +414,10 @@ function buildProjectSkillBridge(gsap, ScrollTrigger) {
     const activate = () => {
       state.hovered = index;
       nodes.forEach((item, itemIndex) => item.classList.toggle("is-active", itemIndex === index));
-      if (coreStatus) coreStatus.textContent = node.dataset.tech || "Connected tool";
     };
     const deactivate = () => {
       state.hovered = -1;
       node.classList.remove("is-active");
-      if (coreStatus) coreStatus.textContent = `${nodes.length} technologies`;
     };
     node.addEventListener("pointerenter", activate);
     node.addEventListener("pointerleave", deactivate);
