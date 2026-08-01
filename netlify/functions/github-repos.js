@@ -1,8 +1,13 @@
-const GITHUB_REPOS_URL = "https://api.github.com/users/rkhplace/repos?sort=updated&per_page=6";
-
-const fallbackDescription = "Public GitHub repository by Rakha, kept available for code review and project reference.";
+const GITHUB_USERNAME = "rkhplace";
+// Over-fetch, because filtering out the profile repo and undocumented repos
+// below can easily drop the pool under 6 if we only ask for 6 to begin with.
+const GITHUB_REPOS_URL = `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=30`;
 
 const cleanText = (value) => (typeof value === "string" ? value.trim() : "");
+
+// A repo named after the account is the special GitHub profile-README repo,
+// not a project — it has no description and shouldn't be featured as one.
+const isProfileRepo = (repo) => cleanText(repo.name).toLowerCase() === GITHUB_USERNAME.toLowerCase();
 
 const normalizeRepo = (repo) => {
   const language = cleanText(repo.language);
@@ -14,7 +19,7 @@ const normalizeRepo = (repo) => {
     id: String(repo.id || repo.name),
     title: cleanText(repo.name) || "GitHub Repository",
     type: language || "GitHub Repository",
-    description: cleanText(repo.description) || fallbackDescription,
+    description: cleanText(repo.description),
     stack: stack.length > 0 ? stack.slice(0, 4) : ["GitHub"],
     href: repo.html_url,
     demo: homepage || "",
@@ -50,7 +55,7 @@ export async function handler() {
 
     const repos = await response.json();
     const normalizedRepos = repos
-      .filter((repo) => !repo.fork && !repo.archived)
+      .filter((repo) => !repo.fork && !repo.archived && !isProfileRepo(repo) && cleanText(repo.description))
       .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
       .slice(0, 6)
       .map(normalizeRepo);

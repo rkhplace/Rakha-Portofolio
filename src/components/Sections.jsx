@@ -8,25 +8,24 @@ import {
 } from "framer-motion";
 import { ArrowUpRight, Github, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
 
-/* Shared scroll-in used by every block, so the whole page shares one rhythm. */
+/*
+ * One reveal pattern for every piece of content on the page: fade up once,
+ * on the way into view, never reversed. Continuous scroll-linked motion is
+ * reserved below for the few places it actually communicates something
+ * (reading progress, a timeline filling in) — tying every block of text to
+ * scroll position independently reads as noise, not depth.
+ */
 const rise = {
-  initial: { y: 34, opacity: 0 },
+  initial: { y: 28, opacity: 0 },
   whileInView: { y: 0, opacity: 1 },
   viewport: { once: true, margin: "-12% 0px" },
-  transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
 };
 
-const SPRING = { stiffness: 110, damping: 28, mass: 0.4, restDelta: 0.001 };
-
-/*
- * Scroll-linked travel for a single element. Unlike the `rise` variant above
- * this never settles — the value tracks the scrollbar the whole way past, which
- * is what keeps the lower half of the page from feeling static.
- */
-function useTrack(ref, offset = ["start end", "end start"]) {
-  const { scrollYProgress } = useScroll({ target: ref, offset });
-  return useSpring(scrollYProgress, SPRING);
-}
+const stagger = (index, step = 0.07) => ({
+  ...rise,
+  transition: { ...rise.transition, delay: index * step },
+});
 
 function SectionHead({ eyebrow, title, children }) {
   return (
@@ -41,8 +40,11 @@ function SectionHead({ eyebrow, title, children }) {
 export function About({ profileImage, chapters, stats }) {
   const ref = useRef(null);
   const reduce = useReducedMotion();
-  const p = useTrack(ref);
-  const portraitY = useTransform(p, [0, 1], [40, -40]);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const p = useSpring(scrollYProgress, { stiffness: 110, damping: 28, mass: 0.4 });
+  // A single restrained accent: the portrait drifts slightly slower than the
+  // page, which reads as depth without touching anything readable.
+  const portraitY = useTransform(p, [0, 1], [-18, 18]);
 
   return (
     <section className="section" id="about" ref={ref}>
@@ -69,12 +71,7 @@ export function About({ profileImage, chapters, stats }) {
 
           <div className="about-cards">
             {chapters.map((chapter, index) => (
-              <motion.article
-                className="about-card"
-                key={chapter.kicker}
-                {...rise}
-                transition={{ ...rise.transition, delay: index * 0.07 }}
-              >
+              <motion.article className="about-card" key={chapter.kicker} {...stagger(index)}>
                 <span>{chapter.kicker}</span>
                 <h3>{chapter.title}</h3>
                 <p>{chapter.text}</p>
@@ -89,25 +86,11 @@ export function About({ profileImage, chapters, stats }) {
 
 /* ── Experience ─────────────────────────────────────────────────────────── */
 
-function TimelineRow({ item }) {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const p = useTrack(ref);
-
-  // The year travels further than the row, so it lags behind as you scroll.
-  const rowY = useTransform(p, [0, 1], [64, -64]);
-  const yearY = useTransform(p, [0, 1], [118, -118]);
-  const opacity = useTransform(p, [0, 0.22, 0.78, 1], [0.32, 1, 1, 0.32]);
-  const markerScale = useTransform(p, [0.15, 0.5, 0.85], [0.5, 1, 0.5]);
-
-  const style = reduce ? undefined : { y: rowY, opacity };
-
+function TimelineRow({ item, index }) {
   return (
-    <motion.div className="timeline-row" ref={ref} style={style}>
-      <motion.i className="timeline-dot" aria-hidden="true" style={reduce ? undefined : { scale: markerScale }} />
-      <motion.div className="timeline-year" style={reduce ? undefined : { y: yearY }}>
-        {item.year}
-      </motion.div>
+    <motion.div className="timeline-row" {...stagger(index, 0.08)}>
+      <i className="timeline-dot" aria-hidden="true" />
+      <div className="timeline-year">{item.year}</div>
       <div>
         <h3>{item.title}</h3>
         <div className="tags">
@@ -124,7 +107,10 @@ function TimelineRow({ item }) {
 export function Experience({ items }) {
   const listRef = useRef(null);
   const reduce = useReducedMotion();
-  const rail = useTrack(listRef, ["start 85%", "end 55%"]);
+  // The one continuous effect worth keeping: the rail fills as you read down
+  // the list, which is a progress indicator, not decoration.
+  const { scrollYProgress } = useScroll({ target: listRef, offset: ["start 80%", "end 60%"] });
+  const rail = useSpring(scrollYProgress, { stiffness: 110, damping: 30, mass: 0.3 });
 
   return (
     <section className="section section-alt" id="experience">
@@ -137,8 +123,8 @@ export function Experience({ items }) {
           <span className="timeline-rail" aria-hidden="true">
             <motion.i style={reduce ? { scaleY: 1 } : { scaleY: rail }} />
           </span>
-          {items.map((item) => (
-            <TimelineRow item={item} key={item.title} />
+          {items.map((item, index) => (
+            <TimelineRow item={item} index={index} key={item.title} />
           ))}
         </div>
       </div>
@@ -149,30 +135,13 @@ export function Experience({ items }) {
 /* ── Projects ───────────────────────────────────────────────────────────── */
 
 function ProjectCard({ project, index, onSelect }) {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const p = useTrack(ref);
-
-  // Columns drift by different amounts so the grid flows instead of sliding
-  // as one slab. Three columns on desktop, so the offset cycles every three.
-  const lane = index % 3;
-  const travel = 52 + lane * 30;
-  const y = useTransform(p, [0, 1], [travel, -travel]);
-  const opacity = useTransform(p, [0, 0.2, 0.8, 1], [0.4, 1, 1, 0.4]);
-
   const Icon = project.icon;
-
   return (
     <motion.button
       type="button"
       className="project-card"
-      ref={ref}
       onClick={() => onSelect(project)}
-      style={reduce ? undefined : { y, opacity }}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: "-8% 0px" }}
-      transition={{ duration: 0.5 }}
+      {...stagger(index % 3, 0.08)}
     >
       <span className="project-icon">{Icon ? <Icon size={22} /> : null}</span>
       <small>{project.type}</small>
@@ -218,37 +187,12 @@ export function Projects({ projects, loading, onSelect }) {
 
 /* ── Skills ─────────────────────────────────────────────────────────────── */
 
-function TechChip({ tech, index, progress, reduce }) {
-  // Staggered lift: chips further down the grid arrive later.
-  const delay = (index % 5) * 0.045;
-  const y = useTransform(progress, [0, 1], [34 + index * 1.6, -34 - index * 1.6]);
-  return (
-    <motion.div
-      className="tech-chip"
-      title={tech.name}
-      style={reduce ? undefined : { y }}
-      initial={{ opacity: 0, scale: 0.86 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, margin: "-6% 0px" }}
-      transition={{ duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      <img src={tech.logo} alt={tech.name} />
-    </motion.div>
-  );
-}
-
 export function Skills({ services, techStack }) {
   const [active, setActive] = useState(0);
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const p = useTrack(ref);
-
-  const panelY = useTransform(p, [0, 1], [56, -56]);
-  const copyY = useTransform(p, [0, 1], [-26, 26]);
   const service = services[active];
 
   return (
-    <section className="section section-alt" id="skills" ref={ref}>
+    <section className="section section-alt" id="skills">
       <div className="shell">
         <SectionHead eyebrow="Skills" title="Tools I reach for.">
           Chosen to fit the problem — frontend, mobile, AI features, and cloud deployment.
@@ -270,26 +214,30 @@ export function Skills({ services, techStack }) {
             ))}
           </div>
 
-          <motion.div className="skill-panel" style={reduce ? undefined : { y: panelY }}>
-            <motion.div style={reduce ? undefined : { y: copyY }}>
+          <div className="skill-panel">
+            <div>
               <h3>{service.title}</h3>
               <p>{service.text}</p>
               <div className="tags">
                 {service.tags.map((tag) => <span key={tag}>{tag}</span>)}
               </div>
-            </motion.div>
+            </div>
             <div className="tech-cloud">
               {techStack.map((tech, index) => (
-                <TechChip
+                <motion.div
+                  className="tech-chip"
                   key={tech.name}
-                  tech={tech}
-                  index={index}
-                  progress={p}
-                  reduce={reduce}
-                />
+                  title={tech.name}
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "-6% 0px" }}
+                  transition={{ duration: 0.4, delay: (index % 10) * 0.03, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <img src={tech.logo} alt={tech.name} />
+                </motion.div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -299,28 +247,15 @@ export function Skills({ services, techStack }) {
 /* ── Contact ────────────────────────────────────────────────────────────── */
 
 export function Contact() {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const p = useTrack(ref);
-
-  const headingY = useTransform(p, [0, 1], [70, -70]);
-  const introY = useTransform(p, [0, 1], [40, -40]);
-  const actionsY = useTransform(p, [0, 1], [22, -22]);
-  const glow = useTransform(p, [0, 0.5, 1], [0.5, 1, 0.5]);
-
   return (
-    <section className="contact" id="contact" ref={ref}>
-      <motion.span className="contact-glow" aria-hidden="true" style={reduce ? undefined : { opacity: glow }} />
+    <section className="contact" id="contact">
+      <span className="contact-glow" aria-hidden="true" />
       <div className="shell">
         <motion.div {...rise}>
           <span className="eyebrow">Contact</span>
-          <motion.h2 style={reduce ? undefined : { y: headingY }}>
-            Let&apos;s build something meaningful.
-          </motion.h2>
-          <motion.p style={reduce ? undefined : { y: introY }}>
-            Open to collaboration, internship conversations, and practical product work.
-          </motion.p>
-          <motion.div className="contact-actions" style={reduce ? undefined : { y: actionsY }}>
+          <h2>Let&apos;s build something meaningful.</h2>
+          <p>Open to collaboration, internship conversations, and practical product work.</p>
+          <div className="contact-actions">
             <a className="btn btn-solid" href="mailto:mrakhaptatama135@gmail.com">
               <Mail size={16} /> Email me
             </a>
@@ -332,7 +267,7 @@ export function Contact() {
             >
               <Linkedin size={16} /> LinkedIn
             </a>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
@@ -369,14 +304,9 @@ const footerLinks = [
 ];
 
 export function Footer() {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-  const p = useTrack(ref);
-  const y = useTransform(p, [0, 1], [50, 0]);
-
   return (
-    <footer className="site-footer" ref={ref}>
-      <motion.div className="shell" style={reduce ? undefined : { y }}>
+    <footer className="site-footer">
+      <div className="shell">
         <div className="footer-grid">
           <div>
             <h4>Muhammad Rakha Pratama</h4>
@@ -422,7 +352,7 @@ export function Footer() {
             </a>
           </div>
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 }
