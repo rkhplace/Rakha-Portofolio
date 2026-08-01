@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { MotionConfig, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  MotionConfig,
+  motion,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import {
   ArrowUpRight,
   BookOpen,
@@ -9,11 +15,7 @@ import {
   Database,
   Github,
   Globe2,
-  Instagram,
   Layers3,
-  Linkedin,
-  Mail,
-  MapPin,
   Menu,
   MonitorSmartphone,
   Route,
@@ -46,12 +48,12 @@ import reactLogo from "../images/tech/react.svg";
 import typescriptLogo from "../images/tech/typescript.svg";
 import vercelLogo from "../images/tech/vercel.svg";
 import viteLogo from "../images/tech/vite.svg";
-import { useCinematicScroll } from "./hooks/useCinematicScroll";
-import JourneySections from "./components/JourneySections";
-import "./styles/journey.css";
+
+import ParallaxHero from "./components/ParallaxHero";
+import { About, Contact, Experience, Footer, Projects, Skills } from "./components/Sections";
+import "./styles/theme.css";
 
 const navItems = [
-  ["Home", "#home"],
   ["About", "#about"],
   ["Experience", "#experience"],
   ["Projects", "#projects"],
@@ -63,37 +65,6 @@ const stats = [
   ["16+", "Public projects"],
   ["5+", "Languages"],
   ["2+", "Years learning"],
-];
-
-const capabilities = [
-  {
-    id: "frontend",
-    icon: Code2,
-    title: "Frontend Development",
-    text: "Building responsive, accessible, and performant interfaces with modern web technologies.",
-    tags: ["React", "TypeScript", "UI Systems"],
-  },
-  {
-    id: "webgis",
-    icon: Globe2,
-    title: "WebGIS",
-    text: "Visualizing spatial data and building interactive maps for real-world decision making.",
-    tags: ["Maps", "Spatial Data", "Leaflet"],
-  },
-  {
-    id: "systems",
-    icon: Layers3,
-    title: "Information Systems",
-    text: "Designing and developing systems that streamline processes and improve clarity.",
-    tags: ["Database", "CRUD", "Architecture"],
-  },
-  {
-    id: "product",
-    icon: Brain,
-    title: "Product Building",
-    text: "From idea to MVP \u2014 turning complex problems into simple, impactful digital products.",
-    tags: ["AI", "Full-stack", "Deployment"],
-  },
 ];
 
 const aboutChapters = [
@@ -200,8 +171,7 @@ const projects = [
     id: "jualin-abp",
     title: "JUALIN ABP",
     type: "Marketplace App",
-    description:
-      "Dart-based marketplace project with web preview and mobile-first product flow.",
+    description: "Dart-based marketplace project with web preview and mobile-first product flow.",
     stack: ["Dart", "Flutter", "Vercel"],
     href: "https://github.com/rkhplace/JUALIN-ABP",
     demo: "https://jualin-4g7j.vercel.app",
@@ -212,8 +182,7 @@ const projects = [
     id: "trip-planner",
     title: "Trip Planner",
     type: "AI Travel App",
-    description:
-      "Next.js travel planner that creates itineraries from destination, duration, and preferences.",
+    description: "Next.js travel planner that creates itineraries from destination, duration, and preferences.",
     stack: ["Next.js", "JavaScript", "Groq API"],
     href: "https://github.com/rkhplace/Trip-Planner",
     icon: Route,
@@ -223,8 +192,7 @@ const projects = [
     id: "cek-cuaca-py",
     title: "Cek Cuaca Py",
     type: "Python Utility",
-    description:
-      "Python weather utility for practicing API requests and data handling.",
+    description: "Python weather utility for practicing API requests and data handling.",
     stack: ["Python", "API", "CLI"],
     href: "https://github.com/rkhplace/Cek-Cuaca-Py",
     icon: Cloud,
@@ -234,8 +202,7 @@ const projects = [
     id: "dpr-ri",
     title: "Website Anggota Komisi VIII DPR RI",
     type: "Public Profile Site",
-    description:
-      "TypeScript website for public profile and information presentation.",
+    description: "TypeScript website for public profile and information presentation.",
     stack: ["TypeScript", "Frontend", "Content"],
     href: "https://github.com/rkhplace/Website-Anggota-Komisi-VIII-DPR-RI",
     icon: Globe2,
@@ -245,8 +212,7 @@ const projects = [
     id: "cyber-security",
     title: "Tugas Besar Cyber Security",
     type: "Security Coursework",
-    description:
-      "PHP coursework project focused on applying web security concepts.",
+    description: "PHP coursework project focused on applying web security concepts.",
     stack: ["PHP", "Security", "Web"],
     href: "https://github.com/rkhplace/Tugas-Besar-Cyber-Security",
     icon: ShieldCheck,
@@ -256,8 +222,7 @@ const projects = [
     id: "paas",
     title: "Tugas PaaS",
     type: "Cloud App",
-    description:
-      "JavaScript application deployed on PaaS for hosting workflow practice.",
+    description: "JavaScript application deployed on PaaS for hosting workflow practice.",
     stack: ["JavaScript", "PaaS", "Vercel"],
     href: "https://github.com/rkhplace/Tugas-PaaS",
     demo: "https://tugas-paa-s-ashy.vercel.app",
@@ -268,8 +233,7 @@ const projects = [
     id: "azure",
     title: "Scalable Web App Azure",
     type: "Cloud Architecture",
-    description:
-      "Azure App Service project with GitHub Actions CI/CD and Application Insights monitoring.",
+    description: "Azure App Service project with GitHub Actions CI/CD and Application Insights monitoring.",
     stack: ["Azure", "CI/CD", "Monitoring"],
     href: "https://github.com/rkhplace/scalable-web-app-azure",
     icon: Server,
@@ -279,8 +243,7 @@ const projects = [
     id: "ai-health",
     title: "AI Health Assistant",
     type: "AI Assistant",
-    description:
-      "TypeScript assistant project for health-related Q&A and conversational interface practice.",
+    description: "TypeScript assistant project for health-related Q&A and conversational interface practice.",
     stack: ["TypeScript", "AI", "UX"],
     href: "https://github.com/rkhplace/AI-Health-Asisstant",
     icon: Brain,
@@ -290,42 +253,17 @@ const projects = [
     id: "library-crud",
     title: "CRUD Sistem Peminjaman Buku",
     type: "Data App",
-    description:
-      "Library loan management website centered on CRUD operations and database-driven workflows.",
+    description: "Library loan management website centered on CRUD operations and database-driven workflows.",
     stack: ["CRUD", "Database", "Web"],
     href: "https://github.com/rkhplace/rkhplace-CRUD-Website-Sistem-Peminjaman-Buku-Perpustakaan",
     icon: BookOpen,
     year: "2025",
   },
   {
-    id: "website-portofolio",
-    title: "Website Portofolio",
-    type: "Personal Site",
-    description:
-      "A personal website project for profile, work showcase, and contact presentation.",
-    stack: ["Portfolio", "Frontend", "Personal Brand"],
-    href: "https://github.com/rkhplace/Website-Portofolio",
-    icon: Globe2,
-    year: "2025",
-  },
-  {
-    id: "rakha-portofolio",
-    title: "Rakha Portofolio",
-    type: "Current Portfolio",
-    description:
-      "Current portfolio codebase rebuilt with React, Vite, and Netlify deployment.",
-    stack: ["React", "Vite", "Netlify"],
-    href: "https://github.com/rkhplace/Rakha-Portofolio",
-    demo: "https://rakhaportofolio.netlify.app/",
-    icon: Code2,
-    year: "2025",
-  },
-  {
     id: "telyubooking",
     title: "UI/UX Design TelyuBooking",
     type: "Product Design",
-    description:
-      "Facility booking app design for Telkom University with mobile-first booking flow and prototype concept.",
+    description: "Facility booking app design for Telkom University with mobile-first booking flow and prototype concept.",
     stack: ["Figma", "UI/UX", "Prototype"],
     href: "https://github.com/rkhplace/UI-UX-design-TelyuBooking",
     demo: "https://www.figma.com/design/CrRirAsUVin8MYyeEnndIJ/UI%2FUX-design-TelyuBooking?node-id=1-139&t=ZqQghHNL7oKAcNHc-0",
@@ -336,8 +274,7 @@ const projects = [
     id: "service-motor",
     title: "Service Motor Management System",
     type: "Backend Logic",
-    description:
-      "Go-based workshop system for service data, spare-part inventory, transactions, search, and sorting.",
+    description: "Go-based workshop system for service data, spare-part inventory, transactions, search, and sorting.",
     stack: ["Go", "Algorithms", "Struct"],
     href: "https://github.com/rkhplace/Service-Motor-Management-System",
     icon: TerminalSquare,
@@ -347,8 +284,7 @@ const projects = [
     id: "athlete-data",
     title: "Pengolahan Data Atlet",
     type: "Data Structures",
-    description:
-      "C++ project for processing athlete and competition data with Delete First operation implementation.",
+    description: "C++ project for processing athlete and competition data with Delete First operation implementation.",
     stack: ["C++", "Data Structure", "Algorithm"],
     href: "https://github.com/rkhplace/Pengolahan-Data-Atlet-Dan-Data-Pertandingan",
     icon: Trophy,
@@ -358,8 +294,7 @@ const projects = [
     id: "database-security",
     title: "Database Security Mini Project",
     type: "Database Security",
-    description:
-      "Mini project exploring database protection techniques, access control, and security documentation.",
+    description: "Mini project exploring database protection techniques, access control, and security documentation.",
     stack: ["Database", "Security", "Access Control"],
     href: "https://github.com/rkhplace/Database-Security-Mini-Project",
     icon: Database,
@@ -369,8 +304,7 @@ const projects = [
     id: "oddeven",
     title: "OddEven Web Calculator",
     type: "Web Algorithm",
-    description:
-      "A web calculator separating odd and even numbers with iteration and recursion approaches.",
+    description: "A web calculator separating odd and even numbers with iteration and recursion approaches.",
     stack: ["HTML", "CSS", "JavaScript"],
     href: "https://github.com/rkhplace/OddEvenWeb",
     demo: "https://rkhplace.github.io/OddEvenWeb/",
@@ -379,7 +313,7 @@ const projects = [
   },
 ];
 
-const fallbackProjects = projects.slice(0, 6);
+const curatedProjects = projects.slice(0, 6);
 
 const languageIcons = {
   CSS: Globe2,
@@ -413,16 +347,9 @@ const normalizeClientRepo = (repo) => {
 };
 
 const formatProjectDate = (dateValue) => {
-  if (!dateValue) {
-    return "Not available";
-  }
-
+  if (!dateValue) return "Not available";
   const date = new Date(dateValue);
-
-  if (Number.isNaN(date.getTime())) {
-    return "Not available";
-  }
-
+  if (Number.isNaN(date.getTime())) return "Not available";
   return new Intl.DateTimeFormat("en", {
     day: "2-digit",
     month: "short",
@@ -430,251 +357,208 @@ const formatProjectDate = (dateValue) => {
   }).format(date);
 };
 
-function App() {
-  const reduceMotion = useReducedMotion();
+export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [githubProjects, setGithubProjects] = useState([]);
-  const [projectsLoading, setProjectsLoading] = useState(true);
-  const featuredProjects = useMemo(
-    () => (githubProjects.length > 0 ? githubProjects : fallbackProjects),
+  const [loading, setLoading] = useState(true);
+
+  const shownProjects = useMemo(
+    () => (githubProjects.length > 0 ? githubProjects : curatedProjects),
     [githubProjects],
   );
-  useCinematicScroll({
-    enabled: true,
-    refreshKey: `${projectsLoading}-${featuredProjects.length}`,
+
+  const { scrollYProgress } = useScroll();
+  const readProgress = useSpring(scrollYProgress, {
+    stiffness: 150,
+    damping: 30,
+    mass: 0.25,
+    restDelta: 0.0005,
   });
 
-  const closeMenu = () => setMenuOpen(false);
   useEffect(() => {
-    let isMounted = true;
+    let mounted = true;
 
-    const loadGithubProjects = async () => {
+    (async () => {
       try {
         const response = await fetch("/api/github-repos");
-
-        if (!response.ok) {
-          throw new Error("GitHub repository API request failed");
-        }
-
+        if (!response.ok) throw new Error("GitHub repository API request failed");
         const data = await response.json();
-        const repos = Array.isArray(data.repos) ? data.repos.map(normalizeClientRepo).slice(0, 6) : [];
-
-        if (isMounted && repos.length > 0) {
-          setGithubProjects(repos);
-        }
+        const repos = Array.isArray(data.repos)
+          ? data.repos.map(normalizeClientRepo).slice(0, 6)
+          : [];
+        if (mounted && repos.length > 0) setGithubProjects(repos);
       } catch {
-        if (isMounted) {
-          setGithubProjects([]);
-        }
+        if (mounted) setGithubProjects([]);
       } finally {
-        if (isMounted) {
-          setProjectsLoading(false);
-        }
+        if (mounted) setLoading(false);
       }
-    };
+    })();
 
-    loadGithubProjects();
-
-    return () => {
-      isMounted = false;
-    };
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
-    if (!window.matchMedia("(pointer: fine)").matches) {
-      return undefined;
-    }
-
-    let frameId;
-    let currentX = 0;
-    let currentY = 8;
-    let targetX = 0;
-    let targetY = 8;
-
-    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-
-    const setShadowTarget = (event) => {
-      const logo = document.querySelector(".brand-mark");
-      if (!logo) {
-        return;
-      }
-
-      const rect = logo.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      targetX = clamp((event.clientX - centerX) / 130, -4, 4);
-      targetY = clamp((event.clientY - centerY) / 130, -3, 6);
-    };
-
-    const animateShadow = () => {
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
-      document.documentElement.style.setProperty("--logo-shadow-x", currentX.toFixed(2));
-      document.documentElement.style.setProperty("--logo-shadow-y", currentY.toFixed(2));
-      frameId = requestAnimationFrame(animateShadow);
-    };
-
-    window.addEventListener("pointermove", setShadowTarget, { passive: true });
-    frameId = requestAnimationFrame(animateShadow);
-
-    return () => {
-      window.removeEventListener("pointermove", setShadowTarget);
-      cancelAnimationFrame(frameId);
-    };
+    // The glass island widens once you leave the top of the hero.
+    const onScroll = () => setExpanded(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 8);
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const sections = document.querySelectorAll("section[id]");
+    if (!sections.length) return undefined;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries
+          .filter((entry) => entry.isIntersecting)
+          .forEach((entry) => setActiveSection(entry.target.id));
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, [loading]);
 
   useEffect(() => {
-    const onScene = (e) => {
-      setActiveSection(e.detail.id);
-    };
-    window.addEventListener("cinematic-scene", onScene);
-    return () => window.removeEventListener("cinematic-scene", onScene);
-  }, []);
-
-  useEffect(() => {
-    if (!selectedProject) {
+    if (!selected) {
       document.body.style.overflow = "";
       return undefined;
     }
-
     document.body.style.overflow = "hidden";
-    const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        setSelectedProject(null);
-      }
+    const onKey = (event) => {
+      if (event.key === "Escape") setSelected(null);
     };
-
-    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
-      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("keydown", onKey);
     };
-  }, [selectedProject]);
+  }, [selected]);
 
   return (
     <MotionConfig reducedMotion="user">
-      <header className={isScrolled ? "site-header scrolled" : "site-header"}>
-        <a className="brand" href="#home" onClick={closeMenu}>
-          <img className="brand-mark" src={logoImage} alt="Rakha logo" />
+      <motion.div className="scroll-progress" style={{ scaleX: readProgress }} aria-hidden="true" />
+
+      <header className={expanded ? "site-header expanded" : "site-header"}>
+        <a className="brand" href="#home" onClick={() => setMenuOpen(false)}>
+          <img src={logoImage} alt="" />
+          Rakha
         </a>
-        <nav className={menuOpen ? "nav open" : "nav"} aria-label="Main navigation">
-          {navItems.map(([label, href]) => {
-            const sceneId = href.replace("#", "");
-            return (
-              <a
-                key={href}
-                href={href}
-                className={activeSection === sceneId ? "active" : undefined}
-                onClick={closeMenu}
-              >
-                {label}
-              </a>
-            );
-          })}
+
+        <nav className={menuOpen ? "site-nav open" : "site-nav"} aria-label="Main">
+          {navItems.map(([label, href]) => (
+            <a
+              key={href}
+              href={href}
+              className={activeSection === href.slice(1) ? "active" : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
+              {label}
+            </a>
+          ))}
         </nav>
+
         <button
-          className="menu-button"
+          className="menu-toggle"
           type="button"
           aria-label="Toggle navigation"
-          onClick={() => setMenuOpen((value) => !value)}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
         >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
       </header>
 
-      <div className="journey-cursor" aria-hidden="true"><i /></div>
-
-      <JourneySections
-        profileImage={profileImage}
-        stats={stats}
-        capabilities={capabilities}
-        chapters={aboutChapters}
-        timelineItems={timelineItems}
-        projects={projectsLoading ? fallbackProjects : featuredProjects}
-        services={services}
-        techStack={techStack}
-        onSelectProject={setSelectedProject}
+      <ParallaxHero
+        name="Rakha Pratama"
+        tagline="Frontend developer exploring interactive web, information systems, and geospatial experiences."
       />
 
+      <About profileImage={profileImage} chapters={aboutChapters} stats={stats} />
+      <Experience items={timelineItems} />
+      <Projects projects={shownProjects} loading={loading} onSelect={setSelected} />
+      <Skills services={services} techStack={techStack} />
+      <Contact />
+      <Footer />
 
-
-
-      {selectedProject && (
-        <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
-      )}
+      <AnimatePresence>
+        {selected && <ProjectModal project={selected} onClose={() => setSelected(null)} />}
+      </AnimatePresence>
     </MotionConfig>
   );
 }
 
 function ProjectModal({ project, onClose }) {
   const Icon = project.icon;
-  const updatedLabel = project.updatedAt ? formatProjectDate(project.updatedAt) : project.year || "Not available";
-  const primaryStack = project.stack?.[0] || project.type || "Repository";
+  const updated = project.updatedAt
+    ? formatProjectDate(project.updatedAt)
+    : project.year || "Not available";
 
   return (
-    <div
+    <motion.div
       className="modal-backdrop"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="project-title"
+      aria-labelledby="modal-title"
       onMouseDown={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
     >
-      <div className="modal-card" onMouseDown={(event) => event.stopPropagation()}>
-        <button className="modal-close" type="button" onClick={onClose} aria-label="Close project details">
-          <X size={20} />
+      <motion.div
+        className="modal"
+        onMouseDown={(event) => event.stopPropagation()}
+        initial={{ y: 24, scale: 0.97, opacity: 0 }}
+        animate={{ y: 0, scale: 1, opacity: 1 }}
+        exit={{ y: 16, scale: 0.98, opacity: 0 }}
+        transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <button className="modal-close" type="button" onClick={onClose} aria-label="Close">
+          <X size={18} />
         </button>
-        <div className="project-icon large">
-          <Icon size={30} />
-        </div>
-        <span className="project-type">{project.type}</span>
-        <h2 id="project-title">{project.title}</h2>
+
+        <span className="project-icon">{Icon ? <Icon size={22} /> : null}</span>
+        <span className="eyebrow" style={{ marginTop: 16 }}>{project.type}</span>
+        <h2 id="modal-title">{project.title}</h2>
         <p>{project.description}</p>
-        <div className="modal-meta" aria-label="Repository metadata">
+
+        <div className="modal-meta">
           <div>
             <span>Primary tech</span>
-            <strong>{primaryStack}</strong>
+            <strong>{project.stack?.[0] || project.type}</strong>
           </div>
           <div>
             <span>Last updated</span>
-            <strong>{updatedLabel}</strong>
+            <strong>{updated}</strong>
           </div>
           <div>
             <span>Preview</span>
-            <strong>{project.demo ? "Live demo available" : "Code repository"}</strong>
+            <strong>{project.demo ? "Live demo" : "Code only"}</strong>
           </div>
         </div>
-        <div className="tag-row">
-          {project.stack.map((tag) => (
-            <span key={tag}>{tag}</span>
-          ))}
+
+        <div className="tags" style={{ marginTop: 18 }}>
+          {project.stack.map((tag) => <span key={tag}>{tag}</span>)}
         </div>
+
         <div className="modal-actions">
-          <a className="button primary" href={project.href} target="_blank" rel="noopener noreferrer">
-            View code <Github size={17} />
+          <a className="btn btn-solid" href={project.href} target="_blank" rel="noreferrer">
+            View code <Github size={16} />
           </a>
           {project.demo && (
-            <a className="button ghost dark" href={project.demo} target="_blank" rel="noopener noreferrer">
-              Live demo <ArrowUpRight size={17} />
+            <a className="btn btn-ghost" href={project.demo} target="_blank" rel="noreferrer">
+              Live demo <ArrowUpRight size={16} />
             </a>
           )}
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
-
-
-export default App;
-
