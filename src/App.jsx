@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AnimatePresence,
   MotionConfig,
@@ -51,6 +51,7 @@ import viteLogo from "../images/tech/vite.svg";
 
 import ParallaxHero from "./components/ParallaxHero";
 import { About, Contact, Experience, Footer, Projects, Skills } from "./components/Sections";
+import useSmoothScroll from "./hooks/useSmoothScroll";
 import "./styles/theme.css";
 
 const navItems = [
@@ -61,32 +62,41 @@ const navItems = [
   ["Contact", "#contact"],
 ];
 
+/* "2+ Years learning" was here and had to go: every candidate is learning, so
+ * the line spent a stat slot saying nothing. These three all point at finished
+ * things instead. */
 const stats = [
   ["16+", "Public projects"],
-  ["5+", "Languages"],
-  ["2+", "Years learning"],
+  ["7", "Languages used"],
+  ["5+", "Live deployments"],
 ];
 
+/*
+ * Reordered so the rarest work leads. Frontend used to sit at 02 as a headline
+ * competency, which both undersold the range below it and repeated what this
+ * page already demonstrates on its own. Geospatial lost its chapter entirely —
+ * it was claimed in four places across the site with no project to point at.
+ */
 const aboutChapters = [
   {
     kicker: "01",
     title: "Computer Science Student",
-    text: "S1 Informatics student from Bandung who keeps turning coursework into public repositories, deployable apps, and interface experiments.",
+    text: "S1 Informatics student from Bandung who keeps turning coursework into public repositories and deployable apps. Currently curious about map-based interfaces.",
   },
   {
     kicker: "02",
-    title: "Frontend Development",
-    text: "Focused on building responsive interfaces with readable structure, polished interaction details, and practical component thinking.",
+    title: "Cloud Deployment and Delivery",
+    text: "Comfortable taking a project past “runs on my machine” — Azure App Service, GitHub Actions pipelines, and monitoring once it is actually live.",
   },
   {
     kicker: "03",
-    title: "Full-stack Product Building",
-    text: "Comfortable connecting UI work with APIs, CRUD logic, databases, deployment workflows, and small AI-powered product features.",
+    title: "Security and Data",
+    text: "Coursework and mini projects in web security, database access control, and CRUD systems built on real schemas rather than mock data.",
   },
   {
     kicker: "04",
-    title: "WebGIS and Geospatial Exploration",
-    text: "Currently interested in map-based interfaces, dashboards, location-aware products, and data visualization for real-world context.",
+    title: "Full-stack Product Building",
+    text: "Connecting interfaces to APIs, databases, mobile flows, and small AI-powered features — end to end, rather than one layer of it.",
   },
 ];
 
@@ -139,30 +149,46 @@ const techStack = [
   { name: "GitHub", logo: githubLogo },
 ];
 
+/*
+ * Order inverted: the first card is what you meet first, and it used to be the
+ * one skill this page already proves by existing. Frontend now closes the list
+ * and says so outright.
+ *
+ * `stack` names index into techStack above rather than repeating logo imports,
+ * so a tool has exactly one definition. Every area carries its own set — the
+ * previous build showed all nineteen logos on every tab, which made the choice
+ * of area mean nothing.
+ */
 const services = [
   {
-    icon: Code2,
-    title: "Frontend Engineering",
-    text: "Responsive interfaces, reusable components, and clean interaction details for web projects.",
-    tags: ["React", "JavaScript", "UI Systems"],
+    icon: Server,
+    title: "Cloud Deployment",
+    text: "Getting work into production and keeping it observable there — App Service, pipelines that deploy on push, and monitoring after release.",
+    stack: ["Microsoft Azure", "GitHub", "Vercel", "Netlify"],
   },
   {
-    icon: MonitorSmartphone,
-    title: "Mobile Product",
-    text: "Mobile-first product flows using Dart and Flutter, from layout planning to deployment preview.",
-    tags: ["Flutter", "Dart", "Mobile UX"],
+    icon: ShieldCheck,
+    title: "Security and Data",
+    text: "Web security practice, database access control, and data-driven systems built on real schemas and real algorithms.",
+    stack: ["PostgreSQL", "PHP", "Go", "C++", "Python"],
   },
   {
     icon: Brain,
     title: "AI Integration",
-    text: "Practical AI features for assistants, planning tools, and workflow automation.",
-    tags: ["AI", "Groq API", "Next.js"],
+    text: "Practical AI features for assistants, planning tools, and workflow automation, wired to real model APIs.",
+    stack: ["Next.js", "TypeScript", "JavaScript", "Python"],
   },
   {
-    icon: Cloud,
-    title: "Cloud Deployment",
-    text: "Deployment practice using PaaS, Azure, CI/CD, and monitoring tools.",
-    tags: ["Azure", "Vercel", "CI/CD"],
+    icon: MonitorSmartphone,
+    title: "Mobile Product",
+    text: "Mobile-first product flows using Dart and Flutter, from layout and prototype through to a deployed web preview.",
+    stack: ["Flutter", "Dart", "Figma", "Vercel"],
+  },
+  {
+    icon: Code2,
+    title: "Frontend Engineering",
+    text: "Responsive interfaces, reusable components, and interaction detail that holds up under scrolling — this page being the working example.",
+    stack: ["React", "Next.js", "JavaScript", "TypeScript", "HTML5", "CSS3", "Vite", "Figma"],
   },
 ];
 
@@ -313,7 +339,18 @@ const projects = [
   },
 ];
 
-const curatedProjects = projects.slice(0, 6);
+/*
+ * Mirrors FEATURED_REPOS in netlify/functions/github-repos.js. Without it the
+ * offline fallback was a plain slice(0, 6) — and the Azure project sits seventh
+ * in the list above, so whenever the GitHub call failed the single most
+ * differentiating piece of work silently vanished from the page.
+ */
+const FEATURED_IDS = ["azure", "cyber-security", "jualin-abp"];
+
+const curatedProjects = [
+  ...FEATURED_IDS.map((id) => projects.find((project) => project.id === id)).filter(Boolean),
+  ...projects.filter((project) => !FEATURED_IDS.includes(project.id)),
+].slice(0, 6);
 
 const languageIcons = {
   CSS: Globe2,
@@ -362,6 +399,7 @@ export default function App() {
   const [selected, setSelected] = useState(null);
   const [activeSection, setActiveSection] = useState("home");
   const [expanded, setExpanded] = useState(false);
+  const [overHero, setOverHero] = useState(true);
   const [githubProjects, setGithubProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -369,6 +407,8 @@ export default function App() {
     () => (githubProjects.length > 0 ? githubProjects : curatedProjects),
     [githubProjects],
   );
+
+  const lenis = useSmoothScroll();
 
   const { scrollYProgress } = useScroll();
   const readProgress = useSpring(scrollYProgress, {
@@ -401,11 +441,26 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // The glass island widens once you leave the top of the hero.
-    const onScroll = () => setExpanded(window.scrollY > 40);
+    const onScroll = () => {
+      // The glass island widens once you leave the top of the hero.
+      setExpanded(window.scrollY > 40);
+      /*
+       * The hero is 220vh of near-black sky, so the header floats over dark for
+       * the first two screens and its navy-on-frosted-white treatment goes
+       * unreadable there. Tracking the hero's own bottom edge rather than a
+       * scroll threshold keeps the swap tied to what is actually behind it.
+       */
+      const hero = document.getElementById("home");
+      setOverHero(hero ? hero.getBoundingClientRect().bottom > 96 : false);
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -428,24 +483,34 @@ export default function App() {
   useEffect(() => {
     if (!selected) {
       document.body.style.overflow = "";
+      lenis.current?.start();
       return undefined;
     }
+    // `overflow: hidden` alone no longer holds the page: Lenis drives the real
+    // window scroll from its own loop and has to be paused as well.
     document.body.style.overflow = "hidden";
+    lenis.current?.stop();
+
     const onKey = (event) => {
       if (event.key === "Escape") setSelected(null);
     };
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      lenis.current?.start();
       window.removeEventListener("keydown", onKey);
     };
-  }, [selected]);
+  }, [selected, lenis]);
 
   return (
     <MotionConfig reducedMotion="user">
       <motion.div className="scroll-progress" style={{ scaleX: readProgress }} aria-hidden="true" />
 
-      <header className={expanded ? "site-header expanded" : "site-header"}>
+      <header
+        className={["site-header", expanded && "expanded", overHero && "on-dark"]
+          .filter(Boolean)
+          .join(" ")}
+      >
         <a className="brand" href="#home" onClick={() => setMenuOpen(false)}>
           <img src={logoImage} alt="" />
           Rakha
@@ -477,7 +542,7 @@ export default function App() {
 
       <ParallaxHero
         name="Rakha Pratama"
-        tagline="Frontend developer exploring interactive web, information systems, and geospatial experiences."
+        tagline="Informatics student building and shipping full-stack products — cloud deployment, security, mobile, and the web."
       />
 
       <About profileImage={profileImage} chapters={aboutChapters} stats={stats} />
@@ -495,10 +560,54 @@ export default function App() {
 }
 
 function ProjectModal({ project, onClose }) {
+  const modalRef = useRef(null);
   const Icon = project.icon;
   const updated = project.updatedAt
     ? formatProjectDate(project.updatedAt)
     : project.year || "Not available";
+
+  /*
+   * Focus management for the dialog. Without it, opening the modal leaves focus
+   * on the card behind the backdrop: Tab walks straight into the page
+   * underneath while the dialog is still up, and closing drops the user at the
+   * top of the document rather than the card they opened.
+   */
+  useEffect(() => {
+    const returnTo = document.activeElement;
+    const modal = modalRef.current;
+    modal?.querySelector(".modal-close")?.focus();
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Tab" || !modal) return;
+
+      const focusable = [...modal.querySelectorAll("a[href], button:not([disabled])")];
+      if (!focusable.length) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!modal.contains(document.activeElement)) {
+        // Focus was outside the dialog to begin with — pull it back in rather
+        // than let Tab continue through the page behind the backdrop.
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      // Runs once AnimatePresence has finished the exit animation, which is the
+      // point the dialog is actually gone from the page.
+      if (returnTo instanceof HTMLElement) returnTo.focus();
+    };
+  }, []);
 
   return (
     <motion.div
@@ -514,6 +623,11 @@ function ProjectModal({ project, onClose }) {
     >
       <motion.div
         className="modal"
+        ref={modalRef}
+        /* Lenis calls preventDefault on wheel events even while stopped, which
+         * would freeze this panel's own overflow scrolling. This attribute is
+         * the documented opt-out and is checked before that. */
+        data-lenis-prevent=""
         onMouseDown={(event) => event.stopPropagation()}
         initial={{ y: 24, scale: 0.97, opacity: 0 }}
         animate={{ y: 0, scale: 1, opacity: 1 }}

@@ -7,31 +7,31 @@
 }
 
 :root {
-  /* Sky */
-  --sky-high: #d8e8f8;
-  --sky-low: #b2cde9;
+  /*
+   * Sampled from the hero portrait rather than picked: #030d1f is its darkest
+   * sky, #1a52a7 the cobalt glow coming from the lower right. The palette was
+   * a desaturated slate before, which is why the photo sat on it like a
+   * cut-out — same family of blue, different character.
+   */
+  --sky-high: #030d1f;
+  --sky-mid: #0a2247;
+  --sky-low: #123b78;
+  --glow: #1a52a7;
 
-  /* Ink */
-  --navy: #2c4a6e;
-  --navy-deep: #223a5c;
-  --navy-soft: #5c7391;
+  /* Ink. --navy carries text on white *and* white text on itself, so it has to
+   * clear contrast in both directions — this one is 10.98:1 either way. */
+  --navy: #123a7a;
+  --navy-deep: #0b2856;
+  --navy-soft: #546d9e;
 
-  /* Surfaces — kept cool, so they sit with the sky and the grey rock */
+  /* Surfaces — kept light, and pulled a touch cooler to sit with the cobalt */
   --surface: #ffffff;
-  --surface-alt: #f2f4f7;
+  --surface-alt: #f1f4f9;
   --paper: #ffffff;
 
-  /* Stone layers, far to near */
-  --stone-far: #b6c5d6;
-  --stone-far-snow: #e8eff7;
-  --stone-mid: #8fa2b8;
-  --stone-mid-snow: #dbe5f0;
-  --stone-near: #47586c;
-  --stone-fore: #33424f;
-
-  --line: rgba(44, 74, 110, 0.14);
-  --shadow-lg: 0 30px 70px rgba(34, 58, 92, 0.16);
-  --shadow-sm: 0 10px 26px rgba(34, 58, 92, 0.1);
+  --line: rgba(18, 58, 122, 0.14);
+  --shadow-lg: 0 30px 70px rgba(11, 40, 86, 0.16);
+  --shadow-sm: 0 10px 26px rgba(11, 40, 86, 0.1);
 
   /*
    * Glass. On a near-white page the refraction alone is invisible, so the pane
@@ -44,14 +44,17 @@
   --glass-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-    0 1px 2px rgba(34, 58, 92, 0.05),
-    0 14px 36px rgba(34, 58, 92, 0.1);
+    0 1px 2px rgba(11, 40, 86, 0.05),
+    0 14px 36px rgba(11, 40, 86, 0.1);
 
   --radius: 14px;
   --radius-lg: 24px;
 
   --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --shell: min(1180px, calc(100% - 96px));
+  /* The shell's own left margin, restated against the viewport so full-bleed
+   * rails (the Experience track) can line their first item up with the copy. */
+  --gutter: calc((100vw - min(1180px, 100vw - 96px)) / 2);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -59,8 +62,22 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
+/*
+ * No `scroll-behavior: smooth` here — Lenis owns scrolling and the two fight
+ * over anchor jumps. The reduced-motion block below restores it for anyone who
+ * has Lenis switched off.
+ */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 body {
@@ -139,7 +156,7 @@ button {
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 28px rgba(34, 58, 92, 0.1);
+  box-shadow: 0 8px 28px rgba(11, 40, 86, 0.1);
   backdrop-filter: blur(16px) saturate(165%);
   -webkit-backdrop-filter: blur(16px) saturate(165%);
   transform: translateX(-50%);
@@ -156,9 +173,43 @@ button {
   padding: 13px 14px 13px 22px;
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.58);
-  box-shadow: 0 16px 44px rgba(34, 58, 92, 0.16);
+  box-shadow: 0 16px 44px rgba(11, 40, 86, 0.16);
   backdrop-filter: blur(26px) saturate(185%);
   -webkit-backdrop-filter: blur(26px) saturate(185%);
+}
+
+/*
+ * Dark treatment while the island floats over the hero. Same geometry, inverted
+ * ink — the widening `expanded` transition still runs underneath it, and both
+ * states hand back to the light treatment as the first section arrives.
+ */
+.site-header.on-dark {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(8, 22, 48, 0.34);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.28);
+}
+
+.site-header.on-dark.expanded {
+  background: rgba(8, 22, 48, 0.56);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.34);
+}
+
+.site-header.on-dark .brand,
+.site-header.on-dark .site-nav a,
+.site-header.on-dark .menu-toggle {
+  color: #fff;
+}
+
+.site-header.on-dark .site-nav a:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.site-header.on-dark .site-nav a.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.site-header.on-dark .menu-toggle {
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .brand {
@@ -195,12 +246,12 @@ button {
 
 .site-nav a:hover {
   opacity: 1;
-  background: rgba(44, 74, 110, 0.08);
+  background: rgba(18, 58, 122, 0.08);
 }
 
 .site-nav a.active {
   opacity: 1;
-  background: rgba(44, 74, 110, 0.12);
+  background: rgba(18, 58, 122, 0.12);
 }
 
 .menu-toggle {
@@ -239,12 +290,12 @@ button {
 }
 
 .btn-ghost {
-  background: rgba(44, 74, 110, 0.1);
+  background: rgba(18, 58, 122, 0.1);
   color: var(--navy);
 }
 
 .btn-ghost:hover {
-  background: rgba(44, 74, 110, 0.17);
+  background: rgba(18, 58, 122, 0.17);
   transform: translateY(-2px);
 }
 
@@ -271,52 +322,41 @@ button {
   height: 100vh;
   height: 100svh;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--sky-high) 0%, var(--sky-low) 100%);
+  /*
+   * The radial pool is placed where the light in the portrait comes from — low
+   * and to the right. Matching the direction is what stops the cut-out reading
+   * as pasted on: its rim light now has a source in the scene behind it.
+   */
+  background:
+    radial-gradient(ellipse 72% 56% at 64% 84%, rgba(26, 82, 167, 0.55), transparent 68%),
+    linear-gradient(180deg, var(--sky-high) 0%, var(--sky-mid) 58%, var(--sky-low) 100%);
 }
 
-.hero-layer {
+/*
+ * The portrait layer. z-index puts it above .hero-copy (1), which is the whole
+ * trick: the figure rises *over* the name instead of the name fading out from
+ * under it. No trailing ground block here — unlike the ridge this replaced, a
+ * cut-out figure is meant to have sky on every side of it.
+ */
+.hero-portrait-layer {
   position: absolute;
   left: 50%;
+  z-index: 6;
+  width: min(680px, 86vw);
   translate: -50% 0;
   pointer-events: none;
+  will-change: transform;
 }
 
-.hero-layer img {
+.hero-portrait-layer img {
   display: block;
   width: 100%;
   height: auto;
 }
 
-/*
- * The ridge travels further up than its own height, so each layer trails a
- * block of solid ground. It has to be a sibling of the image, not a background
- * on the layer — the asset is transparent above the ridgeline, and a layer
- * background would fill that sky in.
- */
-.layer-ground {
-  display: block;
-  height: 130vh;
-}
-
-.layer-far {
-  z-index: 2;
-  top: 52vh;
-  width: 150%;
-  opacity: 0.34;
-}
-
-/* Mirrored so the two copies do not read as the same silhouette twice. */
-.layer-far img {
-  transform: scaleX(-1);
-}
-
-.layer-far .layer-ground {
-  background: #aebccb;
-}
-
 .layer-cloud-a { z-index: 3; }
 .layer-cloud-b { z-index: 4; }
-/* Sits in front of the near ridge, so it drifts across the rock face. */
+/* Sits in front of the portrait, so it drifts across the figure. */
 .layer-cloud-c { z-index: 7; }
 
 .cloud img {
@@ -324,22 +364,12 @@ button {
   height: auto;
 }
 
-.layer-near {
-  z-index: 6;
-  top: 60vh;
-  width: 128%;
-}
-
-.layer-near .layer-ground {
-  background: #5b625d;
-}
-
 .hero-copy {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1; /* deliberately behind the ridges so they sweep in front */
+  z-index: 1; /* deliberately behind the figure so it sweeps in front */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -353,22 +383,33 @@ button {
   font-weight: 700;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--navy-soft);
+  color: rgba(255, 255, 255, 0.62);
 }
 
+/*
+ * Tinted into the sky rather than left pure white. White was chosen only to
+ * guarantee legibility when the hero went dark, and it overshot: 19.4:1 against
+ * the sky where the original navy-on-pale design sat at 7.3:1 — nearly three
+ * times the shout. It is also a colour that appears nowhere in the photograph,
+ * so it read as pasted over the scene instead of belonging to it. At 10.4:1
+ * this is still comfortably legible while letting the portrait, which is the
+ * thing the whole hero is built around, out-rank its own caption.
+ */
 .hero-title {
   font-size: clamp(3.6rem, 11.5vw, 11rem);
-  font-weight: 780;
+  font-weight: 700;
   letter-spacing: -0.05em;
   line-height: 0.86;
-  color: var(--navy);
+  color: #a8c0dc;
 }
 
+/* Pulled down with the title. At 0.74 it landed on 10.67:1 — brighter than the
+ * name above it, which left the headline winning on size alone. */
 .hero-sub {
   max-width: 560px;
   margin-top: 26px;
-  color: var(--navy);
-  opacity: 0.78;
+  color: #fff;
+  opacity: 0.6;
   font-size: clamp(0.98rem, 1.25vw, 1.16rem);
   line-height: 1.55;
 }
@@ -379,6 +420,31 @@ button {
   justify-content: center;
   gap: 12px;
   margin-top: 30px;
+}
+
+/*
+ * The page-wide buttons assume a light background: .btn-solid is navy-on-white,
+ * which over this sky is dark on dark. In the hero the roles invert — the solid
+ * one goes white to carry the primary action, and the secondary becomes glass
+ * so the two do not read as the same button twice.
+ */
+.hero-actions .btn-solid {
+  background: #fff;
+  color: var(--navy-deep);
+}
+
+.hero-actions .btn-solid:hover {
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.hero-actions .btn-light {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+}
+
+.hero-actions .btn-light:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .hero-cue {
@@ -395,13 +461,22 @@ button {
   font-weight: 650;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.9);
-  text-shadow: 0 1px 8px rgba(34, 58, 92, 0.5);
+  /* A transient hint that fades out by 12% of the scroll — it has no business
+   * sitting brighter than the headline, which at 0.75 it did. */
+  color: rgba(255, 255, 255, 0.5);
 }
 
+/*
+ * The cloud asset is a bright white cut-out, which on this sky would read as
+ * cotton wool. Blurred hard, dropped to a sixth of its opacity and blended with
+ * `screen`, it stops being a cloud and becomes the same hanging glow the
+ * portrait's own background has.
+ */
 .cloud {
   position: absolute;
-  filter: blur(0.4px);
+  opacity: 0.17;
+  filter: blur(16px);
+  mix-blend-mode: screen;
 }
 
 /* ── Section shell ──────────────────────────────────────────────────────── */
@@ -441,6 +516,24 @@ button {
 
 .section-head h2 {
   font-size: clamp(2.3rem, 5vw, 4.2rem);
+}
+
+/*
+ * Scroll-linked word reveal. Deliberately not masked behind an overflow clip:
+ * at these display sizes a hard mask has to fight descenders and the tight 0.95
+ * line-height, and the dim-to-lit cascade already carries the effect. The space
+ * between words is a margin, not a text node, so the inline-block boxes cannot
+ * collapse it away.
+ */
+/* Spacing comes from the real space between these boxes, not a margin — see
+ * RevealText. Inline-block is what lets each word carry its own transform. */
+.reveal-word {
+  display: inline-block;
+}
+
+.reveal-word > span {
+  display: inline-block;
+  will-change: transform, opacity;
 }
 
 .section-head p {
@@ -501,7 +594,7 @@ button {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 22px 48px rgba(34, 58, 92, 0.14);
+    0 22px 48px rgba(11, 40, 86, 0.14);
 }
 
 .about-card h3 {
@@ -637,6 +730,176 @@ button {
   color: var(--navy-soft);
 }
 
+/* ── Experience rail (horizontal) ───────────────────────────────────────── */
+
+/*
+ * The section is grown past one screen by exactly the track's overflow (set
+ * inline from JS), and the viewport inside it pins to the top — so the extra
+ * height is spent travelling sideways instead of down.
+ */
+.exp-pin {
+  position: relative;
+  z-index: 10;
+}
+
+/* Deliberately `100vh` and not `100svh`: the section height it has to match is
+ * set from JS as `calc(100vh + …)`, and mixing the two units releases the pin
+ * early by exactly the mobile toolbar's height. */
+.exp-viewport {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  padding: clamp(64px, 8vh, 104px) 0;
+  overflow: hidden;
+}
+
+/* Screen wide enough to show the whole track — nothing to pin for. */
+.exp-viewport-static {
+  position: static;
+  height: auto;
+  padding: clamp(96px, 13vh, 160px) 0;
+}
+
+/* Held back from the full page scale: the rail has to share one screen with
+ * the cards and the progress bar, unlike a normal stacked section head. */
+.exp-viewport .section-head {
+  max-width: 640px;
+  margin-bottom: 0;
+}
+
+.exp-viewport .section-head h2 {
+  font-size: clamp(1.9rem, 3.5vw, 3.1rem);
+}
+
+.exp-viewport .section-head p {
+  margin-top: 14px;
+  font-size: 0.96rem;
+}
+
+.exp-track {
+  display: flex;
+  align-items: stretch;
+  width: max-content;
+  /* Full-bleed, but the first card still lines up with the copy above it. */
+  padding-inline: var(--gutter);
+  margin: clamp(26px, 4vh, 44px) 0;
+  will-change: transform;
+}
+
+.exp-track > * {
+  flex: none;
+  margin-right: 22px;
+}
+
+.exp-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: clamp(292px, 29vw, 392px);
+  padding: 30px;
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-lg);
+  background: var(--glass-fill);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.exp-index {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  font-size: 2.6rem;
+  font-weight: 780;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: rgba(18, 58, 122, 0.12);
+}
+
+.exp-year {
+  display: inline-block;
+  align-self: flex-start;
+  margin-bottom: 18px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(18, 58, 122, 0.1);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--navy);
+}
+
+.exp-card h3 {
+  max-width: 15ch;
+  font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+}
+
+.exp-card p {
+  margin-top: 12px;
+  color: var(--navy-soft);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.exp-card .tags {
+  margin-top: auto;
+  padding-top: 22px;
+}
+
+.exp-card-end {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.35s var(--ease);
+}
+
+.exp-card-end:hover {
+  transform: translateY(-4px);
+}
+
+.exp-card-end .exp-year {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.exp-card-end p {
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.exp-card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+
+.exp-progress {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.exp-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--navy);
+  transform-origin: left;
+}
+
+.exp-progress-reverse i {
+  transform-origin: right;
+}
+
 /* ── Projects ───────────────────────────────────────────────────────────── */
 
 .project-grid {
@@ -645,7 +908,18 @@ button {
   gap: 20px;
 }
 
+/*
+ * The perspective has to sit on the cell, not the grid: it only applies to a
+ * direct child, and the card that tilts is one level further down — the cell
+ * itself is reserved for the scroll-linked column drift.
+ */
+.project-cell {
+  display: flex;
+  perspective: 1400px;
+}
+
 .project-card {
+  width: 100%;
   display: flex;
   flex-direction: column;
   padding: 26px;
@@ -665,7 +939,7 @@ button {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 1),
     inset 0 0 0 1px rgba(255, 255, 255, 0.6),
-    0 26px 56px rgba(34, 58, 92, 0.16);
+    0 26px 56px rgba(11, 40, 86, 0.16);
 }
 
 .project-icon {
@@ -675,7 +949,7 @@ button {
   height: 46px;
   margin-bottom: 20px;
   border-radius: 12px;
-  background: rgba(44, 74, 110, 0.1);
+  background: rgba(18, 58, 122, 0.1);
   color: var(--navy);
 }
 
@@ -713,70 +987,71 @@ button {
 
 /* ── Skills ─────────────────────────────────────────────────────────────── */
 
-.skill-tabs {
+/*
+ * Deliberately navy where the Experience cards are pale glass. Both sections
+ * now ride the same horizontal rail, and identical cards on an identical
+ * mechanic would read as the page repeating itself — the weight is what keeps
+ * them distinct.
+ */
+.skill-card {
+  position: relative;
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 34px;
-}
-
-.skill-tabs button {
-  padding: 11px 18px;
-  border: 1px solid var(--glass-edge);
-  border-radius: 999px;
-  background: var(--glass-fill);
-  box-shadow: var(--glass-shadow);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  color: var(--navy-soft);
-  font-size: 0.85rem;
-  font-weight: 620;
-  transition: background 0.25s, color 0.25s, border-color 0.25s;
-}
-
-.skill-tabs button.active {
-  background: var(--navy);
-  border-color: var(--navy);
-  color: #fff;
-}
-
-.skill-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(30px, 5vw, 70px);
-  align-items: center;
-  padding: clamp(28px, 4vw, 46px);
+  flex-direction: column;
+  width: clamp(292px, 29vw, 392px);
+  padding: 30px;
   border-radius: var(--radius-lg);
   background: var(--navy);
   color: #fff;
+  box-shadow: var(--shadow-lg);
 }
 
-.skill-panel h3 {
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
+.skill-index {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  font-size: 2.6rem;
+  font-weight: 780;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.14);
 }
 
-.skill-panel p {
-  margin-top: 14px;
+.skill-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.skill-card h3 {
+  max-width: 14ch;
+  font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+}
+
+.skill-card p {
+  margin-top: 12px;
   opacity: 0.76;
-  font-size: 0.96rem;
+  font-size: 0.92rem;
   line-height: 1.6;
 }
 
-.skill-panel .tags span {
-  border-color: rgba(255, 255, 255, 0.25);
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.tech-cloud {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+.skill-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 24px;
 }
 
 .tech-chip {
   display: grid;
   place-items: center;
-  aspect-ratio: 1;
+  width: 52px;
+  height: 52px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
   transition: background 0.25s, transform 0.25s var(--ease);
@@ -788,9 +1063,23 @@ button {
 }
 
 .tech-chip img {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
+}
+
+/* Stacked fallback: the card sheds its rail width and fills the column. */
+.skill-list {
+  display: grid;
+  gap: 16px;
+}
+
+.skill-list .skill-card {
+  width: 100%;
+}
+
+.skill-list .skill-card h3 {
+  max-width: none;
 }
 
 /* ── Contact + footer ───────────────────────────────────────────────────── */
@@ -815,7 +1104,7 @@ button {
   translate: -50% -50%;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(108, 152, 205, 0.24), transparent 66%);
+  background: radial-gradient(circle, rgba(26, 82, 167, 0.2), transparent 66%);
 }
 
 .contact h2 {
@@ -925,7 +1214,7 @@ button {
   display: grid;
   place-items: center;
   padding: 24px;
-  background: rgba(34, 58, 92, 0.42);
+  background: rgba(11, 40, 86, 0.42);
   backdrop-filter: blur(6px);
 }
 
@@ -953,7 +1242,7 @@ button {
   height: 36px;
   border: 0;
   border-radius: 50%;
-  background: rgba(44, 74, 110, 0.09);
+  background: rgba(18, 58, 122, 0.09);
   color: var(--navy);
 }
 
@@ -1003,10 +1292,12 @@ button {
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 1024px) {
-  :root { --shell: calc(100% - 48px); }
+  :root {
+    --shell: calc(100% - 48px);
+    --gutter: 24px;
+  }
 
-  .about-grid,
-  .skill-panel {
+  .about-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1024,7 +1315,10 @@ button {
 }
 
 @media (max-width: 720px) {
-  :root { --shell: calc(100% - 32px); }
+  :root {
+    --shell: calc(100% - 32px);
+    --gutter: 16px;
+  }
 
   .site-nav {
     position: fixed;
@@ -1045,7 +1339,7 @@ button {
   .hero-layer { width: 230%; }
 
   .stat-row { grid-template-columns: 1fr; }
-  .tech-cloud { grid-template-columns: repeat(4, 1fr); }
+  .tech-chip { width: 46px; height: 46px; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   .modal-meta { grid-template-columns: 1fr; }
