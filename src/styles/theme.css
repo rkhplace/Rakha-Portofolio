@@ -967,11 +967,22 @@ button {
   letter-spacing: -0.025em;
 }
 
+/*
+ * Capped at four lines. Curated copy is written to roughly one sentence, but an
+ * uncurated repo brings whatever its GitHub description happens to say — one
+ * card ran to six lines beside a card of one, and the grid row stretched to the
+ * tallest of them. The modal still shows the description in full.
+ */
 .project-card > p {
   margin-top: 10px;
   color: var(--navy-soft);
   font-size: 0.9rem;
   line-height: 1.55;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  overflow: hidden;
 }
 
 .project-card .tags {

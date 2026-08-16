@@ -25,6 +25,18 @@ const featureRank = (repo) => {
 
 const isFeatured = (repo) => featureRank(repo) !== Number.MAX_SAFE_INTEGER;
 
+/*
+ * The portfolio itself. Listing the site you are currently looking at as one of
+ * its own six featured projects is filler, and it costs a slot a real project
+ * could have used.
+ */
+const EXCLUDED_REPOS = ["Rakha-Portofolio"];
+
+const isExcluded = (repo) => {
+  const name = cleanText(repo.name).toLowerCase();
+  return EXCLUDED_REPOS.some((entry) => entry.toLowerCase() === name);
+};
+
 const cleanText = (value) => (typeof value === "string" ? value.trim() : "");
 
 // A repo named after the account is the special GitHub profile-README repo,
@@ -82,6 +94,7 @@ export async function handler() {
           !repo.fork &&
           !repo.archived &&
           !isProfileRepo(repo) &&
+          !isExcluded(repo) &&
           // Featured repos are chosen deliberately, so they are exempt from the
           // description requirement the rest of the pool has to clear — the
           // client supplies a fallback blurb for anything that arrives empty.

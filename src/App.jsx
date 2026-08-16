@@ -366,16 +366,59 @@ const languageIcons = {
 const projectDescriptionFallback =
   "Public GitHub repository by Rakha, kept available for code review and project reference.";
 
+/* Repo name out of a GitHub URL, lowercased so the two sides can be matched. */
+const repoKeyFromHref = (value) => {
+  const match = String(value || "").match(/github\.com\/[^/]+\/([^/?#]+)/i);
+  return match ? match[1].toLowerCase() : "";
+};
+
+const curatedByRepo = new Map(
+  projects
+    .filter((project) => repoKeyFromHref(project.href))
+    .map((project) => [repoKeyFromHref(project.href), project]),
+);
+
+/* `scalable-web-app-azure` -> `Scalable Web App Azure`, for repos with no
+ * curated entry yet. Words already in caps are left alone so an acronym does
+ * not come back as `Jualin Abp`. */
+const prettifyRepoName = (name) =>
+  String(name || "GitHub Repository")
+    .replace(/[-_]+/g, " ")
+    .trim()
+    .split(" ")
+    .map((word) => (word === word.toUpperCase() ? word : word.charAt(0).toUpperCase() + word.slice(1)))
+    .join(" ");
+
+/*
+ * Curated copy wins; GitHub fills the gaps.
+ *
+ * The live feed used to replace the curated list wholesale, so the moment the
+ * API succeeded every hand-written title and description was thrown away — the
+ * grid came back with raw slugs for titles, "JAVASCRIPT" where the curated type
+ * said "Cloud Architecture", a paragraph-long README blurb on one card and the
+ * placeholder string on repos that carry no GitHub description at all. GitHub
+ * is still what decides *which* repos appear and when they were last touched,
+ * and it remains the only source for anything not curated yet.
+ */
 const normalizeClientRepo = (repo) => {
+  const curated = curatedByRepo.get(repoKeyFromHref(repo.href || repo.html_url));
+
+  if (curated) {
+    return {
+      ...curated,
+      demo: curated.demo || repo.demo || repo.homepage || "",
+      updatedAt: repo.updatedAt || repo.updated_at,
+    };
+  }
+
   const language = repo.type || repo.language || "GitHub Repository";
-  const stack = Array.isArray(repo.stack) && repo.stack.length > 0 ? repo.stack : [language];
 
   return {
     id: repo.id,
-    title: repo.title || repo.name || "GitHub Repository",
+    title: prettifyRepoName(repo.title || repo.name),
     type: language,
     description: repo.description || projectDescriptionFallback,
-    stack,
+    stack: Array.isArray(repo.stack) && repo.stack.length > 0 ? repo.stack : [language],
     href: repo.href || repo.html_url,
     demo: repo.demo || repo.homepage || "",
     icon: languageIcons[language] || Github,
