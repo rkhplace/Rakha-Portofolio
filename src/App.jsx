@@ -80,14 +80,19 @@ const stats = [
 /*
  * Reordered so the rarest work leads. Frontend used to sit at 02 as a headline
  * competency, which both undersold the range below it and repeated what this
- * page already demonstrates on its own. Geospatial lost its chapter entirely —
- * it was claimed in four places across the site with no project to point at.
+ * page already demonstrates on its own.
+ *
+ * Geospatial was cut from here once, on the grounds that nothing backed it.
+ * That was wrong: the reading came from this project list, and this list was
+ * incomplete. Three separate builds carry real mapping work, and two of them
+ * are on screen in the Work strip. It is back at 04 with the specifics named,
+ * so the claim can be checked rather than taken on trust.
  */
 const aboutChapters = [
   {
     kicker: "01",
     title: "Computer Science Student",
-    text: "S1 Informatics student from Bandung who keeps turning coursework into public repositories and deployable apps. Currently curious about map-based interfaces.",
+    text: "S1 Informatics student from Bandung who keeps turning coursework into public repositories and deployable apps.",
   },
   {
     kicker: "02",
@@ -101,6 +106,11 @@ const aboutChapters = [
   },
   {
     kicker: "04",
+    title: "Geospatial and Mapping",
+    text: "A 3D digital twin of Bandung on Cesium with extruded OpenStreetMap buildings and live sensor layers, radius search on Leaflet, and day-by-day routing on Google Maps.",
+  },
+  {
+    kicker: "05",
     title: "Full-stack Product Building",
     text: "Connecting interfaces to APIs, databases, mobile flows, and small AI-powered features — end to end, rather than one layer of it.",
   },
@@ -257,7 +267,8 @@ const projects = [
     description: "JavaScript application deployed on PaaS for hosting workflow practice.",
     stack: ["JavaScript", "PaaS", "Vercel"],
     href: "https://github.com/rkhplace/Tugas-PaaS",
-    demo: "https://tugas-paa-s-ashy.vercel.app",
+    /* demo removed: tugas-paa-s-ashy.vercel.app now answers 404. A dead "Live
+     * demo" button is worse than none — it invites a click that fails. */
     icon: Cloud,
     year: "2025",
   },
@@ -339,7 +350,8 @@ const projects = [
     description: "A web calculator separating odd and even numbers with iteration and recursion approaches.",
     stack: ["HTML", "CSS", "JavaScript"],
     href: "https://github.com/rkhplace/OddEvenWeb",
-    demo: "https://rkhplace.github.io/OddEvenWeb/",
+    /* demo removed: GitHub Pages is not enabled for this repo, so the URL
+     * redirected to a "Site not found" page. */
     icon: Code2,
     year: "2025",
   },
@@ -642,7 +654,7 @@ export default function App() {
 
       <ParallaxHero
         name="Rakha Pratama"
-        tagline="Informatics student building and shipping full-stack products — cloud deployment, security, mobile, and the web."
+        tagline="Informatics student building and shipping full-stack products — cloud deployment, security, mapping, and mobile."
       />
 
       <About profileImage={profileImage} chapters={aboutChapters} stats={stats} />

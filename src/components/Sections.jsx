@@ -62,7 +62,7 @@ export function About({ profileImage, chapters, stats }) {
     <section className="section" id="about" ref={ref}>
       <div className="shell">
         <SectionHead eyebrow="About" title="I build software end to end, and put it in production.">
-          Informatics student in Bandung, working across cloud delivery, security, mobile,
+          Informatics student in Bandung, working across cloud delivery, security, mapping,
           and the interfaces in front of them.
         </SectionHead>
 
@@ -641,7 +641,7 @@ export function Footer() {
             <h4>Muhammad Rakha Pratama</h4>
             <p className="footer-blurb">
               Informatics student building and shipping full-stack products — cloud
-              deployment, security, mobile, and the web.
+              deployment, security, mapping, and mobile.
             </p>
           </div>
           {footerLinks.map((group) => (
