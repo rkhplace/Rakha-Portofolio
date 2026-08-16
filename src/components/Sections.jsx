@@ -374,6 +374,49 @@ export function Projects({ projects, loading, onSelect }) {
   );
 }
 
+/* ── Work gallery ───────────────────────────────────────────────────────── */
+
+/*
+ * Screens, with nothing to click through to.
+ *
+ * Two of the four demo links on the project cards are dead 404s and the image
+ * coverage is uneven — three shots of one project, none of two others — so
+ * wiring these to individual projects would have produced broken links and a
+ * grid where some cards carry a picture and some do not. Standing on their own
+ * they only have to be true, which they are: every one is the real interface.
+ *
+ * Laid on a dark panel because the screenshots are near-white UI; on the light
+ * page they would bleed into the background at the edges.
+ */
+export function Work({ items }) {
+  return (
+    <section className="section section-dark" id="work">
+      <div className="shell">
+        <SectionHead eyebrow="Work" title="What it actually looks like.">
+          Interfaces from the projects above — mapping, marketplace, and public-sector work,
+          captured from the running applications.
+        </SectionHead>
+
+        <div className="work-grid">
+          {items.map((item, index) => (
+            <motion.figure
+              className={`work-item work-item-${item.shape}`}
+              key={item.src}
+              {...stagger(index % 3, 0.08)}
+            >
+              <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+              <figcaption>
+                <strong>{item.title}</strong>
+                <span>{item.note}</span>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── Skills ─────────────────────────────────────────────────────────────── */
 
 const skillsCopy = {

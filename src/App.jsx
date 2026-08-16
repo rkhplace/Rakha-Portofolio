@@ -29,6 +29,12 @@ import {
 
 import profileImage from "../images/RakhaApplePark.jpeg";
 import logoImage from "../images/Logo.png";
+import workDigitalTwin from "../images/work/work-digital-twin.webp";
+import workJualinProduct from "../images/work/work-jualin-product.webp";
+import workJualinMobile from "../images/work/work-jualin-mobile.webp";
+import workDprRi from "../images/work/work-dpr-ri.webp";
+import workTripPlanner from "../images/work/work-trip-planner.webp";
+import workJualinLogin from "../images/work/work-jualin-login.webp";
 import azureLogo from "../images/tech/azure.svg";
 import cppLogo from "../images/tech/cplusplus.svg";
 import cssLogo from "../images/tech/css3.svg";
@@ -50,7 +56,7 @@ import vercelLogo from "../images/tech/vercel.svg";
 import viteLogo from "../images/tech/vite.svg";
 
 import ParallaxHero from "./components/ParallaxHero";
-import { About, Contact, Experience, Footer, Projects, Skills } from "./components/Sections";
+import { About, Contact, Experience, Footer, Projects, Skills, Work } from "./components/Sections";
 import useSmoothScroll from "./hooks/useSmoothScroll";
 import "./styles/theme.css";
 
@@ -363,6 +369,57 @@ const languageIcons = {
   TypeScript: Code2,
 };
 
+/*
+ * The gallery set. `shape` drives the grid span, not the image's own aspect:
+ * `wide` is a half-row cell, `tall` is the phone shot standing through two rows
+ * beside them, `full` closes the grid across its whole width so the last row
+ * has no hole in it.
+ */
+const workShots = [
+  {
+    src: workDigitalTwin,
+    shape: "wide",
+    title: "3D Digital Twin — Bandung",
+    note: "Cesium and OpenStreetMap, 2,500 building footprints extruded, sensor and citizen-report layers.",
+    alt: "3D digital twin of Bandung with extruded OpenStreetMap buildings and layer filters",
+  },
+  {
+    src: workJualinProduct,
+    shape: "wide",
+    title: "JUALIN — product detail",
+    note: "Leaflet radius search: buyers see a 10 km area, never the seller's exact address.",
+    alt: "JUALIN product page showing a listing beside a map with a 10 km offer radius",
+  },
+  {
+    src: workJualinMobile,
+    shape: "tall",
+    title: "JUALIN — Flutter app",
+    note: "The same marketplace built for mobile.",
+    alt: "JUALIN marketplace running on a phone, showing the product feed",
+  },
+  {
+    src: workDprRi,
+    shape: "wide",
+    title: "Komisi VIII DPR RI",
+    note: "Public profile and agenda site for a sitting member of parliament.",
+    alt: "Landing page of the DPR RI member profile website",
+  },
+  {
+    src: workTripPlanner,
+    shape: "wide",
+    title: "Trip Planner",
+    note: "Groq-generated itinerary with a mapped route per day, exportable to PDF, Excel and Word.",
+    alt: "Trip Planner itinerary form beside a map of Bali with a daily route",
+  },
+  {
+    src: workJualinLogin,
+    shape: "full",
+    title: "JUALIN — seller entry",
+    note: "Sign-in and onboarding for the seller side of the marketplace.",
+    alt: "JUALIN sign-in page with the seller value proposition alongside",
+  },
+];
+
 const projectDescriptionFallback =
   "Public GitHub repository by Rakha, kept available for code review and project reference.";
 
@@ -591,6 +648,8 @@ export default function App() {
       <About profileImage={profileImage} chapters={aboutChapters} stats={stats} />
       <Experience items={timelineItems} />
       <Projects projects={shownProjects} loading={loading} onSelect={setSelected} />
+      {/* Straight after the list: named, then shown. */}
+      <Work items={workShots} />
       <Skills services={services} techStack={techStack} />
       <Contact />
       <Footer />
