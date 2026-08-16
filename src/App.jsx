@@ -29,7 +29,6 @@ import {
 
 import profileImage from "../images/RakhaApplePark.jpeg";
 import logoImage from "../images/Logo.png";
-import workDigitalTwin from "../images/work/work-digital-twin.webp";
 import workJualinProduct from "../images/work/work-jualin-product.webp";
 import workJualinMobile from "../images/work/work-jualin-mobile.webp";
 import workDprRi from "../images/work/work-dpr-ri.webp";
@@ -107,7 +106,7 @@ const aboutChapters = [
   {
     kicker: "04",
     title: "Geospatial and Mapping",
-    text: "A 3D digital twin of Bandung on Cesium with extruded OpenStreetMap buildings and live sensor layers, radius search on Leaflet, and day-by-day routing on Google Maps.",
+    text: "Radius search on Leaflet and OpenStreetMap so buyers see an area instead of an address, and day-by-day itinerary routing drawn on Google Maps.",
   },
   {
     kicker: "05",
@@ -388,13 +387,11 @@ const languageIcons = {
  * has no hole in it.
  */
 const workShots = [
-  {
-    src: workDigitalTwin,
-    shape: "wide",
-    title: "3D Digital Twin — Bandung",
-    note: "Cesium and OpenStreetMap, 2,500 building footprints extruded, sensor and citizen-report layers.",
-    alt: "3D digital twin of Bandung with extruded OpenStreetMap buildings and layer filters",
-  },
+  /*
+   * A sixth shot sat at the head of this list and has been withdrawn: the work
+   * belongs to an employer's repository, so it is not ours to publish. Nothing
+   * in the copy below references it either.
+   */
   {
     src: workJualinProduct,
     shape: "wide",
