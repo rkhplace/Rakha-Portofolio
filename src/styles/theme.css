@@ -1035,14 +1035,27 @@ button {
 }
 
 /*
- * Six across two-and-a-bit rows. The phone shot stands through two rows beside
- * the wide ones rather than being letterboxed into a landscape cell, and the
- * last item runs the full width so the grid closes without a hole.
+ * One row, full-bleed. Every item is set to the same height and takes whatever
+ * width its own aspect gives it — so the landscape screens stay landscape and
+ * the phone shot stays a phone, rather than all six being forced into a common
+ * cell and cropped to fit.
  */
-.work-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
+.work-strip {
+  margin-top: clamp(28px, 4vh, 48px);
+  overflow: hidden;
+}
+
+.work-track {
+  display: flex;
+  width: max-content;
+  padding-inline: var(--gutter);
+  will-change: transform;
+}
+
+.work-track > * {
+  flex: none;
+  margin-right: 16px;
+  height: clamp(210px, 27vh, 300px);
 }
 
 .work-item {
@@ -1054,29 +1067,23 @@ button {
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
+/* Height-led: the figure takes its width from the image, not the other way
+ * round, which is what keeps every aspect intact on a shared baseline. */
 .work-item img {
   display: block;
-  width: 100%;
   height: 100%;
-  /* Anchored to the top: these are application screens, and the toolbar or
-   * header is the part that identifies them. */
-  object-fit: cover;
-  object-position: top center;
+  width: auto;
 }
 
-.work-item-wide {
-  grid-column: span 2;
-  aspect-ratio: 16 / 10;
+/* Narrow screens and reduced-motion get a strip they push themselves. */
+.work-strip-swipe {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
-.work-item-tall {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.work-item-full {
-  grid-column: span 6;
-  aspect-ratio: 24 / 7;
+.work-strip-swipe .work-item {
+  scroll-snap-align: center;
 }
 
 .work-item figcaption {
@@ -1457,12 +1464,7 @@ button {
   .stat-row { grid-template-columns: 1fr; }
   .tech-chip { width: 46px; height: 46px; }
 
-  /* Single column: the spans only make sense with room for two side by side. */
-  .work-grid { grid-template-columns: 1fr; }
-  .work-item-wide,
-  .work-item-tall,
-  .work-item-full { grid-column: span 1; grid-row: span 1; aspect-ratio: 16 / 10; }
-  .work-item-tall { aspect-ratio: 3 / 4; }
+  .work-track > * { height: clamp(180px, 30vh, 240px); }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-bottom { flex-direction: column; align-items: flex-start; }
   .modal-meta { grid-template-columns: 1fr; }

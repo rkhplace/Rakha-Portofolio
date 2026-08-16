@@ -389,29 +389,77 @@ export function Projects({ projects, loading, onSelect }) {
  * page they would bleed into the background at the edges.
  */
 export function Work({ items }) {
+  const sectionRef = useRef(null);
+  const trackRef = useRef(null);
+  const reduce = useReducedMotion();
+  const wide = useMediaQuery("(min-width: 900px)");
+  const [distance, setDistance] = useState(0);
+
+  const drifting = wide && !reduce;
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || !drifting) {
+      setDistance(0);
+      return undefined;
+    }
+
+    const measure = () => setDistance(Math.max(0, track.scrollWidth - window.innerWidth));
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(track);
+    window.addEventListener("resize", measure);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [drifting, items]);
+
+  /*
+   * Deliberately not pinned, unlike Experience and Skills. A pinned rail costs
+   * a full viewport plus the whole track overflow — measured at ~2900px here,
+   * against 1374px for the grid this replaced. Tying the drift to the section's
+   * own pass through the screen instead keeps it one row tall and leaves the
+   * reader's scroll under their control: a gallery is worth glancing at, not
+   * worth trapping someone in.
+   */
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"],
+  });
+  const p = useSpring(scrollYProgress, {
+    stiffness: 110,
+    damping: 30,
+    mass: 0.35,
+    restDelta: 0.0005,
+  });
+  const x = useTransform(p, [0, 1], [0, -distance]);
+
   return (
-    <section className="section section-dark" id="work">
+    <section className="section section-dark work" id="work" ref={sectionRef}>
       <div className="shell">
         <SectionHead eyebrow="Work" title="What it actually looks like.">
           Interfaces from the projects above — mapping, marketplace, and public-sector work,
           captured from the running applications.
         </SectionHead>
+      </div>
 
-        <div className="work-grid">
-          {items.map((item, index) => (
-            <motion.figure
-              className={`work-item work-item-${item.shape}`}
-              key={item.src}
-              {...stagger(index % 3, 0.08)}
-            >
+      {/* Full-bleed: the strip runs past both edges so it reads as a longer
+          reel than the screen, which is what makes the drift legible. */}
+      <div className={drifting ? "work-strip" : "work-strip work-strip-swipe"}>
+        <motion.div className="work-track" ref={trackRef} style={drifting ? { x } : undefined}>
+          {items.map((item) => (
+            <figure className="work-item" key={item.src}>
               <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
               <figcaption>
                 <strong>{item.title}</strong>
                 <span>{item.note}</span>
               </figcaption>
-            </motion.figure>
+            </figure>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
