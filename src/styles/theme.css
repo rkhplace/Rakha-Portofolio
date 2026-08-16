@@ -342,7 +342,20 @@ button {
   position: absolute;
   left: 50%;
   z-index: 6;
-  width: min(680px, 86vw);
+  /*
+   * Sized from the viewport, not fixed pixels. Both the rest position (68vh)
+   * and the travel derive from viewport height, so a fixed 680px figure kept
+   * the same size while the distance it covered grew — on a 1920x960 screen it
+   * finished 263px clear of the floor, showing the crop at the jacket and a
+   * band of empty sky beneath it. 107vh wide works out to ~100vh tall.
+   *
+   * The 140vw arm only ever wins on a phone, where a figure bound to the screen
+   * width is far shorter than the screen is tall and the base cap leaves it
+   * almost no room to move. Letting it overflow the width and be clipped by the
+   * viewport buys back the travel; the subject is centred, so the crop takes
+   * shoulders rather than head.
+   */
+  width: min(140vw, 107vh);
   translate: -50% 0;
   pointer-events: none;
   will-change: transform;

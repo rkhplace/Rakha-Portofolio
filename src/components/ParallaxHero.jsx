@@ -82,7 +82,21 @@ export default function ParallaxHero({ name, tagline }) {
       // is whatever puts the middle of the face on the middle of the headline.
       const rest = 0.68 * window.innerHeight;
       const end = titleCentre - faceCentre * figureHeight;
-      setTravel(Math.max(0, rest - end));
+
+      /*
+       * Capped so the figure never lifts its own base off the bottom of the
+       * screen. The cut-out is cropped at the jacket, which makes that edge a
+       * hard horizontal line rather than a silhouette — the moment it clears
+       * the floor you see the crop with sky underneath it.
+       *
+       * On a desktop the wanted travel now sits just inside this cap, so the
+       * face still lands on the headline. On a phone the figure is width-bound
+       * and much shorter than the screen, so the cap dominates and it barely
+       * moves — which is the correct outcome there: a small figure floating in
+       * the middle of a tall screen would look broken, not intentional.
+       */
+      const maxTravel = rest + figureHeight - window.innerHeight;
+      setTravel(Math.max(0, Math.min(rest - end, maxTravel)));
     };
 
     measure();
